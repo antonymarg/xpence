@@ -1,3 +1,5 @@
-export default function App() {
-  return <></>;
+import { Redirect } from "expo-router";
+
+export default function RootIndex() {
+  return <Redirect href="/(app)/home" />;
 }
