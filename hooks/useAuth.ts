@@ -9,7 +9,6 @@ export default function useAuth() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const isAuthenticated = !!claims;
-  // Fetch the claims once, and subscribe to auth state changes
   useEffect(() => {
     const fetchClaims = async () => {
       setIsLoading(true);
@@ -37,11 +36,11 @@ export default function useAuth() {
   useEffect(() => {
     const fetchProfile = async () => {
       setIsLoading(true);
-      if (claims) {
+      if (claims?.sub) {
         const { data } = await supabase
-          .from("profiles")
+          .from("user_profiles")
           .select("*")
-          .eq("id", claims.sub)
+          .eq("uu_id", claims.sub)
           .single();
         setProfile(data);
       } else {

@@ -25,11 +25,20 @@ export const theme = {
     savings: "#4CC9F0",
     success: "#4ADE80",
 
+    // Feedback (success, error, info, warning)
+    error: "#DC2626",
+    info: "#2563EB",
+    warning: "#F59E0B",
+
     // Overlays
     needsBg: "rgba(67, 97, 238, 0.1)",
     wantsBg: "rgba(247, 37, 133, 0.1)",
     savingsBg: "rgba(76, 201, 240, 0.1)",
     primaryRedBg: "rgba(255, 77, 77, 0.1)",
+    successBg: "rgba(74, 222, 128, 0.15)",
+    errorBg: "rgba(220, 38, 38, 0.1)",
+    infoBg: "rgba(37, 99, 235, 0.1)",
+    warningBg: "rgba(245, 158, 11, 0.15)",
   },
 
   spacing: {

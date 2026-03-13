@@ -12,9 +12,10 @@ import {
 
 interface ITextInputProps extends RNTextInputProps {
   label?: string;
+  error?: string | null;
 }
 
-export default function TextInput({ label, ...props }: ITextInputProps) {
+export default function TextInput({ label, error, ...props }: ITextInputProps) {
   const [isFocused, setIsFocused] = useState(false);
 
   const onFocus = (e: FocusEvent) => {
@@ -31,11 +32,12 @@ export default function TextInput({ label, ...props }: ITextInputProps) {
     <View>
       {label && <Text style={styles.label}>{label}</Text>}
       <RNTextInput
-        style={[styles.input, isFocused && styles.inputFocused, props.style]}
+        style={[styles.input, isFocused && styles.inputFocused, error && styles.inputError, props.style]}
         {...props}
         onFocus={onFocus}
         onBlur={onBlur}
       />
+      {error && <Text style={styles.error}>{error}</Text>}
     </View>
   );
 }
@@ -48,6 +50,11 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing.sm,
     color: theme.colors.textLight,
   },
+  error: {
+    color: theme.colors.error,
+    fontSize: theme.typography.sizes.sm,
+    marginTop: theme.spacing.xs,
+  },
   input: {
     padding: theme.spacing.md,
     backgroundColor: "#fff",
@@ -57,5 +64,8 @@ const styles = StyleSheet.create({
   },
   inputFocused: {
     borderColor: theme.colors.needs,
+  },
+  inputError: {
+    borderColor: theme.colors.error,
   },
 });

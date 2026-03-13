@@ -1,3 +1,4 @@
+import Alert from "@/components/Alert";
 import AuthWrapper from "@/components/AuthWrapper";
 import DividerText from "@/components/DividerText";
 import Pressable from "@/components/Pressable";
@@ -7,51 +8,81 @@ import { supabase } from "@/lib/supabase";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link } from "expo-router";
 import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Image, Keyboard, StyleSheet, Text, View } from "react-native";
+
+const EMAIL_REGEX = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
+
+interface InputState {
+  value: string;
+  error: string | null;
+}
 
 export default function Login() {
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const [email, setEmail] = React.useState<InputState>({ value: "", error: null });
+  const [password, setPassword] = React.useState<InputState>({ value: "", error: null });
   const [loading, setLoading] = React.useState(false);
-
+  const [error, setError] = React.useState<string | null>(null);
+  
   const onLoginPress = async () => {
-    if (!email || !password) {
-      // Show some error message
+    setError(null);
+    Keyboard.dismiss();
+    if(!email.value) {
+      setEmail({ value: email.value, error: "Email is required" });
       return;
     }
-    // Handle login logic here
+    if(!EMAIL_REGEX.test(email.value)) {
+      setEmail({ value: email.value, error: "Invalid email" });
+      return;
+    }
+    if(!password.value) {
+      setPassword({ value: password.value, error: "Password is required" });
+      return;
+    }
     setLoading(true);
+    setEmail({ value: email.value, error: null });
+    setPassword({ value: password.value, error: null });
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
-    });
-    if (error) console.log("Error logging in:", error.message);
-    setLoading(false);
+    try{
+      const { error: loginError } = await supabase.auth.signInWithPassword({
+        email: email.value.trim(),
+        password: password.value,
+      });
+      if (loginError) {
+        setError(loginError.message);
+      }
+    } catch {
+      setError("An unknown error occurred");
+    } finally {
+      setLoading(false);
+    }
   };
   const onGooglePress = () => {};
 
   return (
     <AuthWrapper>
+      {error && <Alert message={error} type="error" />}
       <View style={styles.inputContainer}>
         <TextInput
           placeholder="name@example.com"
           label="Email"
-          value={email}
-          onChangeText={setEmail}
+          value={email.value}
+          onChangeText={(text) => setEmail({ value: text, error: null })}
+          error={email.error} 
+          editable={!loading}
+          autoCapitalize="none"
+          autoComplete="email"
+          keyboardType="email-address"
         />
         <TextInput
           placeholder="Password"
           label="Password"
           secureTextEntry
-          value={password}
-          onChangeText={setPassword}
+          value={password.value}
+          onChangeText={(text) => setPassword({ value: text, error: null })}
+          error={password.error}
+          editable={!loading}
         />
         <Pressable
-          style={({ pressed }) => ({
-            opacity: pressed ? 0.7 : 1,
-            transform: [{ scale: pressed ? 0.98 : 1 }],
-          })}
           disabled={loading}
           onPress={onLoginPress}
         >
@@ -64,7 +95,7 @@ export default function Login() {
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
           >
-            <Text style={styles.buttonText}>Continue</Text>
+            {loading ? <ActivityIndicator size="small" color="#fff" /> : <Text style={styles.buttonText}>Continue</Text>}
           </LinearGradient>
         </Pressable>
         <DividerText text="or" />
@@ -75,7 +106,7 @@ export default function Login() {
         >
           <Image
             source={require("../../assets/images/google-icon.png")}
-            style={{ width: 20, height: 20 }}
+            style={styles.googleIcon}
           />
           <Text style={[styles.buttonText, { color: "#000" }]}>
             Continue with Google
@@ -124,6 +155,10 @@ const styles = StyleSheet.create({
   },
   footerQuestion: {
     color: theme.colors.textLight,
+  },
+  googleIcon: {
+    width: 20,
+    height: 20,
   },
   footerLink: {
     color: theme.colors.primaryRed,

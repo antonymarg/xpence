@@ -19,9 +19,12 @@ export default function Pressable({
           opacity: pressed ? 0.7 : 1,
           transform: [{ scale: pressed ? 0.98 : 1 }],
         };
+        const disabledStyle = {
+          opacity: rest.disabled ? 0.5 : 1,
+        };
         const userStyle =
           typeof style === "function" ? style(state) : style;
-        return StyleSheet.flatten([userStyle, pressStyle]);
+        return StyleSheet.flatten([userStyle, pressStyle, disabledStyle]);
       }}
     >
       {children}
