@@ -1,10 +1,11 @@
 import AuthWrapper from "@/components/AuthWrapper";
+import Pressable from "@/components/Pressable";
 import TextInput from "@/components/TextInput";
 import { theme } from "@/constants/theme";
 import { supabase } from "@/lib/supabase";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 export default function Signup() {
   const [email, setEmail] = React.useState("");

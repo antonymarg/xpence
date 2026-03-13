@@ -31,7 +31,7 @@ export default function TextInput({ label, ...props }: ITextInputProps) {
     <View>
       {label && <Text style={styles.label}>{label}</Text>}
       <RNTextInput
-        style={[styles.input, isFocused && styles.inputFocused]}
+        style={[styles.input, isFocused && styles.inputFocused, props.style]}
         {...props}
         onFocus={onFocus}
         onBlur={onBlur}

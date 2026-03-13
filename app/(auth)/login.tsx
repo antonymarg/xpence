@@ -1,12 +1,13 @@
 import AuthWrapper from "@/components/AuthWrapper";
 import DividerText from "@/components/DividerText";
+import Pressable from "@/components/Pressable";
 import TextInput from "@/components/TextInput";
 import { theme } from "@/constants/theme";
 import { supabase } from "@/lib/supabase";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link } from "expo-router";
 import React from "react";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 
 export default function Login() {
   const [email, setEmail] = React.useState("");
@@ -104,9 +105,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   googleButton: {
-    backgroundColor: "#fff",
+    backgroundColor: theme.colors.card,
     flexDirection: "row",
-    color: "#000",
+    color: theme.colors.textDark,
     gap: theme.spacing.sm,
   },
   buttonText: {

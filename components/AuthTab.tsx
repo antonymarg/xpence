@@ -1,6 +1,8 @@
 import { theme } from "@/constants/theme";
 import React from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
+import Pressable from "./Pressable";
+
 
 interface AuthTabProps {
   text: string;

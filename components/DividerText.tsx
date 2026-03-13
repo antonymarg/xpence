@@ -5,7 +5,7 @@ import { StyleSheet, Text, View } from "react-native";
 interface DividerTextProps {
   text: string;
 }
-export default function DividerText({ text }: { text: string }) {
+export default function DividerText({ text }:DividerTextProps) {
   return (
     <View style={styles.container}>
       <View style={styles.line} />
