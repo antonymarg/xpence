@@ -1,7 +1,7 @@
 import * as userApi from "@/api/users.api";
 import { Profile } from "@/api/users.types";
 import { supabase } from "@/lib/supabase";
-import { useRouter, type Href } from "expo-router";
+import { Href, useRouter } from "expo-router";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 export type AuthContextType = {
@@ -27,22 +27,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const isAuthenticated = !!claims;
 
   useEffect(() => {
-    const initAuth = async () => {
-      const res = await userApi.getCurrentStatus();
-      if (!res.success) {
-        console.error("Error fetching current status:", res.error);
+    userApi
+      .getCurrentStatus()
+      .then((res) => {
+        if (!res.success) throw res.error;
+        return res.data;
+      })
+      .then((claims) => {
+        setClaims(claims);
+        if (!claims?.sub) {
+          setProfile(null);
+          return null;
+        }
+        return userApi.getUserProfile(claims.sub);
+      })
+      .then((res) => {
+        if (res && !res.success) throw res.error;
+        if (res?.success) setProfile(res.data);
+      })
+      .catch((error) => {
+        console.error("Auth init error:", error);
+      })
+      .finally(() => {
         setIsLoading(false);
-        return;
-      }
-      setClaims(res.data);
-      setIsLoading(false);
-    };
-    initAuth();
+      });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log(">>> AUTH STATE CHANGE", event, session);
+      console.log(`>>> AUTH STATE CHANGE: ${new Date().toISOString()}`, event);
       let redirectRoute: Href = "/(app)/home";
       if (event === "INITIAL_SESSION") {
         redirectRoute = session?.user?.id ? "/(app)/home" : "/(auth)/login";
@@ -57,20 +70,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       subscription.unsubscribe();
     };
   }, [router]);
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      const res = await userApi.getUserProfile(claims?.sub as string);
-      if (!res.success) {
-        console.error("Error fetching user profile:", res.error);
-        setIsLoading(false);
-        return;
-      }
-      setProfile(res.data);
-      setIsLoading(false);
-    };
-    fetchProfile();
-  }, [claims]);
 
   const value: AuthContextType = {
     profile,

@@ -85,18 +85,17 @@ export default function Login() {
           password: password.value,
         },
       );
-      console.log("authData", authData);
       if (signUpError || !authData?.user?.id) {
         setError("Failed to sign up");
         return;
       }
-      const { data: profileData, error: profileError } = await supabase
+      const { error: profileError } = await supabase
         .from("user_profiles")
         .insert({
           user_id: authData.user.id,
           display_name: name.value,
         });
-      if (profileError || !profileData) {
+      if (profileError) {
         setError("Failed to create profile");
         return;
       }

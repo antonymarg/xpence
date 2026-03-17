@@ -8,7 +8,6 @@ function AddRecordPage() {
   const { profile } = useAuth();
   const [categories, setCategories] = React.useState<Category[]>([]);
   useEffect(() => {
-    console.log("here", profile);
     const fetchUserCategories = async () => {
       if (!profile) return;
       try {
@@ -23,7 +22,7 @@ function AddRecordPage() {
       }
     };
     fetchUserCategories();
-  }, []);
+  }, [profile]);
 
   return (
     <View>

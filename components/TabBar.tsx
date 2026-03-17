@@ -12,7 +12,7 @@ type TabType = "home" | "insights" | "addRecord" | "achievements";
 const getIconColor = (activeTab: TabType, page: TabType) =>
   activeTab === page ? theme.colors.primaryRed : theme.colors.icons;
 
-function TapBar() {
+function TabBar() {
   const router = useRouter();
   const segments = useSegments();
   const activeTab = segments[1] as TabType;
@@ -101,4 +101,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TapBar;
+export default TabBar;
