@@ -8,7 +8,14 @@ import { supabase } from "@/lib/supabase";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link } from "expo-router";
 import React from "react";
-import { ActivityIndicator, Image, Keyboard, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  Keyboard,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 const EMAIL_REGEX = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
 
@@ -18,23 +25,29 @@ interface InputState {
 }
 
 export default function Login() {
-  const [email, setEmail] = React.useState<InputState>({ value: "", error: null });
-  const [password, setPassword] = React.useState<InputState>({ value: "", error: null });
+  const [email, setEmail] = React.useState<InputState>({
+    value: "",
+    error: null,
+  });
+  const [password, setPassword] = React.useState<InputState>({
+    value: "",
+    error: null,
+  });
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
-  
+
   const onLoginPress = async () => {
     setError(null);
     Keyboard.dismiss();
-    if(!email.value) {
+    if (!email.value) {
       setEmail({ value: email.value, error: "Email is required" });
       return;
     }
-    if(!EMAIL_REGEX.test(email.value)) {
+    if (!EMAIL_REGEX.test(email.value)) {
       setEmail({ value: email.value, error: "Invalid email" });
       return;
     }
-    if(!password.value) {
+    if (!password.value) {
       setPassword({ value: password.value, error: "Password is required" });
       return;
     }
@@ -42,7 +55,7 @@ export default function Login() {
     setEmail({ value: email.value, error: null });
     setPassword({ value: password.value, error: null });
 
-    try{
+    try {
       const { error: loginError } = await supabase.auth.signInWithPassword({
         email: email.value.trim(),
         password: password.value,
@@ -67,7 +80,7 @@ export default function Login() {
           label="Email"
           value={email.value}
           onChangeText={(text) => setEmail({ value: text, error: null })}
-          error={email.error} 
+          error={email.error}
           editable={!loading}
           autoCapitalize="none"
           autoComplete="email"
@@ -82,10 +95,7 @@ export default function Login() {
           error={password.error}
           editable={!loading}
         />
-        <Pressable
-          disabled={loading}
-          onPress={onLoginPress}
-        >
+        <Pressable disabled={loading} onPress={onLoginPress}>
           <LinearGradient
             colors={[
               theme.colors.mainGradient[0],
@@ -95,7 +105,11 @@ export default function Login() {
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
           >
-            {loading ? <ActivityIndicator size="small" color="#fff" /> : <Text style={styles.buttonText}>Continue</Text>}
+            {loading ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <Text style={styles.buttonText}>Continue</Text>
+            )}
           </LinearGradient>
         </Pressable>
         <DividerText text="or" />

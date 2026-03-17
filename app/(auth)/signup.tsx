@@ -6,7 +6,13 @@ import { theme } from "@/constants/theme";
 import { supabase } from "@/lib/supabase";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import { ActivityIndicator, Keyboard, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Keyboard,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 const EMAIL_REGEX = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
 
@@ -16,37 +22,55 @@ interface InputState {
 }
 
 export default function Login() {
-  const [email, setEmail] = React.useState<InputState>({ value: "", error: null });
-  const [password, setPassword] = React.useState<InputState>({ value: "", error: null });
-  const [confirmPassword, setConfirmPassword] = React.useState<InputState>({ value: "", error: null });
-  const [name, setName] = React.useState<InputState>({ value: "", error: null });
+  const [email, setEmail] = React.useState<InputState>({
+    value: "",
+    error: null,
+  });
+  const [password, setPassword] = React.useState<InputState>({
+    value: "",
+    error: null,
+  });
+  const [confirmPassword, setConfirmPassword] = React.useState<InputState>({
+    value: "",
+    error: null,
+  });
+  const [name, setName] = React.useState<InputState>({
+    value: "",
+    error: null,
+  });
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
-  
+
   const onSignupPress = async () => {
     setError(null);
     Keyboard.dismiss();
-    if(!email.value) {
+    if (!email.value) {
       setEmail({ value: email.value, error: "Email is required" });
       return;
     }
-    if(!EMAIL_REGEX.test(email.value)) {
+    if (!EMAIL_REGEX.test(email.value)) {
       setEmail({ value: email.value, error: "Invalid email" });
       return;
     }
-    if(!password.value) {
+    if (!password.value) {
       setPassword({ value: password.value, error: "Password is required" });
       return;
     }
-    if(!confirmPassword.value) {
-      setConfirmPassword({ value: confirmPassword.value, error: "Confirm password is required" });
+    if (!confirmPassword.value) {
+      setConfirmPassword({
+        value: confirmPassword.value,
+        error: "Confirm password is required",
+      });
       return;
     }
-    if(confirmPassword.value !== password.value) {
-      setConfirmPassword({ value: confirmPassword.value, error: "Passwords do not match" });
+    if (confirmPassword.value !== password.value) {
+      setConfirmPassword({
+        value: confirmPassword.value,
+        error: "Passwords do not match",
+      });
       return;
     }
-    if(!name.value) {
+    if (!name.value) {
       setName({ value: name.value, error: "Name is required" });
       return;
     }
@@ -54,29 +78,28 @@ export default function Login() {
     setEmail({ value: email.value, error: null });
     setPassword({ value: password.value, error: null });
 
-    try{
-      const { data: authData, error: signUpError } = await supabase.auth.signUp({
-        email: email.value.trim(),
-        password: password.value,
-        options: {
-
-        }
-      });
-      console.log('authData', authData);
+    try {
+      const { data: authData, error: signUpError } = await supabase.auth.signUp(
+        {
+          email: email.value.trim(),
+          password: password.value,
+        },
+      );
+      console.log("authData", authData);
       if (signUpError || !authData?.user?.id) {
         setError("Failed to sign up");
-        return
+        return;
       }
-      const { data: profileData, error: profileError } = await supabase.from("user_profiles").insert({
-        uu_id: authData.user.id,
-        display_name: name.value,
-      });
-      console.log('profileData', profileData);
+      const { data: profileData, error: profileError } = await supabase
+        .from("user_profiles")
+        .insert({
+          user_id: authData.user.id,
+          display_name: name.value,
+        });
       if (profileError || !profileData) {
         setError("Failed to create profile");
-        return
+        return;
       }
-
     } catch {
       setError("An unknown error occurred");
     } finally {
@@ -88,7 +111,7 @@ export default function Login() {
     <AuthWrapper>
       {error && <Alert message={error} type="error" />}
       <View style={styles.inputContainer}>
-      <TextInput
+        <TextInput
           placeholder="John"
           label="What's your name?"
           value={name.value}
@@ -101,7 +124,7 @@ export default function Login() {
           label="Email"
           value={email.value}
           onChangeText={(text) => setEmail({ value: text, error: null })}
-          error={email.error} 
+          error={email.error}
           editable={!loading}
           autoCapitalize="none"
           autoComplete="email"
@@ -121,14 +144,13 @@ export default function Login() {
           label="Confirm password"
           secureTextEntry
           value={confirmPassword.value}
-          onChangeText={(text) => setConfirmPassword({ value: text, error: null })}
+          onChangeText={(text) =>
+            setConfirmPassword({ value: text, error: null })
+          }
           error={confirmPassword.error}
           editable={!loading}
         />
-        <Pressable
-          disabled={loading}
-          onPress={onSignupPress}
-        >
+        <Pressable disabled={loading} onPress={onSignupPress}>
           <LinearGradient
             colors={[
               theme.colors.mainGradient[0],
@@ -138,7 +160,11 @@ export default function Login() {
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
           >
-            {loading ? <ActivityIndicator size="small" color="#fff" /> : <Text style={styles.buttonText}>Sign Up</Text>}
+            {loading ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <Text style={styles.buttonText}>Sign Up</Text>
+            )}
           </LinearGradient>
         </Pressable>
       </View>

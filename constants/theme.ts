@@ -30,6 +30,8 @@ export const theme = {
     info: "#2563EB",
     warning: "#F59E0B",
 
+    icons: "#D1D5DB",
+
     // Overlays
     needsBg: "rgba(67, 97, 238, 0.1)",
     wantsBg: "rgba(247, 37, 133, 0.1)",
