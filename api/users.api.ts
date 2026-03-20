@@ -25,6 +25,7 @@ async function getUserProfile(): Result<Profile | null> {
     const profile: Profile = {
       userId: data.user_id,
       displayName: data.display_name,
+      budget: data.budget,
     };
     return { success: true, data: profile };
   } catch (err) {

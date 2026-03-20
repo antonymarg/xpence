@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import { toError } from "@/lib/utils";
 import { Result } from "@/types/api.types";
-import { Expense } from "@/types/expenses.types";
+import { Expense, ExpensesSummary } from "@/types/expenses.types";
 import { getUserId } from "./users.api";
 
 async function addExpense(expense: Expense): Result<Expense> {
@@ -33,19 +33,40 @@ async function addExpense(expense: Expense): Result<Expense> {
   }
 }
 
-async function getSumOfExpenses(): Result<number> {
+async function getSummaryOfExpenses(): Result<ExpensesSummary> {
   try {
     const userId = await getUserId();
     const { data, error } = await supabase
       .from("expenses")
-      .select("amount")
+      .select("amount, categories (type)")
       .eq("user_id", userId);
     if (error) throw error;
-    const sum = data.reduce((acc, cur) => acc + cur.amount, 0) ?? 0;
-    return { success: true, data: sum };
+    const summary = data.reduce(
+      (acc, cur) => {
+        switch (cur.categories.type) {
+          case "needs":
+            acc.needs += cur.amount;
+            break;
+          case "wants":
+            acc.wants += cur.amount;
+            break;
+          case "savings":
+            acc.savings += cur.amount;
+            break;
+        }
+        return acc;
+      },
+      {
+        needs: 0,
+        wants: 0,
+        savings: 0,
+      },
+    );
+    return { success: true, data: summary };
   } catch (err) {
+    console.log(err);
     return { success: false, error: toError(err) };
   }
 }
 
-export { addExpense, getSumOfExpenses };
+export { addExpense, getSummaryOfExpenses };

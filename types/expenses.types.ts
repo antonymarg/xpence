@@ -1,4 +1,5 @@
-import { Database } from "@/database.types";
+import { Database } from "@/types/database.types";
+import { CategoryType } from "./users.types";
 
 type DBExpense = Database["public"]["Tables"]["expenses"]["Row"];
 type Expense = {
@@ -7,4 +8,7 @@ type Expense = {
   description: string;
   amount: number;
 };
-export type { DBExpense, Expense };
+
+type ExpensesSummary = Record<CategoryType, number>;
+
+export type { DBExpense, Expense, ExpensesSummary };

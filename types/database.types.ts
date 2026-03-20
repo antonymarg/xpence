@@ -72,16 +72,19 @@ export type Database = {
       };
       user_profiles: {
         Row: {
+          budget: number;
           created_at: string;
           display_name: string;
           user_id: string;
         };
         Insert: {
+          budget?: number;
           created_at?: string;
           display_name?: string;
           user_id?: string;
         };
         Update: {
+          budget?: number;
           created_at?: string;
           display_name?: string;
           user_id?: string;

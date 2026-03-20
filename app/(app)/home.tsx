@@ -1,25 +1,74 @@
-import { getSumOfExpenses } from "@/api/expenses.api";
+import * as expenseApi from "@/api/expenses.api";
+import Card from "@/components/Card";
 import { theme } from "@/constants/theme";
 import { useAuth } from "@/providers/AuthProvider";
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { ExpensesSummary } from "@/types/expenses.types";
+import React, { useState } from "react";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
 function HomePage() {
   const { profile } = useAuth();
-
-  const [sum, setSum] = React.useState<number>(0);
+  const [expenses, setExpenses] = useState<ExpensesSummary>({
+    needs: 0,
+    wants: 0,
+    savings: 0,
+  });
 
   React.useEffect(() => {
-    getSumOfExpenses().then((r) => {
-      if (r.success) setSum(r.data);
+    expenseApi.getSummaryOfExpenses().then((r) => {
+      if (r.success) setExpenses(r.data);
     });
   }, []);
+
+  const sum = expenses.needs + expenses.wants + expenses.savings;
+
+  if (!profile)
+    return (
+      <View style={styles.pageContainer}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
 
   return (
     <View style={styles.pageContainer}>
       <View>
         <Text style={styles.helloText}>Hey, {profile?.displayName}!</Text>
-        <Text style={styles.helloText}>{(sum / 100).toString()}!</Text>
+      </View>
+      <View>
+        <Card>
+          <View style={styles.sumContainer}>
+            <Text style={styles.mainHeader}>Monthly Budget Status</Text>
+            <Text>Sum: €{(sum / 100).toFixed(2)}</Text>
+            <Text>left of €{profile?.budget}</Text>
+          </View>
+        </Card>
+      </View>
+      <View style={styles.categoryContainer}>
+        <Card>
+          <View style={styles.category}>
+            <Text style={[styles.needsText, styles.percentageText]}>
+              {((expenses.needs / sum) * 100).toFixed(0)}%
+            </Text>
+
+            <Text style={styles.labelText}>Needs</Text>
+          </View>
+        </Card>
+        <Card>
+          <View style={styles.category}>
+            <Text style={[styles.wantsText, styles.percentageText]}>
+              {((expenses.wants / sum) * 100).toFixed(0)}%
+            </Text>
+            <Text style={styles.labelText}>Wants</Text>
+          </View>
+        </Card>
+        <Card>
+          <View style={styles.category}>
+            <Text style={[styles.savingsText, styles.percentageText]}>
+              {((expenses.savings / sum) * 100).toFixed(0)}%
+            </Text>
+            <Text style={styles.labelText}>Savings</Text>
+          </View>
+        </Card>
       </View>
     </View>
   );
@@ -34,6 +83,47 @@ const styles = StyleSheet.create({
     color: theme.colors.textDark,
     fontSize: theme.typography.sizes.lg,
     fontWeight: theme.typography.weights.bold,
+  },
+  sumContainer: {
+    width: "100%",
+    padding: 25,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  mainHeader: {
+    color: theme.colors.textLight,
+    textTransform: "uppercase",
+    fontWeight: theme.typography.weights.bold,
+    // fontSize: theme.typography.sizes.xl,
+  },
+  categoryContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  category: {
+    gap: 5,
+    flexDirection: "column",
+    alignItems: "center",
+    paddingHorizontal: 10,
+  },
+  percentageText: {
+    fontSize: theme.typography.sizes.xl,
+    fontWeight: theme.typography.weights.bold,
+  },
+  labelText: {
+    color: theme.colors.textLight,
+    fontSize: theme.typography.sizes.sm,
+    fontWeight: theme.typography.weights.bold,
+  },
+  needsText: {
+    color: theme.colors.needs,
+  },
+  wantsText: {
+    color: theme.colors.wants,
+  },
+  savingsText: {
+    color: theme.colors.savings,
   },
 });
 
