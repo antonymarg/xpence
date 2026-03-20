@@ -1,119 +1,140 @@
 import * as expenseApi from "@/api/expenses.api";
-import { getUserCategories } from "@/api/users.api";
 import CategoryPicker from "@/components/CategoryPicker";
-import CategoryTypePicker from "@/components/CategoryTypePicker";
 import DatePicker from "@/components/DatePicker";
 import Pressable from "@/components/Pressable";
 import TextInput from "@/components/TextInput";
 import { theme } from "@/constants/theme";
 import { useAuth } from "@/providers/AuthProvider";
-import { Category } from "@/types/users.types";
 import { Ionicons } from "@expo/vector-icons";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React from "react";
+import { Controller, useForm } from "react-hook-form";
+import {
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import { z } from "zod";
+
+const schema = z.object({
+  amount: z.coerce.number().min(0.01, "Please enter a valid amount"),
+  description: z.string().min(1, "Please enter a description"),
+  categoryId: z.string().min(1, "Please select a category"),
+  date: z.date(),
+});
 
 function AddRecordPage() {
-  const { profile } = useAuth();
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [selectedCategoryType, setSelectedCategoryType] = useState<
-    Category["type"] | null
-  >("needs");
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
-    null,
-  );
-  const [amount, setAmount] = useState<number>(0);
-  const [description, setDescription] = useState<string>("");
-  const [date, setDate] = useState<Date>(new Date());
+  const { profile, userCategories } = useAuth();
 
-  useEffect(() => {
-    const fetchUserCategories = async () => {
-      if (!profile) return;
-      try {
-        const result = await getUserCategories(profile.userId);
-        if (!result.success) {
-          console.error("Error fetching user categories:", result.error);
-          return;
-        }
-        setCategories(result.data);
-      } catch (error) {
-        console.error("Error fetching user categories:", error);
-      }
-    };
-    fetchUserCategories();
-  }, [profile]);
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      amount: 0,
+      description: "",
+      categoryId: "",
+      date: new Date(),
+    },
+  });
 
   const handleCancel = () => {
     router.back();
   };
 
-  const handleSave = async () => {
-    if (!amount || amount < 0) return;
-    if (!selectedCategory) return;
-    if (!description) return;
-    await expenseApi.addExpense(
-      {
-        categoryId: selectedCategory.id,
-        amount,
-        description,
-        date,
-      },
-      profile?.userId as string,
-    );
+  const handleSave = async (data: z.infer<typeof schema>) => {
+    const result = await expenseApi.addExpense(data);
+    if (result) {
+      router.back();
+    } else {
+      alert("Something went wrong");
+    }
   };
 
-  const onSelectCategoryType = (type: Category["type"]) => {
-    setSelectedCategoryType(type);
-    setSelectedCategory(null);
-  };
+  if (!profile || userCategories.length === 0)
+    return (
+      <View style={styles.formContainer}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
 
   return (
-    <View style={styles.formContainer}>
+    <KeyboardAvoidingView style={styles.formContainer}>
       <View style={styles.header}>
         <Pressable onPress={handleCancel}>
           <Ionicons name="close" color={theme.colors.textLight} size={32} />
         </Pressable>
         <Text style={styles.headerTitle}>Add Expense</Text>
-        <Pressable onPress={handleSave}>
+        <Pressable onPress={handleSubmit(handleSave)}>
           <Text style={styles.headerSave}>Save</Text>
         </Pressable>
       </View>
       <View style={styles.mainForm}>
         <View style={styles.formSegment}>
           <Text style={styles.titleText}>Amount</Text>
-          <TextInput
-            value={amount.toString()}
-            onChangeText={(text) => setAmount(parseFloat(text))}
-            keyboardType="numeric"
+          <Controller
+            control={control}
+            name="amount"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                onChangeText={(text) => onChange(text.replace(/[^0-9.]/g, ""))}
+                inputMode="numeric"
+                value={String(value)}
+                onBlur={onBlur}
+                error={errors.amount?.message}
+                placeholder="0"
+              />
+            )}
           />
         </View>
         <View style={styles.formSegment}>
           <Text style={styles.titleText}>Description</Text>
-          <TextInput value={description} onChangeText={setDescription} />
-        </View>
-        <View style={styles.formSegment}>
-          <Text style={styles.titleText}>Expense type</Text>
-          <CategoryTypePicker
-            selectedCategoryType={selectedCategoryType}
-            onSelectCategoryType={onSelectCategoryType}
+          <Controller
+            control={control}
+            name="description"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                onChange={onChange}
+                onBlur={onBlur}
+                value={value}
+                error={errors.description?.message}
+              />
+            )}
           />
         </View>
         <View style={styles.formSegment}>
           <Text style={styles.titleText}>Available Categories</Text>
-          <CategoryPicker
-            categories={categories.filter(
-              (cat) => cat.type === selectedCategoryType,
+          <Controller
+            name="categoryId"
+            control={control}
+            render={({ field }) => (
+              <CategoryPicker
+                categories={userCategories}
+                selectedCategoryId={field.value}
+                onSelectCategory={field.onChange}
+                error={errors.categoryId?.message}
+              />
             )}
-            selectedCategory={selectedCategory}
-            onSelectCategory={setSelectedCategory}
           />
         </View>
         <View style={styles.formSegment}>
           <Text style={styles.titleText}>Date</Text>
-          <DatePicker value={date} onChange={setDate} />
+          <Controller
+            control={control}
+            name="date"
+            render={({ field: { onChange, value } }) => (
+              <DatePicker onChange={onChange} value={value} />
+            )}
+          />
+          <Text>{errors.date?.message}</Text>
         </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

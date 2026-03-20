@@ -7,11 +7,11 @@ import { StyleSheet, Text, View } from "react-native";
 function HomePage() {
   const { profile } = useAuth();
 
-  const [sum, setSum] = React.useState<number | null>(null);
+  const [sum, setSum] = React.useState<number>(0);
 
   React.useEffect(() => {
-    getSumOfExpenses(profile?.userId).then((r) => {
-      setSum(r);
+    getSumOfExpenses().then((r) => {
+      if (r.success) setSum(r.data);
     });
   }, []);
 
@@ -19,7 +19,7 @@ function HomePage() {
     <View style={styles.pageContainer}>
       <View>
         <Text style={styles.helloText}>Hey, {profile?.displayName}!</Text>
-        <Text style={styles.helloText}>{sum?.toString()}!</Text>
+        <Text style={styles.helloText}>{(sum / 100).toString()}!</Text>
       </View>
     </View>
   );

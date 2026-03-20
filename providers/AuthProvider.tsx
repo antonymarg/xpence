@@ -1,6 +1,6 @@
 import * as userApi from "@/api/users.api";
 import { supabase } from "@/lib/supabase";
-import { Profile } from "@/types/users.types";
+import { Category, Profile } from "@/types/users.types";
 import { Href, useRouter } from "expo-router";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
@@ -8,42 +8,32 @@ export type AuthContextType = {
   profile: Profile | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  userCategories: Category[];
 };
 
 const defaultValues: AuthContextType = {
   profile: null,
   isAuthenticated: false,
   isLoading: false,
+  userCategories: [],
 };
 
 export const AuthContext = createContext<AuthContextType>(defaultValues);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const [claims, setClaims] = useState<Record<string, unknown> | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [userCategories, setUserCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const isAuthenticated = !!claims;
+  const isAuthenticated = !!profile;
 
   useEffect(() => {
     userApi
-      .getCurrentStatus()
+      .getUserProfile()
       .then((res) => {
         if (!res.success) throw res.error;
-        return res.data;
-      })
-      .then((claims) => {
-        setClaims(claims);
-        if (!claims?.sub) {
-          setProfile(null);
-          return null;
-        }
-        return userApi.getUserProfile(claims.sub);
-      })
-      .then((res) => {
-        if (res && !res.success) throw res.error;
-        if (res?.success) setProfile(res.data);
+        if (res.success) setProfile(res.data);
       })
       .catch((error) => {
         console.error("Auth init error:", error);
@@ -56,25 +46,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
       console.log(`>>> AUTH STATE CHANGE: ${new Date().toISOString()}`, event);
-      let redirectRoute: Href = "/(app)/home";
-      if (event === "INITIAL_SESSION") {
-        redirectRoute = session?.user?.id ? "/(app)/home" : "/(auth)/login";
-      } else if (event === "SIGNED_IN") {
+      let redirectRoute: Href | null = null;
+      if (event === "SIGNED_IN") {
         redirectRoute = "/(app)/home";
       } else if (event === "SIGNED_OUT") {
         redirectRoute = "/(auth)/login";
       }
-      router.replace(redirectRoute);
+      if (redirectRoute) router.replace(redirectRoute);
     });
     return () => {
       subscription.unsubscribe();
     };
   }, [router]);
 
+  useEffect(() => {
+    if (!profile) return;
+    userApi.getUserCategories().then((res) => {
+      if (!res.success) return;
+      return setUserCategories(res.data);
+    });
+  }, [profile]);
+
   const value: AuthContextType = {
     profile,
     isAuthenticated,
     isLoading,
+    userCategories,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

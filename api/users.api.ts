@@ -1,33 +1,18 @@
 import { supabase } from "@/lib/supabase";
+import { toError } from "@/lib/utils";
 import { Result } from "@/types/api.types";
 import { Category, Profile } from "@/types/users.types";
-import { JwtPayload } from "@supabase/supabase-js";
 
-const toError = (err: unknown): Error => {
-  if (err instanceof Error) {
-    return err;
-  }
-  return new Error(String(err));
-};
-
-async function getCurrentStatus(): Result<JwtPayload | null> {
-  try {
-    const { data, error } = await supabase.auth.getClaims();
-    if (error) throw error;
-    return { success: true, data: data?.claims ?? null };
-  } catch (err) {
-    return { success: false, error: toError(err) };
-  }
+async function getUserId(): Promise<string> {
+  const { data, error } = await supabase.auth.getSession();
+  if (error) throw error;
+  if (!data.session) throw new Error("No session found");
+  return data.session.user.id;
 }
 
-async function getUserProfile(userId: string): Result<Profile | null> {
-  if (!userId)
-    return {
-      success: false,
-      error: new Error("User ID is required to fetch profile"),
-    };
-
+async function getUserProfile(): Result<Profile | null> {
   try {
+    const userId = await getUserId();
     const { data, error } = await supabase
       .from("user_profiles")
       .select("*")
@@ -47,13 +32,9 @@ async function getUserProfile(userId: string): Result<Profile | null> {
   }
 }
 
-async function getUserCategories(userId: string): Result<Category[]> {
-  if (!userId)
-    return {
-      success: false,
-      error: new Error("User ID is required to fetch categories"),
-    };
+async function getUserCategories(): Result<Category[]> {
   try {
+    const userId = await getUserId();
     const { data, error } = await supabase
       .from("user_to_category")
       .select("categories (id, name, type)")
@@ -65,4 +46,4 @@ async function getUserCategories(userId: string): Result<Category[]> {
   }
 }
 
-export { getCurrentStatus, getUserCategories, getUserProfile };
+export { getUserCategories, getUserId, getUserProfile };

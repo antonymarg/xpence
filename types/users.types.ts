@@ -10,4 +10,6 @@ type Category = Omit<
   "is_default"
 >;
 
-export { Category, Profile };
+type CategoryType = Category["type"];
+
+export { Category, CategoryType, Profile };

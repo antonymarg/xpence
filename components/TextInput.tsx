@@ -12,7 +12,7 @@ import {
 
 interface ITextInputProps extends RNTextInputProps {
   label?: string;
-  error?: string | null;
+  error?: string;
 }
 
 export default function TextInput({ label, error, ...props }: ITextInputProps) {
@@ -32,7 +32,12 @@ export default function TextInput({ label, error, ...props }: ITextInputProps) {
     <View>
       {label && <Text style={styles.label}>{label}</Text>}
       <RNTextInput
-        style={[styles.input, isFocused && styles.inputFocused, error && styles.inputError, props.style]}
+        style={[
+          styles.input,
+          isFocused && styles.inputFocused,
+          error && styles.inputError,
+          props.style,
+        ]}
         {...props}
         onFocus={onFocus}
         onBlur={onBlur}
