@@ -1,6 +1,6 @@
 import { createClient, processLock } from "@supabase/supabase-js";
 import { AppState, Platform } from "react-native";
-import { Database } from "./database.types";
+import { Database } from "../types/database.types";
 import * as storage from "./storage";
 
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL!;

@@ -1,4 +1,4 @@
-import { Database } from "@/lib/database.types";
+import { Database } from "@/types/database.types";
 
 type Profile = {
   userId: string;

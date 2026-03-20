@@ -35,6 +35,7 @@ export default function AppLayout() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: theme.colors.background,
   },
   loadingContainer: {
     flex: 1,
@@ -42,7 +43,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   contentContainer: {
-    backgroundColor: theme.colors.background,
     flex: 1,
     marginTop: theme.spacing.xl,
     marginHorizontal: theme.spacing.lg,

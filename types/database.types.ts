@@ -35,6 +35,41 @@ export type Database = {
         };
         Relationships: [];
       };
+      expenses: {
+        Row: {
+          amount: number;
+          category_id: string;
+          date: string;
+          description: string;
+          id: string;
+          user_id: string;
+        };
+        Insert: {
+          amount: number;
+          category_id?: string;
+          date: string;
+          description?: string;
+          id?: string;
+          user_id?: string;
+        };
+        Update: {
+          amount?: number;
+          category_id?: string;
+          date?: string;
+          description?: string;
+          id?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "expenses_category_id_fkey";
+            columns: ["category_id"];
+            isOneToOne: false;
+            referencedRelation: "categories";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       user_profiles: {
         Row: {
           created_at: string;
@@ -43,12 +78,12 @@ export type Database = {
         };
         Insert: {
           created_at?: string;
-          display_name?: string | null;
+          display_name?: string;
           user_id?: string;
         };
         Update: {
           created_at?: string;
-          display_name?: string | null;
+          display_name?: string;
           user_id?: string;
         };
         Relationships: [];

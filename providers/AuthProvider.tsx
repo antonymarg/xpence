@@ -1,6 +1,6 @@
 import * as userApi from "@/api/users.api";
-import { Profile } from "@/api/users.types";
 import { supabase } from "@/lib/supabase";
+import { Profile } from "@/types/users.types";
 import { Href, useRouter } from "expo-router";
 import React, { createContext, useContext, useEffect, useState } from "react";
 

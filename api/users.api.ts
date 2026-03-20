@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/supabase";
+import { Result } from "@/types/api.types";
+import { Category, Profile } from "@/types/users.types";
 import { JwtPayload } from "@supabase/supabase-js";
-import { Result } from "./api.types";
-import { Category, Profile } from "./users.types";
 
 const toError = (err: unknown): Error => {
   if (err instanceof Error) {
