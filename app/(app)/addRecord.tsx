@@ -13,6 +13,8 @@ import { Controller, useForm } from "react-hook-form";
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
+  Platform,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -64,7 +66,10 @@ function AddRecordPage() {
     );
 
   return (
-    <KeyboardAvoidingView style={styles.formContainer}>
+    <KeyboardAvoidingView
+      style={styles.formContainer}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <View style={styles.header}>
         <Pressable onPress={handleCancel}>
           <Ionicons name="close" color={theme.colors.textLight} size={32} />
@@ -74,7 +79,7 @@ function AddRecordPage() {
           <Text style={styles.headerSave}>Save</Text>
         </Pressable>
       </View>
-      <View style={styles.mainForm}>
+      <ScrollView style={styles.mainForm}>
         <View style={styles.formSegment}>
           <Text style={styles.titleText}>Amount</Text>
           <Controller
@@ -133,7 +138,7 @@ function AddRecordPage() {
           />
           <Text>{errors.date?.message}</Text>
         </View>
-      </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }

@@ -15,6 +15,7 @@ import {
   Image,
   Keyboard,
   KeyboardAvoidingView,
+  Platform,
   StyleSheet,
   Text,
   View,
@@ -41,6 +42,7 @@ export default function Login() {
 
   const onLoginPress = async (data: FormData) => {
     setLoginError(null);
+    setLoading(true);
     Keyboard.dismiss();
     try {
       const { error: loginError } = await supabase.auth.signInWithPassword({
@@ -62,7 +64,10 @@ export default function Login() {
   return (
     <AuthWrapper>
       {loginError && <Alert message={loginError} type="error" />}
-      <KeyboardAvoidingView style={styles.inputContainer}>
+      <KeyboardAvoidingView
+        style={styles.inputContainer}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
         <Controller
           control={control}
           name="email"
@@ -82,7 +87,7 @@ export default function Login() {
         />
         <Controller
           control={control}
-          name="email"
+          name="password"
           render={({ field }) => (
             <TextInput
               placeholder="Password"

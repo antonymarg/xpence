@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
   Keyboard,
   KeyboardAvoidingView,
+  Platform,
   StyleSheet,
   Text,
 } from "react-native";
@@ -80,7 +81,10 @@ export default function Login() {
   return (
     <AuthWrapper>
       {signupError && <Alert message={signupError} type="error" />}
-      <KeyboardAvoidingView style={styles.inputContainer}>
+      <KeyboardAvoidingView
+        style={styles.inputContainer}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
         <Controller
           control={control}
           name="name"
