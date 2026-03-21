@@ -3,7 +3,7 @@ import Card from "@/components/Card";
 import { theme } from "@/constants/theme";
 import { useAuth } from "@/providers/AuthProvider";
 import { ExpensesSummary } from "@/types/expenses.types";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
 function HomePage() {
@@ -14,13 +14,11 @@ function HomePage() {
     savings: 0,
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     expenseApi.getSummaryOfExpenses().then((r) => {
       if (r.success) setExpenses(r.data);
     });
   }, []);
-
-  const sum = expenses.needs + expenses.wants + expenses.savings;
 
   if (!profile)
     return (
@@ -28,6 +26,9 @@ function HomePage() {
         <ActivityIndicator size="large" />
       </View>
     );
+
+  const sum = expenses.needs + expenses.wants + expenses.savings;
+  const remaining = Math.max(0, profile?.budget - sum);
 
   return (
     <View style={styles.pageContainer}>
@@ -38,7 +39,7 @@ function HomePage() {
         <Card>
           <View style={styles.sumContainer}>
             <Text style={styles.mainHeader}>Monthly Budget Status</Text>
-            <Text>Sum: €{(sum / 100).toFixed(2)}</Text>
+            <Text>Sum: €{sum.toFixed(2)}</Text>
             <Text>left of €{profile?.budget}</Text>
           </View>
         </Card>

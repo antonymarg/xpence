@@ -45,13 +45,13 @@ async function getSummaryOfExpenses(): Result<ExpensesSummary> {
       (acc, cur) => {
         switch (cur.categories.type) {
           case "needs":
-            acc.needs += cur.amount;
+            acc.needs += cur.amount / 100;
             break;
           case "wants":
-            acc.wants += cur.amount;
+            acc.wants += cur.amount / 100;
             break;
           case "savings":
-            acc.savings += cur.amount;
+            acc.savings += cur.amount / 100;
             break;
         }
         return acc;
