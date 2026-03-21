@@ -1,8 +1,10 @@
 import * as userApi from "@/api/users.api";
 import { supabase } from "@/lib/supabase";
+import { unwrap } from "@/lib/utils";
 import { Category, Profile } from "@/types/users.types";
+import { useQuery } from "@tanstack/react-query";
 import { Href, useRouter } from "expo-router";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect } from "react";
 
 export type AuthContextType = {
   profile: Profile | null;
@@ -22,29 +24,22 @@ export const AuthContext = createContext<AuthContextType>(defaultValues);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [userCategories, setUserCategories] = useState<Category[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+
+  const { data: profile, isLoading: profileLoading } = useQuery({
+    queryKey: ["profile"],
+    queryFn: () => unwrap(userApi.getUserProfile()),
+  });
+  const { data: userCategories } = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => unwrap(userApi.getUserCategories()),
+  });
 
   const isAuthenticated = !!profile;
 
   useEffect(() => {
-    userApi
-      .getUserProfile()
-      .then((res) => {
-        if (!res.success) throw res.error;
-        if (res.success) setProfile(res.data);
-      })
-      .catch((error) => {
-        console.error("Auth init error:", error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
+    } = supabase.auth.onAuthStateChange((event) => {
       console.log(`>>> AUTH STATE CHANGE: ${new Date().toISOString()}`, event);
       let redirectRoute: Href | null = null;
       if (event === "SIGNED_IN") {
@@ -59,19 +54,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, [router]);
 
-  useEffect(() => {
-    if (!profile) return;
-    userApi.getUserCategories().then((res) => {
-      if (!res.success) return;
-      return setUserCategories(res.data);
-    });
-  }, [profile]);
-
   const value: AuthContextType = {
-    profile,
+    profile: profile ?? null,
+    userCategories: userCategories ?? [],
     isAuthenticated,
-    isLoading,
-    userCategories,
+    isLoading: profileLoading,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

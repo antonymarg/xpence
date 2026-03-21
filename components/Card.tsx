@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.card,
     padding: theme.spacing.md,
     borderRadius: theme.borderRadius.md,
-    alignSelf: "flex-start",
+    ...theme.shadows.soft,
   },
 });
 

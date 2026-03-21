@@ -1,34 +1,28 @@
 import * as expenseApi from "@/api/expenses.api";
 import Card from "@/components/Card";
 import { theme } from "@/constants/theme";
+import { unwrap } from "@/lib/utils";
 import { useAuth } from "@/providers/AuthProvider";
-import { ExpensesSummary } from "@/types/expenses.types";
-import React, { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import React from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
 function HomePage() {
   const { profile } = useAuth();
-  const [expenses, setExpenses] = useState<ExpensesSummary>({
-    needs: 0,
-    wants: 0,
-    savings: 0,
+  const { data: expenseSummary, isLoading: isExpenseLoading } = useQuery({
+    queryKey: ["expenseSummary"],
+    queryFn: () => unwrap(expenseApi.getSummaryOfExpenses()),
   });
 
-  useEffect(() => {
-    expenseApi.getSummaryOfExpenses().then((r) => {
-      if (r.success) setExpenses(r.data);
-    });
-  }, []);
-
-  if (!profile)
+  if (!profile || isExpenseLoading || !expenseSummary)
     return (
       <View style={styles.pageContainer}>
         <ActivityIndicator size="large" />
       </View>
     );
 
-  const sum = expenses.needs + expenses.wants + expenses.savings;
-  const remaining = Math.max(0, profile?.budget - sum);
+  const sum =
+    expenseSummary.needs + expenseSummary.wants + expenseSummary.savings;
 
   return (
     <View style={styles.pageContainer}>
@@ -48,7 +42,7 @@ function HomePage() {
         <Card>
           <View style={styles.category}>
             <Text style={[styles.needsText, styles.percentageText]}>
-              {((expenses.needs / sum) * 100).toFixed(0)}%
+              {((expenseSummary.needs / sum) * 100).toFixed(0)}%
             </Text>
 
             <Text style={styles.labelText}>Needs</Text>
@@ -57,7 +51,7 @@ function HomePage() {
         <Card>
           <View style={styles.category}>
             <Text style={[styles.wantsText, styles.percentageText]}>
-              {((expenses.wants / sum) * 100).toFixed(0)}%
+              {((expenseSummary.wants / sum) * 100).toFixed(0)}%
             </Text>
             <Text style={styles.labelText}>Wants</Text>
           </View>
@@ -65,7 +59,7 @@ function HomePage() {
         <Card>
           <View style={styles.category}>
             <Text style={[styles.savingsText, styles.percentageText]}>
-              {((expenses.savings / sum) * 100).toFixed(0)}%
+              {((expenseSummary.savings / sum) * 100).toFixed(0)}%
             </Text>
             <Text style={styles.labelText}>Savings</Text>
           </View>
