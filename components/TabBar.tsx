@@ -23,7 +23,6 @@ function TabBar() {
 
   const logout = () => {
     supabase.auth.signOut();
-    router.replace("/(auth)/login");
   };
 
   return (

@@ -5,97 +5,97 @@ import Pressable from "@/components/Pressable";
 import TextInput from "@/components/TextInput";
 import { theme } from "@/constants/theme";
 import { supabase } from "@/lib/supabase";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import {
   ActivityIndicator,
   Image,
   Keyboard,
+  KeyboardAvoidingView,
   StyleSheet,
   Text,
   View,
 } from "react-native";
+import z from "zod";
 
-const EMAIL_REGEX = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
+const schema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+});
 
-interface InputState {
-  value: string;
-  error: string | null;
-}
+type FormData = z.infer<typeof schema>;
 
 export default function Login() {
-  const [email, setEmail] = React.useState<InputState>({
-    value: "",
-    error: null,
+  const {
+    control,
+    formState: { errors },
+    handleSubmit,
+  } = useForm({
+    resolver: zodResolver(schema),
   });
-  const [password, setPassword] = React.useState<InputState>({
-    value: "",
-    error: null,
-  });
-  const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
 
-  const onLoginPress = async () => {
-    setError(null);
+  const onLoginPress = async (data: FormData) => {
+    setLoginError(null);
     Keyboard.dismiss();
-    if (!email.value) {
-      setEmail({ value: email.value, error: "Email is required" });
-      return;
-    }
-    if (!EMAIL_REGEX.test(email.value)) {
-      setEmail({ value: email.value, error: "Invalid email" });
-      return;
-    }
-    if (!password.value) {
-      setPassword({ value: password.value, error: "Password is required" });
-      return;
-    }
-    setLoading(true);
-    setEmail({ value: email.value, error: null });
-    setPassword({ value: password.value, error: null });
-
     try {
       const { error: loginError } = await supabase.auth.signInWithPassword({
-        email: email.value.trim(),
-        password: password.value,
+        email: data.email.trim(),
+        password: data.password,
       });
       if (loginError) {
-        setError(loginError.message);
+        setLoginError(loginError.message);
       }
     } catch {
-      setError("An unknown error occurred");
+      setLoginError("An unknown error occurred");
     } finally {
       setLoading(false);
     }
   };
+
   const onGooglePress = () => {};
 
   return (
     <AuthWrapper>
-      {error && <Alert message={error} type="error" />}
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="name@example.com"
-          label="Email"
-          value={email.value}
-          onChangeText={(text) => setEmail({ value: text, error: null })}
-          error={email.error}
-          editable={!loading}
-          autoCapitalize="none"
-          autoComplete="email"
-          keyboardType="email-address"
+      {loginError && <Alert message={loginError} type="error" />}
+      <KeyboardAvoidingView style={styles.inputContainer}>
+        <Controller
+          control={control}
+          name="email"
+          render={({ field }) => (
+            <TextInput
+              placeholder="name@example.com"
+              label="Email"
+              value={field.value}
+              onChangeText={field.onChange}
+              onBlur={field.onBlur}
+              error={errors.email?.message}
+              autoCapitalize="none"
+              autoComplete="email"
+              keyboardType="email-address"
+            />
+          )}
         />
-        <TextInput
-          placeholder="Password"
-          label="Password"
-          secureTextEntry
-          value={password.value}
-          onChangeText={(text) => setPassword({ value: text, error: null })}
-          error={password.error}
-          editable={!loading}
+        <Controller
+          control={control}
+          name="email"
+          render={({ field }) => (
+            <TextInput
+              placeholder="Password"
+              label="Password"
+              secureTextEntry
+              value={field.value}
+              onChangeText={field.onChange}
+              onBlur={field.onBlur}
+              error={errors.password?.message}
+            />
+          )}
         />
-        <Pressable disabled={loading} onPress={onLoginPress}>
+        <Pressable disabled={loading} onPress={handleSubmit(onLoginPress)}>
           <LinearGradient
             colors={[
               theme.colors.mainGradient[0],
@@ -126,7 +126,7 @@ export default function Login() {
             Continue with Google
           </Text>
         </Pressable>
-      </View>
+      </KeyboardAvoidingView>
       <View style={styles.footer}>
         <Text style={styles.footerQuestion}>New here?</Text>
         <Link href="/(auth)/signup" style={styles.footerLink}>

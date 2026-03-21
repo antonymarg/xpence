@@ -4,103 +4,74 @@ import Pressable from "@/components/Pressable";
 import TextInput from "@/components/TextInput";
 import { theme } from "@/constants/theme";
 import { supabase } from "@/lib/supabase";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
+import { Controller, useForm } from "react-hook-form";
 import {
   ActivityIndicator,
   Keyboard,
+  KeyboardAvoidingView,
   StyleSheet,
   Text,
-  View,
 } from "react-native";
+import z from "zod";
 
-const EMAIL_REGEX = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
+const schema = z
+  .object({
+    email: z.string().email(),
+    password: z.string().min(8),
+    confirmPassword: z.string().min(8),
+    name: z.string().min(3),
+    budget: z.number().min(0),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
-interface InputState {
-  value: string;
-  error: string | null;
-}
+type FormData = z.infer<typeof schema>;
 
 export default function Login() {
-  const [email, setEmail] = React.useState<InputState>({
-    value: "",
-    error: null,
-  });
-  const [password, setPassword] = React.useState<InputState>({
-    value: "",
-    error: null,
-  });
-  const [confirmPassword, setConfirmPassword] = React.useState<InputState>({
-    value: "",
-    error: null,
-  });
-  const [name, setName] = React.useState<InputState>({
-    value: "",
-    error: null,
-  });
   const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
+  const [signupError, setSignupError] = React.useState<string | null>(null);
 
-  const onSignupPress = async () => {
-    setError(null);
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(schema),
+  });
+
+  const onSignupPress = async (formData: FormData) => {
+    setSignupError(null);
     Keyboard.dismiss();
-    if (!email.value) {
-      setEmail({ value: email.value, error: "Email is required" });
-      return;
-    }
-    if (!EMAIL_REGEX.test(email.value)) {
-      setEmail({ value: email.value, error: "Invalid email" });
-      return;
-    }
-    if (!password.value) {
-      setPassword({ value: password.value, error: "Password is required" });
-      return;
-    }
-    if (!confirmPassword.value) {
-      setConfirmPassword({
-        value: confirmPassword.value,
-        error: "Confirm password is required",
-      });
-      return;
-    }
-    if (confirmPassword.value !== password.value) {
-      setConfirmPassword({
-        value: confirmPassword.value,
-        error: "Passwords do not match",
-      });
-      return;
-    }
-    if (!name.value) {
-      setName({ value: name.value, error: "Name is required" });
-      return;
-    }
     setLoading(true);
-    setEmail({ value: email.value, error: null });
-    setPassword({ value: password.value, error: null });
-
     try {
       const { data: authData, error: signUpError } = await supabase.auth.signUp(
         {
-          email: email.value.trim(),
-          password: password.value,
+          email: formData.email.trim(),
+          password: formData.password,
         },
       );
       if (signUpError || !authData?.user?.id) {
-        setError("Failed to sign up");
+        setSignupError("Failed to sign up");
         return;
       }
       const { error: profileError } = await supabase
         .from("user_profiles")
         .insert({
           user_id: authData.user.id,
-          display_name: name.value,
+          display_name: formData.name,
+          budget: formData.budget,
         });
       if (profileError) {
-        setError("Failed to create profile");
+        setSignupError("Failed to create profile");
         return;
       }
     } catch {
-      setError("An unknown error occurred");
+      setSignupError("An unknown error occurred");
     } finally {
       setLoading(false);
     }
@@ -108,48 +79,94 @@ export default function Login() {
 
   return (
     <AuthWrapper>
-      {error && <Alert message={error} type="error" />}
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="John"
-          label="What's your name?"
-          value={name.value}
-          onChangeText={(text) => setName({ value: text, error: null })}
-          error={name.error}
-          editable={!loading}
+      {signupError && <Alert message={signupError} type="error" />}
+      <KeyboardAvoidingView style={styles.inputContainer}>
+        <Controller
+          control={control}
+          name="name"
+          render={({ field }) => (
+            <TextInput
+              placeholder="John"
+              label="What's your name?"
+              value={field.value}
+              onChangeText={field.onChange}
+              onBlur={field.onBlur}
+              error={errors?.name?.message}
+              editable={!loading}
+            />
+          )}
         />
-        <TextInput
-          placeholder="name@example.com"
-          label="Email"
-          value={email.value}
-          onChangeText={(text) => setEmail({ value: text, error: null })}
-          error={email.error}
-          editable={!loading}
-          autoCapitalize="none"
-          autoComplete="email"
-          keyboardType="email-address"
+        <Controller
+          control={control}
+          name="email"
+          render={({ field }) => (
+            <TextInput
+              placeholder="name@example.com"
+              label="Email"
+              value={field.value}
+              onChangeText={field.onChange}
+              onBlur={field.onBlur}
+              error={errors?.email?.message}
+              editable={!loading}
+              autoCapitalize="none"
+              autoComplete="email"
+              keyboardType="email-address"
+            />
+          )}
         />
-        <TextInput
-          placeholder="Password"
-          label="Password"
-          secureTextEntry
-          value={password.value}
-          onChangeText={(text) => setPassword({ value: text, error: null })}
-          error={password.error}
-          editable={!loading}
+        <Controller
+          control={control}
+          name="password"
+          render={({ field }) => (
+            <TextInput
+              placeholder="Password"
+              label="Password"
+              secureTextEntry
+              value={field.value}
+              onChangeText={field.onChange}
+              onBlur={field.onBlur}
+              error={errors?.password?.message}
+              editable={!loading}
+              autoCapitalize="none"
+            />
+          )}
         />
-        <TextInput
-          placeholder="Confirm password"
-          label="Confirm password"
-          secureTextEntry
-          value={confirmPassword.value}
-          onChangeText={(text) =>
-            setConfirmPassword({ value: text, error: null })
-          }
-          error={confirmPassword.error}
-          editable={!loading}
+        <Controller
+          control={control}
+          name="confirmPassword"
+          render={({ field }) => (
+            <TextInput
+              placeholder="Confirm password"
+              label="Confirm password"
+              secureTextEntry
+              value={field.value}
+              onChangeText={field.onChange}
+              onBlur={field.onBlur}
+              error={errors?.confirmPassword?.message}
+              editable={!loading}
+              autoCapitalize="none"
+            />
+          )}
         />
-        <Pressable disabled={loading} onPress={onSignupPress}>
+        <Controller
+          control={control}
+          name="budget"
+          render={({ field }) => (
+            <TextInput
+              placeholder="0"
+              label="What is your monthly goal?"
+              secureTextEntry
+              inputMode="numeric"
+              value={field.value.toString()}
+              onChangeText={field.onChange}
+              onBlur={field.onBlur}
+              error={errors?.budget?.message}
+              editable={!loading}
+              autoCapitalize="none"
+            />
+          )}
+        />
+        <Pressable disabled={loading} onPress={handleSubmit(onSignupPress)}>
           <LinearGradient
             colors={[
               theme.colors.mainGradient[0],
@@ -166,7 +183,7 @@ export default function Login() {
             )}
           </LinearGradient>
         </Pressable>
-      </View>
+      </KeyboardAvoidingView>
     </AuthWrapper>
   );
 }
