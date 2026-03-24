@@ -1,9 +1,8 @@
 import TabBar from "@/components/TabBar";
-import { theme } from "@/constants/theme";
 import { useAuth } from "@/providers/AuthProvider";
 import { Stack } from "expo-router";
 import React from "react";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { ActivityIndicator, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AppLayout() {
@@ -19,14 +18,12 @@ export default function AppLayout() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.contentContainer}>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="home" />
-          <Stack.Screen name="addRecord" />
-          <Stack.Screen name="achievements" />
-          <Stack.Screen name="insights" />
-        </Stack>
-      </View>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="home" />
+        <Stack.Screen name="addRecord" />
+        <Stack.Screen name="achievements" />
+        <Stack.Screen name="insights" />
+      </Stack>
       <TabBar />
     </SafeAreaView>
   );
@@ -35,16 +32,10 @@ export default function AppLayout() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.background,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-  contentContainer: {
-    flex: 1,
-    marginTop: theme.spacing.xl,
-    marginHorizontal: theme.spacing.lg,
   },
 });

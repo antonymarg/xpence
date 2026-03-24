@@ -1,11 +1,14 @@
 import * as expenseApi from "@/api/expenses.api";
-import Card from "@/components/Card";
+import CategoryCard from "@/components/home/CategoryCard";
+import Header from "@/components/home/Header";
+import OverviewCard from "@/components/home/OverviewCard";
+import SmartInsightCard from "@/components/home/SmartInsightCard";
 import { theme } from "@/constants/theme";
 import { unwrap } from "@/lib/utils";
 import { useAuth } from "@/providers/AuthProvider";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, ScrollView, StyleSheet, View } from "react-native";
 
 function HomePage() {
   const { profile } = useAuth();
@@ -23,48 +26,31 @@ function HomePage() {
 
   const sum =
     expenseSummary.needs + expenseSummary.wants + expenseSummary.savings;
-
   return (
     <View style={styles.pageContainer}>
-      <View>
-        <Text style={styles.helloText}>Hey, {profile?.displayName}!</Text>
-      </View>
-      <View>
-        <Card>
-          <View style={styles.sumContainer}>
-            <Text style={styles.mainHeader}>Monthly Budget Status</Text>
-            <Text>Sum: €{sum.toFixed(2)}</Text>
-            <Text>left of €{profile?.budget}</Text>
-          </View>
-        </Card>
-      </View>
-      <View style={styles.categoryContainer}>
-        <Card>
+      <Header profile={profile} />
+      <ScrollView contentContainerStyle={styles.mainContent}>
+        <OverviewCard sum={sum} budget={profile.budget} />
+        <CategoryCard
+          category="needs"
+          percentage={(expenseSummary.needs / sum) * 100}
+        />
+        <View style={styles.categoriesRow}>
           <View style={styles.category}>
-            <Text style={[styles.needsText, styles.percentageText]}>
-              {((expenseSummary.needs / sum) * 100).toFixed(0)}%
-            </Text>
-
-            <Text style={styles.labelText}>Needs</Text>
+            <CategoryCard
+              category="wants"
+              percentage={(expenseSummary.wants / sum) * 100}
+            />
           </View>
-        </Card>
-        <Card>
           <View style={styles.category}>
-            <Text style={[styles.wantsText, styles.percentageText]}>
-              {((expenseSummary.wants / sum) * 100).toFixed(0)}%
-            </Text>
-            <Text style={styles.labelText}>Wants</Text>
+            <CategoryCard
+              category="savings"
+              percentage={(expenseSummary.savings / sum) * 100}
+            />
           </View>
-        </Card>
-        <Card>
-          <View style={styles.category}>
-            <Text style={[styles.savingsText, styles.percentageText]}>
-              {((expenseSummary.savings / sum) * 100).toFixed(0)}%
-            </Text>
-            <Text style={styles.labelText}>Savings</Text>
-          </View>
-        </Card>
-      </View>
+        </View>
+        <SmartInsightCard />
+      </ScrollView>
     </View>
   );
 }
@@ -73,6 +59,12 @@ const styles = StyleSheet.create({
   pageContainer: {
     flex: 1,
     backgroundColor: theme.colors.background,
+  },
+  mainContent: {
+    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.lg,
+    gap: 20,
+    flex: 1,
   },
   helloText: {
     color: theme.colors.textDark,
@@ -90,17 +82,13 @@ const styles = StyleSheet.create({
     color: theme.colors.textLight,
     textTransform: "uppercase",
     fontWeight: theme.typography.weights.bold,
-    // fontSize: theme.typography.sizes.xl,
   },
-  categoryContainer: {
+  categoriesRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    gap: 20,
   },
   category: {
-    gap: 5,
-    flexDirection: "column",
-    alignItems: "center",
-    paddingHorizontal: 10,
+    flex: 1,
   },
   percentageText: {
     fontSize: theme.typography.sizes.xl,

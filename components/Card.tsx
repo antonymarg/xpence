@@ -1,19 +1,38 @@
-import { theme } from "@/constants/theme";
+import { Theme, theme } from "@/constants/theme";
 import React, { PropsWithChildren } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, ViewProps } from "react-native";
 
-interface CardProps extends PropsWithChildren {}
-function Card({ children }: CardProps) {
-  return <View style={styles.container}>{children}</View>;
+interface CardOnlyProps {
+  padding?: keyof Theme["spacing"];
+  borderRadius?: keyof Theme["borderRadius"];
 }
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: theme.colors.card,
-    padding: theme.spacing.md,
-    borderRadius: theme.borderRadius.md,
-    ...theme.shadows.soft,
-  },
-});
+type CardProps = PropsWithChildren & ViewProps & CardOnlyProps;
+
+function Card({
+  children,
+  padding = "md",
+  borderRadius = "md",
+  ...viewProps
+}: CardProps) {
+  return (
+    <View
+      {...viewProps}
+      style={[styles({ padding, borderRadius }).container, viewProps.style]}
+    >
+      {children}
+    </View>
+  );
+}
+
+const styles = ({ padding, borderRadius }: Required<CardOnlyProps>) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: theme.colors.card,
+      padding: theme.spacing[padding],
+      borderRadius: theme.borderRadius[borderRadius],
+      ...theme.shadows.soft,
+    },
+  });
 
 export default Card;

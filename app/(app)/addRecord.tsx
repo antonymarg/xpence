@@ -165,7 +165,6 @@ function AddRecordPage() {
 const styles = StyleSheet.create({
   formContainer: {
     flex: 1,
-    backgroundColor: theme.colors.background,
     gap: 20,
   },
   header: {
