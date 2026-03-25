@@ -1,9 +1,10 @@
 import { theme } from "@/constants/theme";
 import { Category, CategoryType } from "@/types/users.types";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import CategoryTypePicker from "./CategoryTypePicker";
 import Pressable from "./Pressable";
+import Text from "./Text";
 
 interface CategoryTypePickerProps {
   categories: Category[];
@@ -39,7 +40,11 @@ function CategoryPicker({
         selectedCategoryType={selectedCategoryType}
         onSelectCategoryType={handleSelectType}
       />
-      {error && <Text style={styles.error}>{error}</Text>}
+      {error && (
+        <Text size="sm" color="error" style={styles.error}>
+          {error}
+        </Text>
+      )}
       <View style={styles.categoriesContainer}>
         {Boolean(selectedCategoryType) &&
           filteredCategories.map((category) => (
@@ -51,12 +56,7 @@ function CategoryPicker({
                 selectedCategoryId === category.id && styles.selectedButton,
               ]}
             >
-              <Text
-                style={[
-                  styles.categoryText,
-                  selectedCategoryId === category.id && styles.selectedText,
-                ]}
-              >
+              <Text size="sm" weight="bold">
                 {category.name}
               </Text>
             </Pressable>
@@ -81,26 +81,13 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing.sm,
     paddingHorizontal: theme.spacing.md,
     borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.textLight,
-    backgroundColor: theme.colors.background,
-  },
-  categoryText: {
-    fontSize: theme.typography.sizes.sm,
-    color: theme.colors.textLight,
-    fontWeight: theme.typography.weights.bold,
+    borderColor: theme.colors.primaryOrange,
+    backgroundColor: theme.colors.primaryOrangeBg,
   },
   selectedButton: {
-    borderColor: theme.colors.primaryRed,
-    backgroundColor: theme.colors.primaryRedBg,
-  },
-  selectedText: {
-    color: theme.colors.primaryRed,
-    fontSize: theme.typography.sizes.sm,
+    borderWidth: 1,
   },
   error: {
-    color: theme.colors.error,
-    fontSize: theme.typography.sizes.sm,
     marginTop: theme.spacing.xs,
   },
 });

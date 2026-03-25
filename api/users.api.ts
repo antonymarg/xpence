@@ -13,6 +13,7 @@ async function getUserId(): Promise<string> {
 async function getUserProfile(): Result<Profile | null> {
   try {
     const userId = await getUserId();
+    console.log(userId);
     const { data, error } = await supabase
       .from("user_profiles")
       .select("*")

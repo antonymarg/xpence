@@ -2,6 +2,7 @@ import * as expenseApi from "@/api/expenses.api";
 import CategoryPicker from "@/components/CategoryPicker";
 import DatePicker from "@/components/DatePicker";
 import Pressable from "@/components/Pressable";
+import Text from "@/components/Text";
 import TextInput from "@/components/TextInput";
 import { theme } from "@/constants/theme";
 import { useAuth } from "@/providers/AuthProvider";
@@ -17,11 +18,11 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
-  Text,
   View,
 } from "react-native";
 import Toast from "react-native-toast-message";
 import { z } from "zod";
+
 const schema = z.object({
   amount: z.coerce.number().min(0.01, "Please enter a valid amount"),
   description: z.string().min(1, "Please enter a description"),
@@ -89,15 +90,21 @@ function AddRecordPage() {
         <Pressable onPress={handleCancel}>
           <Ionicons name="close" color={theme.colors.textLight} size={32} />
         </Pressable>
-        <Text style={styles.headerTitle}>Add Expense</Text>
+        <Text size="xl" weight="bold">
+          Add Expense
+        </Text>
         <Pressable onPress={handleSubmit(handleSave)}>
-          <Text style={styles.headerSave}>Save</Text>
+          <Text size="lg" weight="bold" color="primaryRed">
+            Save
+          </Text>
         </Pressable>
       </View>
       <ScrollView>
         <View style={styles.mainForm}>
           <View style={styles.formSegment}>
-            <Text style={styles.titleText}>Amount</Text>
+            <Text size="sm" weight="bold" heading>
+              Amount
+            </Text>
             <Controller
               control={control}
               name="amount"
@@ -116,7 +123,9 @@ function AddRecordPage() {
             />
           </View>
           <View style={styles.formSegment}>
-            <Text style={styles.titleText}>Description</Text>
+            <Text size="sm" weight="bold" heading>
+              Description
+            </Text>
             <Controller
               control={control}
               name="description"
@@ -131,7 +140,9 @@ function AddRecordPage() {
             />
           </View>
           <View style={styles.formSegment}>
-            <Text style={styles.titleText}>Available Categories</Text>
+            <Text size="sm" weight="bold" heading>
+              Available Categories
+            </Text>
             <Controller
               name="categoryId"
               control={control}
@@ -146,7 +157,9 @@ function AddRecordPage() {
             />
           </View>
           <View style={styles.formSegment}>
-            <Text style={styles.titleText}>Date</Text>
+            <Text size="sm" weight="bold" heading>
+              Date
+            </Text>
             <Controller
               control={control}
               name="date"
@@ -166,27 +179,17 @@ const styles = StyleSheet.create({
   formContainer: {
     flex: 1,
     gap: 20,
+    backgroundColor: theme.colors.background,
+    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.lg,
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
-  headerTitle: {
-    fontWeight: theme.typography.weights.bold,
-    fontSize: theme.typography.sizes.xl,
-    color: theme.colors.textDark,
-  },
-  headerSave: {
-    fontWeight: theme.typography.weights.bold,
-    fontSize: theme.typography.sizes.lg,
-    color: theme.colors.primaryRed,
-  },
   titleText: {
     textTransform: "uppercase",
-    fontWeight: "bold",
-    fontSize: theme.typography.sizes.sm,
-    color: theme.colors.textLight,
   },
   mainForm: {
     gap: 20,

@@ -17,6 +17,8 @@ function HomePage() {
     queryFn: () => unwrap(expenseApi.getSummaryOfExpenses()),
   });
 
+  console.log(profile, expenseSummary, isExpenseLoading);
+
   if (!profile || isExpenseLoading || !expenseSummary)
     return (
       <View style={styles.pageContainer}>

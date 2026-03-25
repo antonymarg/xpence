@@ -1,6 +1,7 @@
 import Alert from "@/components/Alert";
 import AuthWrapper from "@/components/AuthWrapper";
 import Pressable from "@/components/Pressable";
+import Text from "@/components/Text";
 import TextInput from "@/components/TextInput";
 import { theme } from "@/constants/theme";
 import { supabase } from "@/lib/supabase";
@@ -14,7 +15,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
-  Text,
 } from "react-native";
 import z from "zod";
 
@@ -24,7 +24,7 @@ const schema = z
     password: z.string().min(8),
     confirmPassword: z.string().min(8),
     name: z.string().min(3),
-    budget: z.number().min(0),
+    budget: z.coerce.number().min(0),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
@@ -33,7 +33,7 @@ const schema = z
 
 type FormData = z.infer<typeof schema>;
 
-export default function Login() {
+export default function Signup() {
   const [loading, setLoading] = React.useState(false);
   const [signupError, setSignupError] = React.useState<string | null>(null);
 
@@ -159,14 +159,12 @@ export default function Login() {
             <TextInput
               placeholder="0"
               label="What is your monthly goal?"
-              secureTextEntry
               inputMode="numeric"
-              value={field.value.toString()}
+              value={field.value?.toString()}
               onChangeText={field.onChange}
               onBlur={field.onBlur}
               error={errors?.budget?.message}
               editable={!loading}
-              autoCapitalize="none"
             />
           )}
         />
@@ -183,7 +181,9 @@ export default function Login() {
             {loading ? (
               <ActivityIndicator size="small" color="#fff" />
             ) : (
-              <Text style={styles.buttonText}>Sign Up</Text>
+              <Text weight="bold" color="white">
+                Sign Up
+              </Text>
             )}
           </LinearGradient>
         </Pressable>
@@ -203,10 +203,5 @@ const styles = StyleSheet.create({
     borderRadius: theme.borderRadius.lg,
     borderColor: theme.colors.divider,
     borderWidth: 1,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: theme.typography.sizes.md,
-    fontWeight: theme.typography.weights.bold,
   },
 });

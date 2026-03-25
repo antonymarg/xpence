@@ -6,9 +6,9 @@ import {
   TextInput as RNTextInput,
   type TextInputProps as RNTextInputProps,
   StyleSheet,
-  Text,
   View,
 } from "react-native";
+import Text from "./Text";
 
 interface ITextInputProps extends RNTextInputProps {
   label?: string;
@@ -30,7 +30,11 @@ export default function TextInput({ label, error, ...props }: ITextInputProps) {
 
   return (
     <View>
-      {label && <Text style={styles.label}>{label}</Text>}
+      {label && (
+        <Text heading size="sm" weight="bold" style={styles.label}>
+          {label}
+        </Text>
+      )}
       <RNTextInput
         style={[
           styles.input,
@@ -50,10 +54,7 @@ export default function TextInput({ label, error, ...props }: ITextInputProps) {
 const styles = StyleSheet.create({
   label: {
     textTransform: "uppercase",
-    fontSize: theme.typography.sizes.sm,
-    fontWeight: theme.typography.weights.bold,
     marginBottom: theme.spacing.sm,
-    color: theme.colors.textLight,
   },
   error: {
     color: theme.colors.error,

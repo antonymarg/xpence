@@ -1,8 +1,8 @@
 import { theme } from "@/constants/theme";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import Pressable from "./Pressable";
-
+import Text from "./Text";
 
 interface AuthTabProps {
   text: string;
@@ -11,19 +11,15 @@ interface AuthTabProps {
 }
 export default function AuthTab({ text, onPress, isActive }: AuthTabProps) {
   return (
-    <Pressable style={styles.tab} onPress={onPress}>
-      <Text style={styles.text}>{text}</Text>
+    <Pressable onPress={onPress}>
+      <Text size="title" weight="heavy">
+        {text}
+      </Text>
       {isActive && <View style={styles.activeIndicator} />}
     </Pressable>
   );
 }
 const styles = StyleSheet.create({
-  tab: {},
-  text: {
-    fontSize: theme.typography.sizes.title,
-    fontWeight: theme.typography.weights.heavy,
-    color: theme.colors.textDark,
-  },
   activeIndicator: {
     backgroundColor: theme.colors.primaryRed,
     height: 4,

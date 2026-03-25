@@ -2,6 +2,7 @@ import Alert from "@/components/Alert";
 import AuthWrapper from "@/components/AuthWrapper";
 import DividerText from "@/components/DividerText";
 import Pressable from "@/components/Pressable";
+import Text from "@/components/Text";
 import TextInput from "@/components/TextInput";
 import { theme } from "@/constants/theme";
 import { supabase } from "@/lib/supabase";
@@ -17,7 +18,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
-  Text,
   View,
 } from "react-native";
 import z from "zod";
@@ -113,7 +113,9 @@ export default function Login() {
             {loading ? (
               <ActivityIndicator size="small" color="#fff" />
             ) : (
-              <Text style={styles.buttonText}>Continue</Text>
+              <Text weight="bold" color="white">
+                Continue
+              </Text>
             )}
           </LinearGradient>
         </Pressable>
@@ -127,15 +129,15 @@ export default function Login() {
             source={require("../../assets/images/google-icon.png")}
             style={styles.googleIcon}
           />
-          <Text style={[styles.buttonText, { color: "#000" }]}>
-            Continue with Google
-          </Text>
+          <Text weight="bold">Continue with Google</Text>
         </Pressable>
       </KeyboardAvoidingView>
       <View style={styles.footer}>
-        <Text style={styles.footerQuestion}>New here?</Text>
-        <Link href="/(auth)/signup" style={styles.footerLink}>
-          Create an account
+        <Text>New here?</Text>
+        <Link href="/(auth)/signup">
+          <Text color="primaryRed" weight="bold">
+            Create an account
+          </Text>
         </Link>
       </View>
     </AuthWrapper>
@@ -160,11 +162,6 @@ const styles = StyleSheet.create({
     color: theme.colors.textDark,
     gap: theme.spacing.sm,
   },
-  buttonText: {
-    color: "#fff",
-    fontSize: theme.typography.sizes.md,
-    fontWeight: theme.typography.weights.bold,
-  },
   footer: {
     flexDirection: "row",
     alignItems: "center",
@@ -172,15 +169,8 @@ const styles = StyleSheet.create({
     gap: theme.spacing.xs,
     marginTop: "auto",
   },
-  footerQuestion: {
-    color: theme.colors.textLight,
-  },
   googleIcon: {
     width: 20,
     height: 20,
-  },
-  footerLink: {
-    color: theme.colors.primaryRed,
-    fontWeight: theme.typography.weights.bold,
   },
 });

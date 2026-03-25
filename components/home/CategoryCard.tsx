@@ -1,8 +1,9 @@
+import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
 import { CategoryType } from "@/types/users.types";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import Card from "../Card";
 import ProgressBar from "../ProgressBar";
 
@@ -31,9 +32,13 @@ function CategoryCard({ category, percentage }: CategoryCardProps) {
         <View style={styling.iconWrapper}>
           <Ionicons name={icon} size={24} color={color} />
         </View>
-        <Text style={styling.percentageText}>{percentage.toFixed(0)}%</Text>
+        <Text weight="bold" size="lg" style={styling.percentageText}>
+          {isNaN(percentage) ? "-" : percentage.toFixed(0) + "%"}
+        </Text>
       </View>
-      <Text style={styling.labelText}>{category.toLocaleUpperCase()}</Text>
+      <Text weight="bold" style={styling.labelText}>
+        {category.toLocaleUpperCase()}
+      </Text>
       <ProgressBar
         height={10}
         percentage={Math.min(percentage / categoryPercentage, 100)}
@@ -60,13 +65,8 @@ const styles = (category: CategoryType) =>
     },
     percentageText: {
       color: theme.colors[`${category}`],
-      fontSize: theme.typography.sizes.lg,
-      fontWeight: theme.typography.weights.bold,
     },
     labelText: {
-      color: theme.colors.textLight,
-      fontSize: theme.typography.sizes.md,
-      fontWeight: theme.typography.weights.bold,
       paddingBottom: theme.spacing.sm,
     },
   });

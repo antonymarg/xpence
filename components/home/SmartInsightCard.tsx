@@ -1,7 +1,8 @@
+import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import Card from "../Card";
 
 interface SmartInsightProps {}
@@ -13,7 +14,7 @@ function SmartInsightCard({}: SmartInsightProps) {
         <Ionicons name="bulb" size={24} color={theme.colors.primaryOrange} />
       </View>
       <View style={styles.textContainer}>
-        <Text style={styles.titleText}>Smart insight</Text>
+        <Text weight="bold" size="lg">Smart insight</Text>
         <Text style={styles.mainText}>
           Please spend less you dum dum! Please spend less you dum dum! Please
           spend less you dum dum!
@@ -39,11 +40,6 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.primaryOrangeBg,
     padding: theme.spacing.sm,
     height: 50,
-  },
-  titleText: {
-    color: theme.colors.textLight,
-    fontSize: theme.typography.sizes.lg,
-    fontWeight: theme.typography.weights.bold,
   },
   mainText: {
     color: theme.colors.textLight,

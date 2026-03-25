@@ -1,8 +1,9 @@
 import { theme } from "@/constants/theme";
-import { Category } from "@/types/users.types";
+import { Category, CategoryType } from "@/types/users.types";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import Pressable from "./Pressable";
+import Text from "./Text";
 
 interface CategoryTypePickerProps {
   selectedCategoryType: Category["type"] | null;
@@ -14,52 +15,35 @@ function CategoryTypePicker({
   onSelectCategoryType,
 }: CategoryTypePickerProps) {
   return (
-    <View style={styles.container}>
+    <View style={styles("needs", false).container}>
       <Pressable
         onPress={() => onSelectCategoryType("needs")}
-        style={[
-          styles.categoryTypeButton,
-          selectedCategoryType === "needs" && styles.needsButton,
-        ]}
+        style={
+          styles("needs", selectedCategoryType === "needs").categoryTypeButton
+        }
       >
-        <Text
-          style={[
-            styles.categoryTypeText,
-            selectedCategoryType === "needs" && styles.needsText,
-          ]}
-        >
+        <Text color="needs" weight="bold">
           Needs
         </Text>
       </Pressable>
       <Pressable
         onPress={() => onSelectCategoryType("wants")}
-        style={[
-          styles.categoryTypeButton,
-          selectedCategoryType === "wants" && styles.wantsButton,
-        ]}
+        style={
+          styles("wants", selectedCategoryType === "wants").categoryTypeButton
+        }
       >
-        <Text
-          style={[
-            styles.categoryTypeText,
-            selectedCategoryType === "wants" && styles.wantsText,
-          ]}
-        >
+        <Text weight="bold" color="wants">
           Wants
         </Text>
       </Pressable>
       <Pressable
         onPress={() => onSelectCategoryType("savings")}
-        style={[
-          styles.categoryTypeButton,
-          selectedCategoryType === "savings" && styles.savingsButton,
-        ]}
+        style={
+          styles("savings", selectedCategoryType === "savings")
+            .categoryTypeButton
+        }
       >
-        <Text
-          style={[
-            styles.categoryTypeText,
-            selectedCategoryType === "savings" && styles.savingsText,
-          ]}
-        >
+        <Text weight="bold" color="savings">
           Savings
         </Text>
       </Pressable>
@@ -67,46 +51,22 @@ function CategoryTypePicker({
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    gap: 10,
-  },
-  categoryTypeButton: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: theme.spacing.sm,
-    borderRadius: theme.borderRadius.md,
-    borderWidth: 2,
-    borderColor: theme.colors.textLight,
-    backgroundColor: theme.colors.background,
-  },
-  categoryTypeText: {
-    color: theme.colors.textLight,
-    fontWeight: theme.typography.weights.bold,
-  },
-  needsButton: {
-    borderColor: theme.colors.needs,
-    backgroundColor: theme.colors.needsBg,
-  },
-  needsText: {
-    color: theme.colors.needs,
-  },
-  wantsButton: {
-    borderColor: theme.colors.wants,
-    backgroundColor: theme.colors.wantsBg,
-  },
-  wantsText: {
-    color: theme.colors.wants,
-  },
-  savingsButton: {
-    borderColor: theme.colors.savings,
-    backgroundColor: theme.colors.savingsBg,
-  },
-  savingsText: {
-    color: theme.colors.savings,
-  },
-});
+const styles = (category: CategoryType, isSelected: boolean) =>
+  StyleSheet.create({
+    container: {
+      flexDirection: "row",
+      gap: 10,
+    },
+    categoryTypeButton: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      paddingVertical: theme.spacing.sm,
+      borderRadius: theme.borderRadius.md,
+      borderWidth: isSelected ? 1 : 0,
+      borderColor: theme.colors[category],
+      backgroundColor: theme.colors[`${category}Bg`],
+    },
+  });
 
 export default CategoryTypePicker;
