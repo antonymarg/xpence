@@ -129,11 +129,11 @@ function AddRecordPage() {
             <Controller
               control={control}
               name="description"
-              render={({ field: { onChange, onBlur, value } }) => (
+              render={({ field }) => (
                 <TextInput
-                  onChange={onChange}
-                  onBlur={onBlur}
-                  value={value}
+                  onChangeText={field.onChange}
+                  onBlur={field.onBlur}
+                  value={field.value}
                   error={errors.description?.message}
                 />
               )}

@@ -1,4 +1,5 @@
 import * as expenseApi from "@/api/expenses.api";
+import ErrorScreen from "@/components/ErrorScreen";
 import CategoryCard from "@/components/home/CategoryCard";
 import Header from "@/components/home/Header";
 import OverviewCard from "@/components/home/OverviewCard";
@@ -6,25 +7,32 @@ import SmartInsightCard from "@/components/home/SmartInsightCard";
 import { theme } from "@/constants/theme";
 import { unwrap } from "@/lib/utils";
 import { useAuth } from "@/providers/AuthProvider";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { ActivityIndicator, ScrollView, StyleSheet, View } from "react-native";
 
 function HomePage() {
-  const { profile } = useAuth();
+  const { profile, isLoading: isProfileLoading } = useAuth();
+  const { refetchQueries } = useQueryClient();
   const { data: expenseSummary, isLoading: isExpenseLoading } = useQuery({
     queryKey: ["expenseSummary"],
     queryFn: () => unwrap(expenseApi.getSummaryOfExpenses()),
   });
 
-  console.log(profile, expenseSummary, isExpenseLoading);
-
-  if (!profile || isExpenseLoading || !expenseSummary)
+  if (isProfileLoading || isExpenseLoading)
     return (
       <View style={styles.pageContainer}>
         <ActivityIndicator size="large" />
       </View>
     );
+
+  if (!profile || !expenseSummary) {
+    return (
+      <View style={styles.pageContainer}>
+        <ErrorScreen onRefresh={refetchQueries} />
+      </View>
+    );
+  }
 
   const sum =
     expenseSummary.needs + expenseSummary.wants + expenseSummary.savings;
