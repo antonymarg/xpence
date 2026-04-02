@@ -1,9 +1,10 @@
 import { theme } from "@/constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
-import { Platform, StyleSheet, Text, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import Pressable from "./Pressable";
+import Button from "./Button";
+import Text from "./Text";
 
 interface DatePickerProps {
   value: Date;
@@ -47,12 +48,15 @@ function DatePicker(props: DatePickerProps) {
 
   return (
     <View>
-      <Pressable onPress={showDatePicker}>
-        <View style={styles.container}>
-          <Ionicons name="calendar" size={24} color={theme.colors.textLight} />
-          <Text style={styles.text}>{props.value.toDateString()}</Text>
-        </View>
-      </Pressable>
+      <Button
+        onPress={showDatePicker}
+        background="transparent"
+        size="sm"
+        style={styles.container}
+      >
+        <Ionicons name="calendar" size={24} color={theme.colors.textLight} />
+        <Text style={styles.text}>{props.value.toDateString()}</Text>
+      </Button>
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
         mode="date"
@@ -66,12 +70,8 @@ function DatePicker(props: DatePickerProps) {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
-    alignItems: "center",
     gap: 10,
     backgroundColor: "#EEEEEE",
-    paddingHorizontal: theme.spacing.sm,
-    paddingVertical: theme.spacing.sm,
     borderRadius: theme.borderRadius.md,
   },
   text: {

@@ -1,0 +1,77 @@
+import { updateUserBudget } from "@/api/users.api";
+import Button from "@/components/Button";
+import Card from "@/components/Card";
+import Text from "@/components/Text";
+import { theme } from "@/constants/theme";
+import { useQueryClient } from "@tanstack/react-query";
+import React, { useState } from "react";
+import { StyleSheet, View } from "react-native";
+import Toast from "react-native-toast-message";
+import UpdateBudgetModal from "./UpdateBudgetModal";
+
+interface BudgetCardProps {
+  budget: number;
+}
+
+function BudgetCard({ budget }: BudgetCardProps) {
+  const [showModal, setShowModal] = useState(false);
+  const queryClient = useQueryClient();
+
+  const onBudgetUpdate = async (newBudget: number) => {
+    const { success } = await updateUserBudget(newBudget);
+    if (success) {
+      Toast.show({
+        type: "success",
+        text1: "Budget updated successfully",
+        visibilityTime: 5000,
+        autoHide: true,
+      });
+      await queryClient.invalidateQueries({ queryKey: ["profile"] });
+      setShowModal(false);
+    }
+  };
+  return (
+    <>
+      <Card>
+        <Text heading size="sm" weight="bold" color="textSecondaryDark">
+          Monthly budget
+        </Text>
+        <View style={styles.budgetText}>
+          <Text size="hero" weight="bold">
+            €{budget.toLocaleString()}
+          </Text>
+          <Button
+            onPress={() => setShowModal(true)}
+            background="gradient"
+            style={styles.updateButton}
+          >
+            <Text weight="bold" color="white">
+              Update
+            </Text>
+          </Button>
+        </View>
+      </Card>
+      <UpdateBudgetModal
+        isVisible={showModal}
+        onClose={() => setShowModal(false)}
+        onConfirm={onBudgetUpdate}
+        initialBudget={budget}
+      />
+    </>
+  );
+}
+
+const styles = StyleSheet.create({
+  budgetText: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 10,
+  },
+  updateButton: {
+    paddingVertical: theme.spacing.md,
+    paddingHorizontal: theme.spacing.lg,
+  },
+});
+
+export default BudgetCard;

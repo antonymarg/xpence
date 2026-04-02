@@ -1,12 +1,12 @@
 import React from "react";
 import { Text, View } from "react-native";
 
-function AchievementsPage() {
+function HistoryPage() {
   return (
     <View>
-      <Text>Achievements page</Text>
+      <Text>History page</Text>
     </View>
   );
 }
 
-export default AchievementsPage;
+export default HistoryPage;

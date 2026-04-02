@@ -1,11 +1,12 @@
 import { theme } from "@/constants/theme";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import Text from "./Text";
 
 interface DividerTextProps {
   text: string;
 }
-export default function DividerText({ text }:DividerTextProps) {
+export default function DividerText({ text }: DividerTextProps) {
   return (
     <View style={styles.container}>
       <View style={styles.line} />

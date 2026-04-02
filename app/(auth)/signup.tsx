@@ -1,12 +1,11 @@
 import Alert from "@/components/Alert";
 import AuthWrapper from "@/components/AuthWrapper";
-import Pressable from "@/components/Pressable";
+import Button from "@/components/Button";
 import Text from "@/components/Text";
 import TextInput from "@/components/TextInput";
 import { theme } from "@/constants/theme";
 import { supabase } from "@/lib/supabase";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -168,25 +167,21 @@ export default function Signup() {
             />
           )}
         />
-        <Pressable disabled={loading} onPress={handleSubmit(onSignupPress)}>
-          <LinearGradient
-            colors={[
-              theme.colors.mainGradient[0],
-              theme.colors.mainGradient[1],
-            ]}
-            style={styles.button}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-          >
-            {loading ? (
-              <ActivityIndicator size="small" color="#fff" />
-            ) : (
-              <Text weight="bold" color="white">
-                Sign Up
-              </Text>
-            )}
-          </LinearGradient>
-        </Pressable>
+        <Button
+          disabled={loading}
+          onPress={handleSubmit(onSignupPress)}
+          background="gradient"
+          block
+          style={styles.button}
+        >
+          {loading ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text weight="bold" color="white">
+              Sign Up
+            </Text>
+          )}
+        </Button>
       </KeyboardAvoidingView>
     </AuthWrapper>
   );
@@ -197,10 +192,6 @@ const styles = StyleSheet.create({
     gap: theme.spacing.lg,
   },
   button: {
-    padding: theme.spacing.md,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: theme.borderRadius.lg,
     borderColor: theme.colors.divider,
     borderWidth: 1,
   },

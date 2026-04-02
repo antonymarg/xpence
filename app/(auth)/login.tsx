@@ -1,19 +1,18 @@
 import Alert from "@/components/Alert";
 import AuthWrapper from "@/components/AuthWrapper";
+import Button from "@/components/Button";
 import DividerText from "@/components/DividerText";
-import Pressable from "@/components/Pressable";
+import Icon from "@/components/Icon";
 import Text from "@/components/Text";
 import TextInput from "@/components/TextInput";
 import { theme } from "@/constants/theme";
 import { supabase } from "@/lib/supabase";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LinearGradient } from "expo-linear-gradient";
 import { Link } from "expo-router";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   ActivityIndicator,
-  Image,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -100,37 +99,36 @@ export default function Login() {
             />
           )}
         />
-        <Pressable disabled={loading} onPress={handleSubmit(onLoginPress)}>
-          <LinearGradient
-            colors={[
-              theme.colors.mainGradient[0],
-              theme.colors.mainGradient[1],
-            ]}
-            style={styles.button}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-          >
-            {loading ? (
-              <ActivityIndicator size="small" color="#fff" />
-            ) : (
-              <Text weight="bold" color="white">
-                Continue
-              </Text>
-            )}
-          </LinearGradient>
-        </Pressable>
+        <Button
+          disabled={loading}
+          onPress={handleSubmit(onLoginPress)}
+          background="gradient"
+          block
+          style={styles.button}
+        >
+          {loading ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text weight="bold" color="white">
+              Continue
+            </Text>
+          )}
+        </Button>
         <DividerText text="or" />
-        <Pressable
-          style={[styles.button, styles.googleButton]}
+        <Button
+          background="card"
+          block
           onPress={onGooglePress}
           disabled={loading}
+          style={styles.button}
         >
-          <Image
-            source={require("../../assets/images/google-icon.png")}
-            style={styles.googleIcon}
+          <Icon
+            name="logo-google"
+            color={theme.colors.primaryOrange}
+            size={20}
           />
           <Text weight="bold">Continue with Google</Text>
-        </Pressable>
+        </Button>
       </KeyboardAvoidingView>
       <View style={styles.footer}>
         <Text>New here?</Text>
@@ -149,17 +147,8 @@ const styles = StyleSheet.create({
     gap: theme.spacing.lg,
   },
   button: {
-    padding: theme.spacing.md,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: theme.borderRadius.lg,
     borderColor: theme.colors.divider,
     borderWidth: 1,
-  },
-  googleButton: {
-    backgroundColor: theme.colors.card,
-    flexDirection: "row",
-    color: theme.colors.textDark,
     gap: theme.spacing.sm,
   },
   footer: {
@@ -168,9 +157,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: theme.spacing.xs,
     marginTop: "auto",
-  },
-  googleIcon: {
-    width: 20,
-    height: 20,
   },
 });

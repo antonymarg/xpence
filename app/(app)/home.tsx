@@ -21,14 +21,14 @@ function HomePage() {
 
   if (isProfileLoading || isExpenseLoading)
     return (
-      <View style={styles.pageContainer}>
+      <View style={[styles.pageContainer, styles.alignCenterContainer]}>
         <ActivityIndicator size="large" />
       </View>
     );
 
   if (!profile || !expenseSummary) {
     return (
-      <View style={styles.pageContainer}>
+      <View style={[styles.pageContainer, styles.alignCenterContainer]}>
         <ErrorScreen onRefresh={refetchQueries} />
       </View>
     );
@@ -70,28 +70,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.colors.background,
   },
+  alignCenterContainer: {
+    flex: 1,
+    alignContent: "center",
+    justifyContent: "center",
+  },
   mainContent: {
     paddingVertical: theme.spacing.md,
     paddingHorizontal: theme.spacing.lg,
     gap: 20,
-    flex: 1,
-  },
-  helloText: {
-    color: theme.colors.textDark,
-    fontSize: theme.typography.sizes.lg,
-    fontWeight: theme.typography.weights.bold,
-  },
-  sumContainer: {
-    width: "100%",
-    padding: 25,
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  mainHeader: {
-    color: theme.colors.textLight,
-    textTransform: "uppercase",
-    fontWeight: theme.typography.weights.bold,
+    flexGrow: 1,
   },
   categoriesRow: {
     flexDirection: "row",
@@ -99,24 +87,6 @@ const styles = StyleSheet.create({
   },
   category: {
     flex: 1,
-  },
-  percentageText: {
-    fontSize: theme.typography.sizes.xl,
-    fontWeight: theme.typography.weights.bold,
-  },
-  labelText: {
-    color: theme.colors.textLight,
-    fontSize: theme.typography.sizes.sm,
-    fontWeight: theme.typography.weights.bold,
-  },
-  needsText: {
-    color: theme.colors.needs,
-  },
-  wantsText: {
-    color: theme.colors.wants,
-  },
-  savingsText: {
-    color: theme.colors.savings,
   },
 });
 

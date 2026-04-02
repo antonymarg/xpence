@@ -1,13 +1,12 @@
 import { theme } from "@/constants/theme";
-import { supabase } from "@/lib/supabase";
 import { Ionicons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import { useRouter, useSegments } from "expo-router";
 import React from "react";
 import { StyleSheet, View } from "react-native";
+import Button from "./Button";
 import Pressable from "./Pressable";
 
-type TabType = "home" | "insights" | "addRecord" | "achievements";
+type TabType = "home" | "insights" | "addRecord" | "history" | "settings";
 
 const getIconColor = (activeTab: TabType, page: TabType) =>
   activeTab === page ? theme.colors.primaryRed : theme.colors.icons;
@@ -17,17 +16,13 @@ function TabBar() {
   const segments = useSegments();
   const activeTab = segments[1] as TabType;
 
-  const handlePress = (page: TabType) => {
+  const navigateTo = (page: TabType) => {
     router.push(`/(app)/${page}`);
-  };
-
-  const logout = () => {
-    supabase.auth.signOut();
   };
 
   return (
     <View style={styles.container}>
-      <Pressable onPress={() => handlePress("home")}>
+      <Pressable onPress={() => navigateTo("home")}>
         <Ionicons
           name="home"
           color={getIconColor(activeTab, "home")}
@@ -35,7 +30,25 @@ function TabBar() {
           size={24}
         />
       </Pressable>
-      <Pressable onPress={() => handlePress("insights")}>
+      <Pressable onPress={() => navigateTo("history")}>
+        <Ionicons
+          name="list"
+          color={getIconColor(activeTab, "history")}
+          style={styles.icons}
+          size={24}
+        />
+      </Pressable>
+      <View style={styles.addRecordContainer}>
+        <Button
+          onPress={() => navigateTo("addRecord")}
+          background="gradient"
+          round
+          style={styles.addRecordButton}
+        >
+          <Ionicons name="add" size={36} color="rgba(255,255,255,0.95)" />
+        </Button>
+      </View>
+      <Pressable onPress={() => navigateTo("insights")}>
         <Ionicons
           name="pie-chart"
           color={getIconColor(activeTab, "insights")}
@@ -43,36 +56,10 @@ function TabBar() {
           size={24}
         />
       </Pressable>
-      <View style={styles.addRecordContainer}>
-        <Pressable onPress={() => handlePress("addRecord")}>
-          <LinearGradient
-            colors={[theme.colors.primaryRed, theme.colors.primaryOrange]}
-            style={{
-              width: 72,
-              height: 72,
-              borderRadius: 36,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-          >
-            <Ionicons name="add" size={36} color="rgba(255,255,255,0.95)" />
-          </LinearGradient>
-        </Pressable>
-      </View>
-      <Pressable onPress={() => handlePress("achievements")}>
+      <Pressable onPress={() => navigateTo("settings")}>
         <Ionicons
-          name="medal"
-          color={getIconColor(activeTab, "achievements")}
-          style={styles.icons}
-          size={24}
-        />
-      </Pressable>
-      <Pressable onPress={logout}>
-        <Ionicons
-          name="options"
-          color={theme.colors.icons}
+          name="settings"
+          color={getIconColor(activeTab, "settings")}
           size={24}
           style={styles.icons}
         />
@@ -97,6 +84,11 @@ const styles = StyleSheet.create({
   addRecordContainer: {
     paddingHorizontal: theme.spacing.sm,
     marginTop: -1 * theme.spacing.md,
+  },
+  addRecordButton: {
+    width: 72,
+    height: 72,
+    padding: 0,
   },
 });
 

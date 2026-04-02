@@ -64,7 +64,6 @@ async function getSummaryOfExpenses(): Result<ExpensesSummary> {
     );
     return { success: true, data: summary };
   } catch (err) {
-    console.log(err);
     return { success: false, error: toError(err) };
   }
 }

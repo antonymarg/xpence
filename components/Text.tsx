@@ -10,6 +10,7 @@ interface CustomTextProps {
   size: keyof typeof theme.typography.sizes;
   weight: keyof typeof theme.typography.weights;
   heading: boolean;
+  textAlign: "left" | "center" | "right";
   color:
     | "error"
     | "needs"
@@ -21,6 +22,7 @@ interface CustomTextProps {
     | "primaryRed"
     | "primaryOrange"
     | "textLight"
+    | "textSecondaryDark"
     | "white";
 }
 
@@ -31,12 +33,16 @@ function Text({
   weight = "regular",
   heading = false,
   color = "textLight",
+  textAlign = "left",
   ...props
 }: TextProps) {
   return (
     <RNText
       {...props}
-      style={[styles({ size, weight, heading, color }).text, props.style]}
+      style={[
+        styles({ size, weight, heading, color, textAlign }).text,
+        props.style,
+      ]}
     >
       {props.children}
     </RNText>
@@ -63,6 +69,7 @@ const styles = (props: CustomTextProps) =>
       letterSpacing: props.heading
         ? theme.typography.letterSpacing.heading
         : theme.typography.letterSpacing.body,
+      textAlign: props.textAlign,
     },
   });
 export default Text;

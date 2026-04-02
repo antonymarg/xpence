@@ -55,7 +55,7 @@ function AddRecordPage() {
 
   const handleSave = async (data: z.infer<typeof schema>) => {
     const result = await expenseApi.addExpense(data);
-    if (result) {
+    if (result.success) {
       Toast.show({
         type: "success",
         text1: "Expense added successfully",
@@ -187,9 +187,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-  },
-  titleText: {
-    textTransform: "uppercase",
   },
   mainForm: {
     gap: 20,

@@ -21,7 +21,8 @@ export default function AppLayout() {
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="home" />
         <Stack.Screen name="addRecord" />
-        <Stack.Screen name="achievements" />
+        <Stack.Screen name="settings" />
+        <Stack.Screen name="history" />
         <Stack.Screen name="insights" />
       </Stack>
       <TabBar />
