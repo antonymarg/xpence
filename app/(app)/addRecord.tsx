@@ -99,7 +99,7 @@ function AddRecordPage() {
           </Text>
         </Pressable>
       </View>
-      <ScrollView>
+      <ScrollView keyboardShouldPersistTaps="handled">
         <View style={styles.mainForm}>
           <View style={styles.formSegment}>
             <Text size="sm" weight="bold" heading>
