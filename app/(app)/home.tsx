@@ -13,7 +13,7 @@ import { ActivityIndicator, ScrollView, StyleSheet, View } from "react-native";
 
 function HomePage() {
   const { profile, isLoading: isProfileLoading } = useAuth();
-  const { refetchQueries } = useQueryClient();
+  const queryClient = useQueryClient();
   const { data: expenseSummary, isLoading: isExpenseLoading } = useQuery({
     queryKey: ["expenseSummary"],
     queryFn: () => unwrap(expenseApi.getSummaryOfExpenses()),
@@ -27,9 +27,13 @@ function HomePage() {
     );
 
   if (!profile || !expenseSummary) {
+    const onRefresh = async () => {
+      await queryClient.refetchQueries({ queryKey: ["profile"] });
+      await queryClient.refetchQueries({ queryKey: ["expenseSummary"] });
+    };
     return (
       <View style={[styles.pageContainer, styles.alignCenterContainer]}>
-        <ErrorScreen onRefresh={refetchQueries} />
+        <ErrorScreen onRefresh={onRefresh} />
       </View>
     );
   }
@@ -43,19 +47,19 @@ function HomePage() {
         <OverviewCard sum={sum} budget={profile.budget} />
         <CategoryCard
           category="needs"
-          percentage={(expenseSummary.needs / sum) * 100}
+          percentage={(expenseSummary.needs / profile.budget) * 100}
         />
         <View style={styles.categoriesRow}>
           <View style={styles.category}>
             <CategoryCard
               category="wants"
-              percentage={(expenseSummary.wants / sum) * 100}
+              percentage={(expenseSummary.wants / profile.budget) * 100}
             />
           </View>
           <View style={styles.category}>
             <CategoryCard
               category="savings"
-              percentage={(expenseSummary.savings / sum) * 100}
+              percentage={(expenseSummary.savings / profile.budget) * 100}
             />
           </View>
         </View>
@@ -78,12 +82,12 @@ const styles = StyleSheet.create({
   mainContent: {
     paddingVertical: theme.spacing.md,
     paddingHorizontal: theme.spacing.lg,
-    gap: 20,
+    gap: theme.spacing.md,
     flexGrow: 1,
   },
   categoriesRow: {
     flexDirection: "row",
-    gap: 20,
+    gap: theme.spacing.md,
   },
   category: {
     flex: 1,

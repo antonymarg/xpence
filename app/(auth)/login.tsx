@@ -65,7 +65,7 @@ export default function Login() {
       {loginError && <Alert message={loginError} type="error" />}
       <KeyboardAvoidingView
         style={styles.inputContainer}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <Controller
           control={control}

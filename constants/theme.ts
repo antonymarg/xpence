@@ -8,6 +8,8 @@
  *   import { useFonts, PlusJakartaSans_400Regular, PlusJakartaSans_500Medium, PlusJakartaSans_700Bold, PlusJakartaSans_800ExtraBold } from "@expo-google-fonts/plus-jakarta-sans";
  */
 
+import { Platform } from "react-native";
+
 export const theme = {
   colors: {
     // Brand Colors
@@ -43,6 +45,7 @@ export const theme = {
     warning: "#F59E0B",
 
     icons: "#D1D5DB",
+    gray: "#e6e8ea",
     progressBarBg: "#f2f4f6",
 
     // Overlays
@@ -99,13 +102,17 @@ export const theme = {
       shadowRadius: 24,
       elevation: 10,
     },
-    brand: {
-      shadowColor: "#FF4D4D",
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.4,
-      shadowRadius: 15,
-      elevation: 8,
-    },
+    brand: Platform.select({
+      ios: {
+        shadowColor: "#FF4D4D",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.4,
+        shadowRadius: 15,
+      },
+      default: {
+        elevation: 8,
+      },
+    }),
   },
 
   typography: {

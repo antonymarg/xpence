@@ -84,7 +84,7 @@ function AddRecordPage() {
   return (
     <KeyboardAvoidingView
       style={styles.formContainer}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <View style={styles.header}>
         <Pressable onPress={handleCancel}>
@@ -178,7 +178,7 @@ function AddRecordPage() {
 const styles = StyleSheet.create({
   formContainer: {
     flex: 1,
-    gap: 20,
+    gap: theme.spacing.md,
     backgroundColor: theme.colors.background,
     paddingVertical: theme.spacing.md,
     paddingHorizontal: theme.spacing.lg,
@@ -189,10 +189,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   mainForm: {
-    gap: 20,
+    gap: theme.spacing.md,
   },
   formSegment: {
-    gap: 10,
+    gap: theme.spacing.sm,
   },
 });
 

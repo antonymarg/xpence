@@ -55,7 +55,7 @@ function DatePicker(props: DatePickerProps) {
         style={styles.container}
       >
         <Ionicons name="calendar" size={24} color={theme.colors.textLight} />
-        <Text style={styles.text}>{props.value.toDateString()}</Text>
+        <Text weight="bold">{props.value.toDateString()}</Text>
       </Button>
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
@@ -70,14 +70,9 @@ function DatePicker(props: DatePickerProps) {
 
 const styles = StyleSheet.create({
   container: {
-    gap: 10,
-    backgroundColor: "#EEEEEE",
+    gap: theme.spacing.sm,
+    backgroundColor: theme.colors.gray,
     borderRadius: theme.borderRadius.md,
-  },
-  text: {
-    color: theme.colors.textLight,
-    fontSize: theme.typography.sizes.md,
-    fontWeight: theme.typography.weights.bold,
   },
 });
 

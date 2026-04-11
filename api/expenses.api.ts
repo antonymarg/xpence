@@ -2,9 +2,20 @@ import { supabase } from "@/lib/supabase";
 import { toError } from "@/lib/utils";
 import { Result } from "@/types/api.types";
 import { Expense, ExpensesSummary } from "@/types/expenses.types";
+import { CategoryType } from "@/types/users.types";
 import { getUserId } from "./users.api";
 
-async function addExpense(expense: Expense): Result<Expense> {
+const OFFSET_GAP = 20;
+
+type GetExpensesParam = {
+  categoryId?: string | null;
+  categoryType?: CategoryType;
+  fromDate?: Date;
+  toDate?: Date;
+  offSet?: number;
+};
+
+async function addExpense(expense: Omit<Expense, "id">): Result<Expense> {
   try {
     const userId = await getUserId();
     const { data, error } = await supabase
@@ -22,6 +33,7 @@ async function addExpense(expense: Expense): Result<Expense> {
     return {
       success: true,
       data: {
+        id: data.id,
         categoryId: data.category_id,
         amount: data.amount,
         date: new Date(data.date),
@@ -68,4 +80,37 @@ async function getSummaryOfExpenses(): Result<ExpensesSummary> {
   }
 }
 
-export { addExpense, getSummaryOfExpenses };
+async function getExpenses(params: GetExpensesParam): Result<Expense[]> {
+  try {
+    const userId = await getUserId();
+    const offset = params.offSet ?? 0;
+    let query = supabase
+      .from("expenses")
+      .select("id, amount, date, description, categories!inner (id, type)")
+      .eq("user_id", userId)
+      .order("date", { ascending: false });
+    if (params.categoryType && !params.categoryId)
+      query = query.eq("categories.type", params.categoryType);
+    if (params.categoryId) query = query.eq("categories.id", params.categoryId);
+    if (params.fromDate)
+      query = query.gte("date", params.fromDate.toISOString());
+    if (params.toDate) query = query.lte("date", params.toDate.toISOString());
+    query = query.range(offset, offset + OFFSET_GAP - 1);
+    const { data, error } = await query;
+    if (error) throw error;
+    return {
+      success: true,
+      data: data.map((item) => ({
+        id: item.id,
+        amount: item.amount / 100,
+        date: new Date(item.date),
+        description: item.description,
+        categoryId: item.categories.id,
+      })),
+    };
+  } catch (err) {
+    return { success: false, error: toError(err) };
+  }
+}
+
+export { addExpense, getExpenses, getSummaryOfExpenses };

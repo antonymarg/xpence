@@ -68,12 +68,12 @@ function CategoryPicker({
 
 const styles = StyleSheet.create({
   container: {
-    gap: 5,
+    gap: theme.spacing.xs,
   },
   categoriesContainer: {
     flexWrap: "wrap",
     flexDirection: "row",
-    gap: 5,
+    gap: theme.spacing.xs,
   },
   categoryButton: {
     alignItems: "center",

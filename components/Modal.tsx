@@ -1,3 +1,4 @@
+import { theme } from "@/constants/theme";
 import React from "react";
 import {
   Pressable,
@@ -37,11 +38,11 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContent: {
-    backgroundColor: "white",
+    backgroundColor: theme.colors.card,
     width: "80%",
-    padding: 20,
-    borderRadius: 10,
-    gap: 12,
+    padding: theme.spacing.lg,
+    borderRadius: theme.borderRadius.md,
+    gap: theme.spacing.md,
   },
 });
 

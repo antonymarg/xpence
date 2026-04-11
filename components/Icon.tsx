@@ -15,7 +15,7 @@ function Icon({
   name,
   color,
   size = 16,
-  background = "#FFFFFF00",
+  background = "transparent",
   padding = "xs",
 }: IconButtonProps) {
   return (

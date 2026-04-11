@@ -27,7 +27,7 @@ function CategoryCard({ category, percentage }: CategoryCardProps) {
   const [color, icon, categoryPercentage] = getIconForCategory(category);
   const styling = styles(category);
   return (
-    <Card style={styling.container}>
+    <Card>
       <View style={styling.header}>
         <View style={styling.iconWrapper}>
           <Ionicons name={icon} size={24} color={color} />
@@ -50,12 +50,11 @@ function CategoryCard({ category, percentage }: CategoryCardProps) {
 
 const styles = (category: CategoryType) =>
   StyleSheet.create({
-    container: {},
     header: {
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-      gap: 10,
+      gap: theme.spacing.sm,
       marginBottom: theme.spacing.md,
     },
     iconWrapper: {

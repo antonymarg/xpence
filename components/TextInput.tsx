@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
   },
   input: {
     padding: theme.spacing.md,
-    backgroundColor: "#fff",
+    backgroundColor: theme.colors.card,
     borderRadius: theme.borderRadius.md,
     borderWidth: 1,
     borderColor: theme.colors.divider,

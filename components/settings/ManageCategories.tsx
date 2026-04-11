@@ -6,7 +6,6 @@ import CategoryEditor from "@/components/settings/CategoryEditor";
 import DeleteCategoryModal from "@/components/settings/DeleteCategoryModal";
 import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
-import { supabase } from "@/lib/supabase";
 import { Category } from "@/types/users.types";
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
@@ -23,8 +22,6 @@ function ManageCategories({ categories }: ManageCategoriesProps) {
   const [deleteModalCategory, setDeleteModalCategory] =
     useState<Category | null>(null);
   const [isAddModalVisible, setIsAddModalVisible] = useState<boolean>(false);
-
-  const signOut = () => supabase.auth.signOut();
 
   const onAddCategory = async ({ name, type }: Omit<Category, "id">) => {
     const { success } = await userApi.addUserCategory({ name, type });

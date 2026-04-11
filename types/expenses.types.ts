@@ -3,6 +3,7 @@ import { CategoryType } from "./users.types";
 
 type DBExpense = Database["public"]["Tables"]["expenses"]["Row"];
 type Expense = {
+  id: string;
   categoryId: string;
   date: Date;
   description: string;

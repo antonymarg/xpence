@@ -55,7 +55,7 @@ const styles = (category: CategoryType, isSelected: boolean) =>
   StyleSheet.create({
     container: {
       flexDirection: "row",
-      gap: 10,
+      gap: theme.spacing.sm,
     },
     categoryTypeButton: {
       flex: 1,

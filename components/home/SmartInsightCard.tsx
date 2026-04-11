@@ -27,11 +27,11 @@ function SmartInsightCard({}: SmartInsightProps) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    gap: 12,
+    gap: theme.spacing.sm,
   },
   textContainer: {
     flex: 1,
-    gap: 5,
+    gap: theme.spacing.xs,
   },
   iconWrapper: {
     borderRadius: theme.borderRadius.sm,

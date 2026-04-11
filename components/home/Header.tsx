@@ -25,7 +25,7 @@ function Header({ profile }: HeaderProps) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    gap: 12,
+    gap: theme.spacing.sm,
     paddingHorizontal: theme.spacing.lg,
     paddingTop: theme.spacing.md,
     alignItems: "center",

@@ -16,7 +16,11 @@ interface StylingButtonProps {
     | "card"
     | "icons"
     | "transparent"
-    | "gradient";
+    | "gradient"
+    | "needs"
+    | "wants"
+    | "savings"
+    | "gray";
   size: "sm" | "md" | "lg" | "xl";
   block: boolean;
   round: boolean;

@@ -38,7 +38,7 @@ function BudgetCard({ budget }: BudgetCardProps) {
         </Text>
         <View style={styles.budgetText}>
           <Text size="hero" weight="bold">
-            €{budget.toLocaleString()}
+            €{budget.toFixed(2)}
           </Text>
           <Button
             onPress={() => setShowModal(true)}
@@ -52,6 +52,7 @@ function BudgetCard({ budget }: BudgetCardProps) {
         </View>
       </Card>
       <UpdateBudgetModal
+        key={budget}
         isVisible={showModal}
         onClose={() => setShowModal(false)}
         onConfirm={onBudgetUpdate}
@@ -66,7 +67,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    gap: 10,
+    gap: theme.spacing.sm,
   },
   updateButton: {
     paddingVertical: theme.spacing.md,

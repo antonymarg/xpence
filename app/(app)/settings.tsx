@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.background,
     paddingVertical: theme.spacing.xl,
     paddingHorizontal: theme.spacing.lg,
-    gap: 20,
+    gap: theme.spacing.md,
   },
   alignCenterContainer: {
     flex: 1,

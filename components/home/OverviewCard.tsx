@@ -15,7 +15,7 @@ function OverviewCard({ sum, budget }: OverviewCardProps) {
   const isOverLimit = remaining < 0;
   const percentage = (sum / budget) * 100;
   return (
-    <Card padding="lg" borderRadius="md" style={styles.overviewCard}>
+    <Card padding="lg" borderRadius="md">
       <View style={styles.topContainer}>
         <Text heading weight="bold" size="xs">
           Monthly Budget Status
@@ -34,7 +34,7 @@ function OverviewCard({ sum, budget }: OverviewCardProps) {
         )}
       </View>
       <Text size="hero" weight="bold" style={styles.numberText}>
-        €{sum.toLocaleString()}
+        €{sum.toFixed(2)}
       </Text>
       <View style={styles.remainingContainer}>
         <ProgressBar height={15} percentage={percentage} type="generic" />
@@ -56,7 +56,6 @@ function OverviewCard({ sum, budget }: OverviewCardProps) {
 }
 
 const styles = StyleSheet.create({
-  overviewCard: {},
   topContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -70,11 +69,11 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
   },
   remainingContainer: {
-    gap: 15,
+    gap: theme.spacing.md,
   },
   remainingTextContainer: {
     flexDirection: "row",
-    gap: 4,
+    gap: theme.spacing.xs,
     alignItems: "baseline",
   },
   overLimitPillText: {

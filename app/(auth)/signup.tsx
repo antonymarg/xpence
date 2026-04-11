@@ -82,7 +82,7 @@ export default function Signup() {
       {signupError && <Alert message={signupError} type="error" />}
       <KeyboardAvoidingView
         style={styles.inputContainer}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <Controller
           control={control}

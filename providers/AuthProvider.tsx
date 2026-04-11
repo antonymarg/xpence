@@ -28,10 +28,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { data: profile, isLoading: profileLoading } = useQuery({
     queryKey: ["profile"],
     queryFn: () => unwrap(userApi.getUserProfile()),
+    enabled: !!supabase.auth.getSession(),
   });
   const { data: userCategories } = useQuery({
     queryKey: ["categories"],
     queryFn: () => unwrap(userApi.getUserCategories()),
+    enabled: !!supabase.auth.getSession(),
   });
 
   const isAuthenticated = !!profile;
