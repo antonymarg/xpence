@@ -1,6 +1,6 @@
 import { theme } from "@/constants/theme";
 import { Category, CategoryType } from "@/types/categories.types";
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import CategoryTypePicker from "./CategoryTypePicker";
 import Pressable from "./Pressable";
@@ -9,7 +9,7 @@ import Text from "./Text";
 interface CategoryTypePickerProps {
   categories: Category[];
   selectedCategoryId: string | null;
-  onSelectCategory: (categoryId: string) => void;
+  onSelectCategory: (categoryId: string | null) => void;
   error?: string;
 }
 
@@ -23,7 +23,7 @@ function CategoryPicker({
     React.useState<CategoryType | null>(null);
 
   const handleSelectType = (type: CategoryType) => {
-    onSelectCategory("");
+    onSelectCategory(null);
     setSelectedCategoryType(type);
   };
 
@@ -33,6 +33,13 @@ function CategoryPicker({
       (category) => category.type === selectedCategoryType,
     );
   }, [selectedCategoryType, categories]);
+
+  useEffect(() => {
+    const category = categories.find((cat) => cat.id === selectedCategoryId);
+    if (category && category.type !== selectedCategoryType) {
+      setSelectedCategoryType(category.type);
+    }
+  }, [selectedCategoryId, categories]);
 
   return (
     <View style={styles.container}>

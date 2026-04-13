@@ -33,9 +33,12 @@ function SettingsPage() {
 
   return (
     <ScrollView contentContainerStyle={styles.pageContainer}>
-      <Text size="xl" weight="bold">
-        {profile.displayName}
-      </Text>
+      <View>
+        <Text size="title" weight="bold">
+          Settings
+        </Text>
+        <Text size="lg">Personalise your experience</Text>
+      </View>
       <Text size="lg" weight="bold">
         Financial Plan
       </Text>
@@ -58,8 +61,7 @@ const styles = StyleSheet.create({
   pageContainer: {
     flexGrow: 1,
     backgroundColor: theme.colors.background,
-    paddingVertical: theme.spacing.xl,
-    paddingHorizontal: theme.spacing.lg,
+    padding: theme.spacing.lg,
     gap: theme.spacing.md,
   },
   alignCenterContainer: {

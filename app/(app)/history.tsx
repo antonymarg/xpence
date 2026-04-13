@@ -3,6 +3,7 @@ import DatePicker from "@/components/DatePicker";
 import CategoryPicker from "@/components/history/CategoryPicker";
 import DeleteExpenseyModal from "@/components/history/DeleteExpenseModal";
 import ExpenseList from "@/components/history/ExpenseList";
+import UpdateExpenseModal from "@/components/history/UpdateExpenseModal";
 import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
 import { useAuth } from "@/providers/AuthProvider";
@@ -46,6 +47,12 @@ function HistoryPage() {
     setSelectedCategory(category);
   };
 
+  const updateExpense = async (expense: Expense) => {
+    await expenseApi.updateExpense(expense);
+    await queryClient.invalidateQueries({ queryKey: ["expenses"] });
+    setExpenseToEdit(null);
+  };
+
   const deleteExpense = async (id: string) => {
     await expenseApi.deleteExpense(id);
     await queryClient.invalidateQueries({ queryKey: ["expenses"] });
@@ -80,7 +87,14 @@ function HistoryPage() {
         onEditExpensePress={setExpenseToEdit}
         onDeleteExpensePress={setExpenseToDelete}
       />
+      <UpdateExpenseModal
+        key={`update-${expenseToEdit?.id}`}
+        expense={expenseToEdit}
+        onClose={() => setExpenseToEdit(null)}
+        onConfirm={updateExpense}
+      />
       <DeleteExpenseyModal
+        key={`delete-${expenseToDelete?.id}`}
         expense={expenseToDelete}
         onConfirm={deleteExpense}
         onClose={() => setExpenseToDelete(null)}

@@ -7,7 +7,7 @@ import Icon from "../Icon";
 import Modal from "../Modal";
 import Text from "../Text";
 
-interface DeleteExpenseyModalProps {
+interface DeleteExpenseModalProps {
   expense: Expense | null;
   onClose: () => void;
   onConfirm: (expenseId: string) => void;
@@ -17,7 +17,7 @@ function DeleteExpenseyModal({
   expense,
   onClose,
   onConfirm,
-}: DeleteExpenseyModalProps) {
+}: DeleteExpenseModalProps) {
   if (!expense) return null;
 
   return (
