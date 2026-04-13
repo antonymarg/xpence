@@ -1,6 +1,6 @@
 import { theme } from "@/constants/theme";
+import { CategoryType } from "@/types/categories.types";
 import { Expense } from "@/types/expenses.types";
-import { CategoryType } from "@/types/users.types";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import Card from "../Card";

@@ -1,10 +1,14 @@
+import * as expenseApi from "@/api/expenses.api";
 import DatePicker from "@/components/DatePicker";
 import CategoryPicker from "@/components/history/CategoryPicker";
+import DeleteExpenseyModal from "@/components/history/DeleteExpenseModal";
 import ExpenseList from "@/components/history/ExpenseList";
 import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
 import { useAuth } from "@/providers/AuthProvider";
-import { CategoryType } from "@/types/users.types";
+import { CategoryType } from "@/types/categories.types";
+import { Expense } from "@/types/expenses.types";
+import { useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
@@ -29,6 +33,9 @@ function HistoryPage() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [fromDate, setFromDate] = useState<Date>(getFirstDayOfMonth());
   const [toDate, setToDate] = useState<Date>(getLastDayOfMonth());
+  const [expenseToEdit, setExpenseToEdit] = useState<Expense | null>(null);
+  const [expenseToDelete, setExpenseToDelete] = useState<Expense | null>(null);
+  const queryClient = useQueryClient();
 
   const onSelectCategoryType = (type: CategoryType | "all") => {
     setSelectedCategoryType(type);
@@ -37,6 +44,12 @@ function HistoryPage() {
 
   const onSelectCategory = (category: string) => {
     setSelectedCategory(category);
+  };
+
+  const deleteExpense = async (id: string) => {
+    await expenseApi.deleteExpense(id);
+    await queryClient.invalidateQueries({ queryKey: ["expenses"] });
+    setExpenseToDelete(null);
   };
 
   return (
@@ -64,6 +77,13 @@ function HistoryPage() {
         selectedCategory={selectedCategory}
         fromDate={fromDate}
         toDate={toDate}
+        onEditExpensePress={setExpenseToEdit}
+        onDeleteExpensePress={setExpenseToDelete}
+      />
+      <DeleteExpenseyModal
+        expense={expenseToDelete}
+        onConfirm={deleteExpense}
+        onClose={() => setExpenseToDelete(null)}
       />
     </View>
   );

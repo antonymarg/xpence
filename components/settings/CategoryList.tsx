@@ -1,5 +1,5 @@
 import { theme } from "@/constants/theme";
-import { Category } from "@/types/users.types";
+import { Category } from "@/types/categories.types";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import Card from "../Card";

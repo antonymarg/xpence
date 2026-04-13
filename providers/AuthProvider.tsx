@@ -1,7 +1,9 @@
+import * as categoryApi from "@/api/categories.api";
 import * as userApi from "@/api/users.api";
 import { supabase } from "@/lib/supabase";
 import { unwrap } from "@/lib/utils";
-import { Category, Profile } from "@/types/users.types";
+import { Category } from "@/types/categories.types";
+import { Profile } from "@/types/users.types";
 import { useQuery } from "@tanstack/react-query";
 import { Href, useRouter } from "expo-router";
 import React, { createContext, useContext, useEffect } from "react";
@@ -32,7 +34,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   });
   const { data: userCategories } = useQuery({
     queryKey: ["categories"],
-    queryFn: () => unwrap(userApi.getUserCategories()),
+    queryFn: () => unwrap(categoryApi.getUserCategories()),
     enabled: !!supabase.auth.getSession(),
   });
 

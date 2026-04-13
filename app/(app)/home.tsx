@@ -15,7 +15,7 @@ function HomePage() {
   const { profile, isLoading: isProfileLoading } = useAuth();
   const queryClient = useQueryClient();
   const { data: expenseSummary, isLoading: isExpenseLoading } = useQuery({
-    queryKey: ["expenseSummary"],
+    queryKey: ["expenses", "summary"],
     queryFn: () => unwrap(expenseApi.getSummaryOfExpenses()),
   });
 

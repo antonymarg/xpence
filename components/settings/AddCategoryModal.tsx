@@ -1,4 +1,4 @@
-import { Category } from "@/types/users.types";
+import { Category } from "@/types/categories.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";

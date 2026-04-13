@@ -1,7 +1,7 @@
 import Button from "@/components/Button";
 import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
-import { Category, CategoryType } from "@/types/users.types";
+import { Category, CategoryType } from "@/types/categories.types";
 import React from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 

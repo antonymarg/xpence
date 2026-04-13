@@ -1,12 +1,13 @@
 import * as expenseApi from "@/api/expenses.api";
 import { theme } from "@/constants/theme";
 import { unwrap } from "@/lib/utils";
-import { Category, CategoryType } from "@/types/users.types";
+import { Category, CategoryType } from "@/types/categories.types";
+import { Expense } from "@/types/expenses.types";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import React from "react";
 import { ActivityIndicator, SectionList, StyleSheet, View } from "react-native";
 import Text from "../Text";
-import ExpenseCard from "./ExpenseCard";
+import SwipeableExpenseCard from "./SwipeableExpenseCard";
 
 const PAGE_SIZE = 20;
 
@@ -16,6 +17,8 @@ interface ExpenseListProps {
   availableCategories: Category[];
   fromDate: Date;
   toDate: Date;
+  onEditExpensePress: (expense: Expense) => void;
+  onDeleteExpensePress: (expense: Expense) => void;
 }
 
 function formatSectionDate(date: Date): string {
@@ -29,8 +32,18 @@ function formatSectionDate(date: Date): string {
     a.getDate() === b.getDate();
 
   const months = [
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
   ];
   const formatted = `${months[date.getMonth()]} ${date.getDate()}`;
 
@@ -45,6 +58,8 @@ function ExpenseList({
   availableCategories,
   fromDate,
   toDate,
+  onEditExpensePress,
+  onDeleteExpensePress,
 }: ExpenseListProps) {
   const {
     data,
@@ -56,6 +71,7 @@ function ExpenseList({
   } = useInfiniteQuery({
     queryKey: [
       "expenses",
+      "history",
       selectedCategoryType,
       selectedCategory,
       fromDate.toDateString(),
@@ -130,10 +146,12 @@ function ExpenseList({
         );
         if (!category) return null;
         return (
-          <ExpenseCard
+          <SwipeableExpenseCard
             expense={item}
             categoryName={category.name}
             categoryType={category.type}
+            onEdit={onEditExpensePress}
+            onDelete={onDeleteExpensePress}
           />
         );
       }}

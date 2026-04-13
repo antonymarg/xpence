@@ -1,5 +1,5 @@
 import { Database } from "@/types/database.types";
-import { CategoryType } from "./users.types";
+import { CategoryType } from "./categories.types";
 
 type DBExpense = Database["public"]["Tables"]["expenses"]["Row"];
 type Expense = {

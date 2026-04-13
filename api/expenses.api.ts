@@ -1,8 +1,8 @@
 import { supabase } from "@/lib/supabase";
 import { toError } from "@/lib/utils";
 import { Result } from "@/types/api.types";
+import { CategoryType } from "@/types/categories.types";
 import { Expense, ExpensesSummary } from "@/types/expenses.types";
-import { CategoryType } from "@/types/users.types";
 import { getUserId } from "./users.api";
 
 const OFFSET_GAP = 20;
@@ -113,4 +113,56 @@ async function getExpenses(params: GetExpensesParam): Result<Expense[]> {
   }
 }
 
-export { addExpense, getExpenses, getSummaryOfExpenses };
+async function updateExpense(expense: Expense): Result<Expense> {
+  try {
+    const userId = await getUserId();
+    const { data, error } = await supabase
+      .from("expenses")
+      .update({
+        category_id: expense.categoryId,
+        amount: expense.amount * 100,
+        date: expense.date.toISOString(),
+        description: expense.description,
+      })
+      .eq("id", expense.id)
+      .eq("user_id", userId)
+      .select()
+      .single();
+    if (error) throw error;
+    return {
+      success: true,
+      data: {
+        id: data.id,
+        categoryId: data.category_id,
+        amount: data.amount,
+        date: new Date(data.date),
+        description: data.description,
+      },
+    };
+  } catch (err) {
+    return { success: false, error: toError(err) };
+  }
+}
+
+async function deleteExpense(expenseId: string): Result<null> {
+  try {
+    const userId = await getUserId();
+    const { error } = await supabase
+      .from("expenses")
+      .delete()
+      .eq("id", expenseId)
+      .eq("user_id", userId);
+    if (error) throw error;
+    return { success: true, data: null };
+  } catch (err) {
+    return { success: false, error: toError(err) };
+  }
+}
+
+export {
+  addExpense,
+  deleteExpense,
+  getExpenses,
+  getSummaryOfExpenses,
+  updateExpense,
+};

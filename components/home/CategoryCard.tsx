@@ -1,6 +1,6 @@
 import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
-import { CategoryType } from "@/types/users.types";
+import { CategoryType } from "@/types/categories.types";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, View } from "react-native";
