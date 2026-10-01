@@ -17,7 +17,7 @@ function UpdateBudgetModal({
   initialBudget,
   onConfirm,
 }: UpdateBudgetModalProps) {
-  const [budget, setBudget] = useState<number>(initialBudget);
+  const [budget, setBudget] = useState<number>(initialBudget / 100);
 
   const onUpdateClick = () => {
     onConfirm(budget);

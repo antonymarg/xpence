@@ -34,20 +34,20 @@ function OverviewCard({ sum, budget }: OverviewCardProps) {
         )}
       </View>
       <Text size="hero" weight="bold" style={styles.numberText}>
-        €{sum.toFixed(2)}
+        €{(sum / 100).toFixed(2)}
       </Text>
       <View style={styles.remainingContainer}>
         <ProgressBar height={15} percentage={percentage} type="generic" />
         <View style={styles.remainingTextContainer}>
           {isOverLimit ? (
             <Text weight="bold" color="error">
-              €{(remaining * -1).toFixed(2)} over budget
+              €{(remaining / 100 * -1).toFixed(2)} over budget
             </Text>
           ) : (
-            <Text size="sm">€{remaining.toFixed(2)} remaining</Text>
+            <Text size="sm">€{(remaining / 100).toFixed(2)} remaining</Text>
           )}
           <Text size="sm" style={styles.budgetText}>
-            Budget: €{budget.toFixed(2)}
+            Budget: €{(budget / 100).toFixed(2)}
           </Text>
         </View>
       </View>

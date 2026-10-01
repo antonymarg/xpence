@@ -38,7 +38,7 @@ function BudgetCard({ budget }: BudgetCardProps) {
         </Text>
         <View style={styles.budgetText}>
           <Text size="hero" weight="bold">
-            €{budget.toFixed(2)}
+            €{(budget / 100).toFixed(2)}
           </Text>
           <Button
             onPress={() => setShowModal(true)}

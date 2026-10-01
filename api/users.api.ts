@@ -38,7 +38,7 @@ async function updateUserBudget(budget: number) {
     const userId = await getUserId();
     const { error } = await supabase
       .from("user_profiles")
-      .update({ budget: budget })
+      .update({ budget: budget * 100 })
       .eq("user_id", userId);
     if (error) throw error;
     return { success: true, data: null };
