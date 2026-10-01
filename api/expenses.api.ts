@@ -47,34 +47,10 @@ async function addExpense(expense: Omit<Expense, "id">): Result<Expense> {
 
 async function getSummaryOfExpenses(): Result<ExpensesSummary> {
   try {
-    const userId = await getUserId();
     const { data, error } = await supabase
-      .from("expenses")
-      .select("amount, categories (type)")
-      .eq("user_id", userId);
+      .rpc('get_current_month_expenses_by_type')
     if (error) throw error;
-    const summary = data.reduce(
-      (acc, cur) => {
-        switch (cur.categories.type) {
-          case "needs":
-            acc.needs += cur.amount / 100;
-            break;
-          case "wants":
-            acc.wants += cur.amount / 100;
-            break;
-          case "savings":
-            acc.savings += cur.amount / 100;
-            break;
-        }
-        return acc;
-      },
-      {
-        needs: 0,
-        wants: 0,
-        savings: 0,
-      },
-    );
-    return { success: true, data: summary };
+    return { success: true, data: data as ExpensesSummary };
   } catch (err) {
     return { success: false, error: toError(err) };
   }
@@ -164,5 +140,6 @@ export {
   deleteExpense,
   getExpenses,
   getSummaryOfExpenses,
-  updateExpense,
+  updateExpense
 };
+
