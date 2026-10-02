@@ -1,33 +1,34 @@
+import * as categoriesApi from "@/api/categories.api";
 import Button from "@/components/Button";
 import ErrorScreen from "@/components/ErrorScreen";
 import Icon from "@/components/Icon";
+import Loading from "@/components/Loading";
 import BudgetCard from "@/components/settings/BudgetCard";
 import ManageCategories from "@/components/settings/ManageCategories";
 import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
 import { supabase } from "@/lib/supabase";
+import { unwrap } from "@/lib/utils";
 import { useAuth } from "@/providers/AuthProvider";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
-import { ActivityIndicator, ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 
 function SettingsPage() {
-  const { profile, userCategories, isLoading: isProfileLoading } = useAuth();
+  const { profile, isLoading: isProfileLoading } = useAuth();
   const queryClient = useQueryClient();
   const signOut = () => supabase.auth.signOut();
 
-  if (isProfileLoading)
-    return (
-      <View style={[styles.pageContainer, styles.alignCenterContainer]}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
+  const { data: userCategories, isLoading: isUserCategoriesLoading } = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => unwrap(categoriesApi.getUserCategories())
+  });
 
-  if (!profile) {
+  if (isProfileLoading || isUserCategoriesLoading) return <Loading />
+
+  if (!profile || !userCategories) {
     return (
-      <View style={[styles.pageContainer, styles.alignCenterContainer]}>
-        <ErrorScreen onRefresh={queryClient.refetchQueries} />
-      </View>
+      <ErrorScreen onRefresh={queryClient.refetchQueries} />
     );
   }
 
@@ -63,11 +64,6 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.background,
     padding: theme.spacing.lg,
     gap: theme.spacing.md,
-  },
-  alignCenterContainer: {
-    flex: 1,
-    alignContent: "center",
-    justifyContent: "center",
   },
   footer: {
     paddingBottom: 20,

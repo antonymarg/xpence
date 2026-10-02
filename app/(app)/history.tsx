@@ -1,15 +1,18 @@
+import * as categoryApi from "@/api/categories.api";
 import * as expenseApi from "@/api/expenses.api";
 import DatePicker from "@/components/DatePicker";
+import ErrorScreen from "@/components/ErrorScreen";
 import CategoryPicker from "@/components/history/CategoryPicker";
 import DeleteExpenseyModal from "@/components/history/DeleteExpenseModal";
 import ExpenseList from "@/components/history/ExpenseList";
 import UpdateExpenseModal from "@/components/history/UpdateExpenseModal";
+import Loading from "@/components/Loading";
 import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
-import { useAuth } from "@/providers/AuthProvider";
+import { unwrap } from "@/lib/utils";
 import { CategoryType } from "@/types/categories.types";
 import { Expense } from "@/types/expenses.types";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
@@ -27,7 +30,10 @@ const getLastDayOfMonth = () => {
 };
 
 function HistoryPage() {
-  const { userCategories } = useAuth();
+  const { data: userCategories, isLoading: isUserCategoriesLoading } = useQuery({
+    queryKey: ["userCategories"],
+    queryFn: () => unwrap(categoryApi.getUserCategories()),
+  });
   const [selectedCategoryType, setSelectedCategoryType] = useState<
     CategoryType | "all"
   >("all");
@@ -58,6 +64,17 @@ function HistoryPage() {
     await queryClient.invalidateQueries({ queryKey: ["expenses"] });
     setExpenseToDelete(null);
   };
+
+  if (isUserCategoriesLoading) {
+    return (<Loading />)
+  }
+
+  if (!userCategories) {
+    const onRefresh = async () => {
+      await queryClient.refetchQueries({ queryKey: ["userCategories"] });
+    }
+    return <ErrorScreen onRefresh={onRefresh} />
+  }
 
   return (
     <View style={styles.pageContainer}>

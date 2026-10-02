@@ -1,12 +1,12 @@
 import TabBar from "@/components/TabBar";
 import { useAuth } from "@/providers/AuthProvider";
-import { Stack } from "expo-router";
+import { Redirect, Stack } from "expo-router";
 import React from "react";
 import { ActivityIndicator, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AppLayout() {
-  const { isLoading } = useAuth();
+  const { isLoading, isAuthenticated } = useAuth();
 
   if (isLoading) {
     return (
@@ -14,6 +14,10 @@ export default function AppLayout() {
         <ActivityIndicator size="large" />
       </SafeAreaView>
     );
+  }
+
+  if (!isAuthenticated) {
+    return <Redirect href="/(auth)/login" />;
   }
 
   return (

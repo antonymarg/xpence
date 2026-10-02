@@ -24,6 +24,7 @@ function ErrorScreen({ onRefresh }: ErrorScreenProps) {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: theme.colors.background,
     flex: 1,
     justifyContent: "center",
     alignItems: "center",

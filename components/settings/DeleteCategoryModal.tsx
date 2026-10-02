@@ -1,7 +1,7 @@
 import { theme } from "@/constants/theme";
 import { Category } from "@/types/categories.types";
 import React from "react";
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import Button from "../Button";
 import Icon from "../Icon";
 import Modal from "../Modal";
@@ -22,7 +22,7 @@ function DeleteCategoryModal({
 
   return (
     <Modal visible={Boolean(category)} onClose={onClose}>
-      <View>
+      <View style={styles.iconWrapper}>
         <Icon
           name="warning"
           color={theme.colors.error}
@@ -54,5 +54,11 @@ function DeleteCategoryModal({
     </Modal>
   );
 }
+
+const styles = StyleSheet.create({
+  iconWrapper: {
+    alignItems: "center",
+  },
+})
 
 export default DeleteCategoryModal;

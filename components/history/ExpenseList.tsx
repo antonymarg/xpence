@@ -6,6 +6,7 @@ import { Expense } from "@/types/expenses.types";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import React from "react";
 import { ActivityIndicator, SectionList, StyleSheet, View } from "react-native";
+import Loading from "../Loading";
 import Text from "../Text";
 import SwipeableExpenseCard from "./SwipeableExpenseCard";
 
@@ -95,13 +96,7 @@ function ExpenseList({
     },
   });
 
-  if (isLoading) {
-    return (
-      <View>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
+  if (isLoading) return (<Loading />);
 
   const allExpenses = data?.pages.flat() ?? [];
 

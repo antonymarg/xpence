@@ -1,24 +1,27 @@
+import * as categoriesApi from "@/api/categories.api";
 import * as expenseApi from "@/api/expenses.api";
 import CategoryPicker from "@/components/CategoryPicker";
 import DatePicker from "@/components/DatePicker";
+import ErrorScreen from "@/components/ErrorScreen";
+import Loading from "@/components/Loading";
 import Pressable from "@/components/Pressable";
 import Text from "@/components/Text";
 import TextInput from "@/components/TextInput";
 import { theme } from "@/constants/theme";
+import { unwrap } from "@/lib/utils";
 import { useAuth } from "@/providers/AuthProvider";
 import { Ionicons } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
-  ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   StyleSheet,
-  View,
+  View
 } from "react-native";
 import Toast from "react-native-toast-message";
 import { z } from "zod";
@@ -31,8 +34,12 @@ const schema = z.object({
 });
 
 function AddRecordPage() {
-  const { profile, userCategories } = useAuth();
+  const { profile } = useAuth();
   const queryClient = useQueryClient();
+  const { data: userCategories, isLoading: isUserCategoriesLoading } = useQuery({
+    queryKey: ["userCategories"],
+    queryFn: () => unwrap(categoriesApi.getUserCategories()),
+  });
 
   const {
     control,
@@ -62,7 +69,7 @@ function AddRecordPage() {
         visibilityTime: 5000,
         autoHide: true,
       });
-      queryClient.invalidateQueries({ queryKey: ["expenseSummary"] });
+      await queryClient.invalidateQueries({ queryKey: ["expenseSummary"] });
     } else {
       Toast.show({
         type: "error",
@@ -74,12 +81,21 @@ function AddRecordPage() {
     reset();
   };
 
-  if (!profile || userCategories.length === 0)
+  if (isUserCategoriesLoading) {
     return (
-      <View style={styles.formContainer}>
-        <ActivityIndicator size="large" />
-      </View>
+      <Loading />
     );
+  }
+
+  if (!profile || !userCategories) {
+    const onRefresh = async () => {
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+    }
+    return (
+      <ErrorScreen onRefresh={onRefresh} />
+    );
+  }
 
   return (
     <KeyboardAvoidingView

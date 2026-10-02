@@ -1,17 +1,14 @@
+import Loading from "@/components/Loading";
 import { useAuth } from "@/providers/AuthProvider";
 import { Redirect } from "expo-router";
 import React from "react";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
 
 export default function RootIndex() {
   const { isLoading, isAuthenticated } = useAuth();
 
+  console.log("RootIndex: isLoading", isLoading, "isAuthenticated", isAuthenticated);
   if (isLoading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
+    return (<Loading />);
   }
 
   if (isAuthenticated) {
@@ -21,10 +18,3 @@ export default function RootIndex() {
   return <Redirect href="/(auth)/login" />;
 }
 
-const styles = StyleSheet.create({
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});

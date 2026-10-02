@@ -4,12 +4,13 @@ import CategoryCard from "@/components/home/CategoryCard";
 import Header from "@/components/home/Header";
 import OverviewCard from "@/components/home/OverviewCard";
 import SmartInsightCard from "@/components/home/SmartInsightCard";
+import Loading from "@/components/Loading";
 import { theme } from "@/constants/theme";
 import { unwrap } from "@/lib/utils";
 import { useAuth } from "@/providers/AuthProvider";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
-import { ActivityIndicator, ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 
 function HomePage() {
   const { profile, isLoading: isProfileLoading } = useAuth();
@@ -19,23 +20,14 @@ function HomePage() {
     queryFn: () => unwrap(expenseApi.getSummaryOfExpenses()),
   });
 
-  if (isProfileLoading || isExpenseLoading)
-    return (
-      <View style={[styles.pageContainer, styles.alignCenterContainer]}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
+  if (isProfileLoading || isExpenseLoading) return (<Loading />)
 
   if (!profile || !expenseSummary) {
     const onRefresh = async () => {
       await queryClient.refetchQueries({ queryKey: ["profile"] });
       await queryClient.refetchQueries({ queryKey: ["expenseSummary"] });
     };
-    return (
-      <View style={[styles.pageContainer, styles.alignCenterContainer]}>
-        <ErrorScreen onRefresh={onRefresh} />
-      </View>
-    );
+    return <ErrorScreen onRefresh={onRefresh} />
   }
 
   const sum =
@@ -73,13 +65,7 @@ const styles = StyleSheet.create({
   pageContainer: {
     flex: 1,
     backgroundColor: theme.colors.background,
-  },
-  alignCenterContainer: {
-    flex: 1,
-    alignContent: "center",
-    justifyContent: "center",
-  },
-  mainContent: {
+  }, mainContent: {
     paddingVertical: theme.spacing.md,
     paddingHorizontal: theme.spacing.lg,
     gap: theme.spacing.md,
