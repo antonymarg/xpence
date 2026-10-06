@@ -12,7 +12,6 @@ function Header({ profile }: HeaderProps) {
   return (
     <View style={styles.container}>
       <Image style={styles.avatar} source={{ uri: "https://i.pinimg.com/474x/55/01/40/550140140f6c9efa2cce59e986bc67c5.jpg" }} />
-
       <View>
         <Text size="xs" heading>
           Welcome back
@@ -31,17 +30,11 @@ const styles = StyleSheet.create({
     paddingTop: theme.spacing.md,
     alignItems: "center",
   },
-  avatarContainer: {
+  avatar: {
     width: 36,
     height: 36,
-    borderRadius: 18,
-    backgroundColor: theme.colors.primaryRedBg,
-  },
-  avatar: {
-    width: 32,
-    height: 32,
-    borderWidth: 3,
-    borderColor: theme.colors.primaryRedBg,
+    borderWidth: 2,
+    borderColor: theme.colors.primaryOrange,
     borderRadius: 18,
   },
 });
