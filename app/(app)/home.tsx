@@ -72,9 +72,9 @@ const styles = StyleSheet.create({
   pageContainer: {
     flex: 1,
     backgroundColor: theme.colors.background,
-  }, mainContent: {
-    paddingVertical: theme.spacing.md,
-    paddingHorizontal: theme.spacing.lg,
+  },
+  mainContent: {
+    padding: theme.spacing.md,
     gap: theme.spacing.md,
     flexGrow: 1,
   },

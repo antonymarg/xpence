@@ -42,10 +42,9 @@ function TabBar() {
         <Button
           onPress={() => navigateTo("addRecord")}
           background="gradient"
-          round
           style={styles.addRecordButton}
         >
-          <Ionicons name="add" size={36} color="rgba(255,255,255,0.95)" />
+          <Ionicons name="add" size={32} color="rgba(255,255,255,0.95)" />
         </Button>
       </View>
       <Pressable onPress={() => navigateTo("insights")}>
@@ -72,7 +71,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: theme.colors.card,
     width: "100%",
-    paddingBottom: theme.spacing.md,
+    paddingBottom: theme.spacing.sm,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -82,13 +81,12 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing.sm,
   },
   addRecordContainer: {
-    paddingHorizontal: theme.spacing.sm,
-    marginTop: -1 * theme.spacing.md,
+    padding: theme.spacing.sm,
   },
   addRecordButton: {
-    width: 72,
-    height: 72,
-    padding: 0,
+    width: 40,
+    height: 40,
+    padding: 0
   },
 });
 

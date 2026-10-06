@@ -2,7 +2,7 @@ import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
 import { Profile } from "@/types/users.types";
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 
 interface HeaderProps {
   profile: Profile;
@@ -11,7 +11,8 @@ interface HeaderProps {
 function Header({ profile }: HeaderProps) {
   return (
     <View style={styles.container}>
-      <View style={styles.avatar} />
+      <Image style={styles.avatar} source={{ uri: "https://i.pinimg.com/474x/55/01/40/550140140f6c9efa2cce59e986bc67c5.jpg" }} />
+
       <View>
         <Text size="xs" heading>
           Welcome back
@@ -30,11 +31,18 @@ const styles = StyleSheet.create({
     paddingTop: theme.spacing.md,
     alignItems: "center",
   },
-  avatar: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+  avatarContainer: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: theme.colors.primaryRedBg,
+  },
+  avatar: {
+    width: 32,
+    height: 32,
+    borderWidth: 3,
+    borderColor: theme.colors.primaryRedBg,
+    borderRadius: 18,
   },
 });
 

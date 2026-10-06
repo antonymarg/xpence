@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
   pageContainer: {
     flexGrow: 1,
     backgroundColor: theme.colors.background,
-    padding: theme.spacing.lg,
+    padding: theme.spacing.md,
     gap: theme.spacing.md,
   },
   footer: {

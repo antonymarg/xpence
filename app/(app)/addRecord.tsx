@@ -201,8 +201,7 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: theme.spacing.md,
     backgroundColor: theme.colors.background,
-    paddingVertical: theme.spacing.md,
-    paddingHorizontal: theme.spacing.lg,
+    padding: theme.spacing.md,
   },
   header: {
     flexDirection: "row",
