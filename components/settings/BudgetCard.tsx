@@ -3,7 +3,7 @@ import Button from "@/components/Button";
 import Card from "@/components/Card";
 import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
-import { useQueryClient } from "@tanstack/react-query";
+import useProfile from "@/hooks/useProfile";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
@@ -15,7 +15,7 @@ interface BudgetCardProps {
 
 function BudgetCard({ budget }: BudgetCardProps) {
   const [showModal, setShowModal] = useState(false);
-  const queryClient = useQueryClient();
+  const { invalidateProfile } = useProfile();
 
   const onBudgetUpdate = async (newBudget: number) => {
     const { success } = await updateUserBudget(newBudget);
@@ -26,7 +26,7 @@ function BudgetCard({ budget }: BudgetCardProps) {
         visibilityTime: 5000,
         autoHide: true,
       });
-      await queryClient.invalidateQueries({ queryKey: ["profile"] });
+      await invalidateProfile();
       setShowModal(false);
     }
   };
@@ -37,7 +37,7 @@ function BudgetCard({ budget }: BudgetCardProps) {
           Monthly budget
         </Text>
         <View style={styles.budgetText}>
-          <Text size="hero" weight="bold">
+          <Text size="title" weight="bold">
             €{(budget / 100).toFixed(2)}
           </Text>
           <Button

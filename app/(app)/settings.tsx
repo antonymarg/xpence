@@ -1,4 +1,3 @@
-import * as categoriesApi from "@/api/categories.api";
 import Button from "@/components/Button";
 import ErrorScreen from "@/components/ErrorScreen";
 import Icon from "@/components/Icon";
@@ -7,30 +6,44 @@ import BudgetCard from "@/components/settings/BudgetCard";
 import ManageCategories from "@/components/settings/ManageCategories";
 import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
+import useProfile from "@/hooks/useProfile";
+import useUserCategories from "@/hooks/useUserCategories";
 import { supabase } from "@/lib/supabase";
-import { unwrap } from "@/lib/utils";
-import { useAuth } from "@/providers/AuthProvider";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Redirect } from "expo-router";
 import React from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 function SettingsPage() {
-  const { profile, isLoading: isProfileLoading } = useAuth();
-  const queryClient = useQueryClient();
-  const signOut = () => supabase.auth.signOut();
+  const {
+    data: profile,
+    isLoading: isProfileLoading,
+    isSuccess: isProfileSuccess,
+    invalidateProfile
+  } = useProfile();
+  const {
+    data: userCategories,
+    isLoading: isUserCategoriesLoading,
+    isSuccess: isUserCategoriesSuccess,
+    invalidateUserCategories
+  } = useUserCategories();
 
-  const { data: userCategories, isLoading: isUserCategoriesLoading } = useQuery({
-    queryKey: ["categories"],
-    queryFn: () => unwrap(categoriesApi.getUserCategories())
-  });
+  const signOut = async () => {
+    await supabase.auth.signOut();
+  };
 
   if (isProfileLoading || isUserCategoriesLoading) return <Loading />
 
-  if (!profile || !userCategories) {
+  if (!isProfileSuccess || !isUserCategoriesSuccess) {
+    const onRefresh = async () => {
+      await invalidateProfile()
+      await invalidateUserCategories();
+    }
     return (
-      <ErrorScreen onRefresh={queryClient.refetchQueries} />
+      <ErrorScreen onRefresh={onRefresh} />
     );
   }
+
+  if (!profile) return <Redirect href="/(auth)/login" />
 
   return (
     <ScrollView contentContainerStyle={styles.pageContainer}>

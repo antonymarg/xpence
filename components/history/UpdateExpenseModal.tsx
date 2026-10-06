@@ -1,9 +1,7 @@
-import * as categoriesApi from "@/api/categories.api";
 import { theme } from "@/constants/theme";
-import { unwrap } from "@/lib/utils";
+import useUserCategories from "@/hooks/useUserCategories";
 import { Expense } from "@/types/expenses.types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { StyleSheet, View } from "react-native";
@@ -33,10 +31,8 @@ function UpdateExpenseModal({
   onClose,
   onConfirm,
 }: UpdateExpenseModalProps) {
-  const { data: userCategories } = useQuery({
-    queryKey: ["userCategories"],
-    queryFn: () => unwrap(categoriesApi.getUserCategories()),
-  });
+  const { data: userCategories, isSuccess: isUserCategoriesSuccess } = useUserCategories();
+
 
   const {
     control,
@@ -53,7 +49,7 @@ function UpdateExpenseModal({
     },
   });
 
-  if (!expense || !userCategories) return null;
+  if (!expense || !isUserCategoriesSuccess) return null;
 
   const handleSave = async (data: z.infer<typeof schema>) => {
     onConfirm({ id: expense?.id, ...data });

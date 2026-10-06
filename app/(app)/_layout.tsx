@@ -1,14 +1,14 @@
 import TabBar from "@/components/TabBar";
-import { useAuth } from "@/providers/AuthProvider";
+import useProfile from "@/hooks/useProfile";
 import { Redirect, Stack } from "expo-router";
 import React from "react";
 import { ActivityIndicator, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AppLayout() {
-  const { isLoading, isAuthenticated } = useAuth();
+  const { data: profile, isLoading: isProfileLoading } = useProfile();
 
-  if (isLoading) {
+  if (isProfileLoading) {
     return (
       <SafeAreaView style={styles.loadingContainer}>
         <ActivityIndicator size="large" />
@@ -16,7 +16,7 @@ export default function AppLayout() {
     );
   }
 
-  if (!isAuthenticated) {
+  if (!profile) {
     return <Redirect href="/(auth)/login" />;
   }
 

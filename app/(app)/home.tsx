@@ -1,4 +1,3 @@
-import * as expenseApi from "@/api/expenses.api";
 import ErrorScreen from "@/components/ErrorScreen";
 import CategoryCard from "@/components/home/CategoryCard";
 import Header from "@/components/home/Header";
@@ -6,29 +5,37 @@ import OverviewCard from "@/components/home/OverviewCard";
 import SmartInsightCard from "@/components/home/SmartInsightCard";
 import Loading from "@/components/Loading";
 import { theme } from "@/constants/theme";
-import { unwrap } from "@/lib/utils";
-import { useAuth } from "@/providers/AuthProvider";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import useExpenseSummary from "@/hooks/useExpenseSummary";
+import useProfile from "@/hooks/useProfile";
+import { Redirect } from "expo-router";
 import React from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 function HomePage() {
-  const { profile, isLoading: isProfileLoading } = useAuth();
-  const queryClient = useQueryClient();
-  const { data: expenseSummary, isLoading: isExpenseLoading } = useQuery({
-    queryKey: ["expenses", "summary"],
-    queryFn: () => unwrap(expenseApi.getSummaryOfExpenses()),
-  });
+  const {
+    data: profile,
+    isLoading: isProfileLoading,
+    isSuccess: isProfileSuccess,
+    invalidateProfile
+  } = useProfile()
 
+  const {
+    data: expenseSummary,
+    isLoading: isExpenseLoading,
+    isSuccess: isExpenseSuccess,
+    invalidateExpenseSummary
+  } = useExpenseSummary();
   if (isProfileLoading || isExpenseLoading) return (<Loading />)
 
-  if (!profile || !expenseSummary) {
+  if (!isProfileSuccess || !isExpenseSuccess) {
     const onRefresh = async () => {
-      await queryClient.refetchQueries({ queryKey: ["profile"] });
-      await queryClient.refetchQueries({ queryKey: ["expenseSummary"] });
+      await invalidateProfile()
+      await invalidateExpenseSummary();
     };
     return <ErrorScreen onRefresh={onRefresh} />
   }
+
+  if (!profile) return <Redirect href="/(auth)/login" />
 
   const sum =
     expenseSummary.needs + expenseSummary.wants + expenseSummary.savings;

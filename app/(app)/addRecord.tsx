@@ -1,4 +1,3 @@
-import * as categoriesApi from "@/api/categories.api";
 import * as expenseApi from "@/api/expenses.api";
 import CategoryPicker from "@/components/CategoryPicker";
 import DatePicker from "@/components/DatePicker";
@@ -8,11 +7,11 @@ import Pressable from "@/components/Pressable";
 import Text from "@/components/Text";
 import TextInput from "@/components/TextInput";
 import { theme } from "@/constants/theme";
-import { unwrap } from "@/lib/utils";
-import { useAuth } from "@/providers/AuthProvider";
+import useExpenseSummary from "@/hooks/useExpenseSummary";
+import useProfile from "@/hooks/useProfile";
+import useUserCategories from "@/hooks/useUserCategories";
 import { Ionicons } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -34,12 +33,18 @@ const schema = z.object({
 });
 
 function AddRecordPage() {
-  const { profile } = useAuth();
-  const queryClient = useQueryClient();
-  const { data: userCategories, isLoading: isUserCategoriesLoading } = useQuery({
-    queryKey: ["userCategories"],
-    queryFn: () => unwrap(categoriesApi.getUserCategories()),
-  });
+  const {
+    isLoading: isProfileLoading,
+    isSuccess: isProfileSuccess,
+    invalidateProfile
+  } = useProfile();
+  const {
+    data: userCategories,
+    isLoading: isUserCategoriesLoading,
+    isSuccess: isUserCategoriesSuccess,
+    invalidateUserCategories
+  } = useUserCategories();
+  const { invalidateExpenseSummary } = useExpenseSummary();
 
   const {
     control,
@@ -69,7 +74,7 @@ function AddRecordPage() {
         visibilityTime: 5000,
         autoHide: true,
       });
-      await queryClient.invalidateQueries({ queryKey: ["expenseSummary"] });
+      await invalidateExpenseSummary();
     } else {
       Toast.show({
         type: "error",
@@ -81,16 +86,16 @@ function AddRecordPage() {
     reset();
   };
 
-  if (isUserCategoriesLoading) {
+  if (isProfileLoading || isUserCategoriesLoading) {
     return (
       <Loading />
     );
   }
 
-  if (!profile || !userCategories) {
+  if (!isProfileSuccess || !isUserCategoriesSuccess) {
     const onRefresh = async () => {
-      queryClient.invalidateQueries({ queryKey: ["profile"] });
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
+      await invalidateProfile()
+      await invalidateUserCategories();
     }
     return (
       <ErrorScreen onRefresh={onRefresh} />

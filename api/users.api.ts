@@ -5,7 +5,9 @@ import { Profile } from "@/types/users.types";
 
 async function getUserId(): Promise<string> {
   const { data, error } = await supabase.auth.getSession();
-  if (error) throw error;
+  if (error) {
+    await supabase.auth.signOut();
+  }
   if (!data.session) throw new Error("No session found");
   return data.session.user.id;
 }

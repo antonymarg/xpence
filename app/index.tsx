@@ -1,17 +1,16 @@
 import Loading from "@/components/Loading";
-import { useAuth } from "@/providers/AuthProvider";
+import useProfile from "@/hooks/useProfile";
 import { Redirect } from "expo-router";
 import React from "react";
 
 export default function RootIndex() {
-  const { isLoading, isAuthenticated } = useAuth();
+  const { data: profile, isLoading: isProfileLoading } = useProfile();
 
-  console.log("RootIndex: isLoading", isLoading, "isAuthenticated", isAuthenticated);
-  if (isLoading) {
+  if (isProfileLoading) {
     return (<Loading />);
   }
 
-  if (isAuthenticated) {
+  if (profile) {
     return <Redirect href="/(app)/home" />;
   }
 

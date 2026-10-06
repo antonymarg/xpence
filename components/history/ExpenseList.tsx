@@ -1,16 +1,12 @@
-import * as expenseApi from "@/api/expenses.api";
 import { theme } from "@/constants/theme";
-import { unwrap } from "@/lib/utils";
+import useExpenses, { type ListItem } from "@/hooks/useExpenses";
 import { Category, CategoryType } from "@/types/categories.types";
 import { Expense } from "@/types/expenses.types";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import React from "react";
-import { ActivityIndicator, SectionList, StyleSheet, View } from "react-native";
+import React, { useCallback } from "react";
+import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
 import Loading from "../Loading";
 import Text from "../Text";
 import SwipeableExpenseCard from "./SwipeableExpenseCard";
-
-const PAGE_SIZE = 20;
 
 interface ExpenseListProps {
   selectedCategoryType: CategoryType | "all";
@@ -22,38 +18,7 @@ interface ExpenseListProps {
   onDeleteExpensePress: (expense: Expense) => void;
 }
 
-function formatSectionDate(date: Date): string {
-  const today = new Date();
-  const yesterday = new Date();
-  yesterday.setDate(today.getDate() - 1);
-
-  const isSameDay = (a: Date, b: Date) =>
-    a.getFullYear() === b.getFullYear() &&
-    a.getMonth() === b.getMonth() &&
-    a.getDate() === b.getDate();
-
-  const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
-  const formatted = `${months[date.getMonth()]} ${date.getDate()}`;
-
-  if (isSameDay(date, today)) return `Today, ${formatted}`;
-  if (isSameDay(date, yesterday)) return `Yesterday, ${formatted}`;
-  return formatted;
-}
-
-function ExpenseList({
+export default function ExpenseList({
   selectedCategoryType,
   selectedCategory,
   availableCategories,
@@ -63,100 +28,67 @@ function ExpenseList({
   onDeleteExpensePress,
 }: ExpenseListProps) {
   const {
-    data,
+    data: items = [],
     isLoading,
     refetch,
     fetchNextPage,
     hasNextPage,
-    isFetchingNextPage,
-  } = useInfiniteQuery({
-    queryKey: [
-      "expenses",
-      "history",
-      selectedCategoryType,
-      selectedCategory,
-      fromDate.toDateString(),
-      toDate.toDateString(),
-    ],
-    queryFn: ({ pageParam }) =>
-      unwrap(
-        expenseApi.getExpenses({
-          offSet: pageParam,
-          categoryType:
-            selectedCategoryType === "all" ? undefined : selectedCategoryType,
-          categoryId: selectedCategory,
-          fromDate,
-          toDate,
-        }),
-      ),
-    initialPageParam: 0,
-    getNextPageParam: (lastPage, _allPages, lastPageParam) => {
-      if (lastPage.length < PAGE_SIZE) return undefined;
-      return lastPageParam + PAGE_SIZE;
-    },
+    isFetchingNextPage
+  } = useExpenses({
+    selectedCategoryType,
+    selectedCategory,
+    fromDate,
+    toDate,
   });
 
-  if (isLoading) return (<Loading />);
-
-  const allExpenses = data?.pages.flat() ?? [];
-
-  if (allExpenses.length === 0) {
-    return (
-      <View>
-        <Text>No expenses found</Text>
-      </View>
-    );
-  }
-
-  const grouped = allExpenses.reduce<Record<string, typeof allExpenses>>(
-    (acc, expense) => {
-      const key = formatSectionDate(expense.date);
-      if (!acc[key]) acc[key] = [];
-      acc[key].push(expense);
-      return acc;
-    },
-    {},
-  );
-  const groupedExpenses = Object.entries(grouped).map(([title, expenses]) => ({
-    title,
-    data: expenses,
-  }));
-
-  return (
-    <SectionList
-      style={style.list}
-      contentContainerStyle={style.listContent}
-      sections={groupedExpenses}
-      keyExtractor={(item) => item.id}
-      initialNumToRender={21}
-      refreshing={isLoading}
-      onRefresh={refetch}
-      onEndReached={() => {
-        if (hasNextPage && !isFetchingNextPage) fetchNextPage();
-      }}
-      onEndReachedThreshold={0.5}
-      renderItem={({ item }) => {
-        const category = availableCategories.find(
-          (cat) => cat.id === item.categoryId,
-        );
-        if (!category) return null;
+  const renderItem = useCallback(
+    ({ item }: { item: ListItem }) => {
+      if (item.type === "header") {
         return (
+          <Text heading weight="bold" style={style.dateHeader}>
+            {item.title}
+          </Text>
+        );
+      }
+
+      const category = availableCategories.find((cat) => cat.id === item.data.categoryId);
+      if (!category) return null;
+
+      return (
+        <View style={style.cardWrapper}>
           <SwipeableExpenseCard
-            expense={item}
+            expense={item.data}
             categoryName={category.name}
             categoryType={category.type}
             onEdit={onEditExpensePress}
             onDelete={onDeleteExpensePress}
           />
-        );
+        </View>
+      );
+    },
+    [availableCategories, onEditExpensePress, onDeleteExpensePress]
+  );
+
+  if (isLoading) return <Loading />;
+
+  return (
+    <FlatList
+      style={style.list}
+      contentContainerStyle={style.listContent}
+      data={items}
+      keyExtractor={(item) => item.id}
+      renderItem={renderItem}
+      refreshing={isLoading}
+      onRefresh={refetch}
+      onEndReached={() => {
+        if (hasNextPage && !isFetchingNextPage) fetchNextPage();
       }}
-      renderSectionHeader={({ section }) => (
-        <Text heading weight="bold" style={style.dateHeader}>
-          {section.title}
-        </Text>
-      )}
-      ListFooterComponent={
-        isFetchingNextPage ? <ActivityIndicator size="small" /> : null
+      onEndReachedThreshold={0.3}
+      ListFooterComponent={isFetchingNextPage ? <ActivityIndicator size="small" /> : null}
+      ListEmptyComponent={
+        <View style={style.empty}>
+          <Text>No expenses found</Text>
+        </View>
       }
     />
   );
@@ -167,11 +99,16 @@ const style = StyleSheet.create({
     flex: 1,
   },
   listContent: {
-    gap: theme.spacing.sm,
+    gap: theme.spacing.md,
   },
   dateHeader: {
     paddingVertical: theme.spacing.md,
   },
+  cardWrapper: {
+    marginBottom: theme.spacing.sm
+  },
+  empty: {
+    padding: theme.spacing.xl,
+    alignItems: "center"
+  },
 });
-
-export default ExpenseList;

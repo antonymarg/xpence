@@ -1,4 +1,3 @@
-import * as categoryApi from "@/api/categories.api";
 import * as expenseApi from "@/api/expenses.api";
 import DatePicker from "@/components/DatePicker";
 import ErrorScreen from "@/components/ErrorScreen";
@@ -9,10 +8,10 @@ import UpdateExpenseModal from "@/components/history/UpdateExpenseModal";
 import Loading from "@/components/Loading";
 import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
-import { unwrap } from "@/lib/utils";
+import useExpenses from "@/hooks/useExpenses";
+import useUserCategories from "@/hooks/useUserCategories";
 import { CategoryType } from "@/types/categories.types";
 import { Expense } from "@/types/expenses.types";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
@@ -30,10 +29,6 @@ const getLastDayOfMonth = () => {
 };
 
 function HistoryPage() {
-  const { data: userCategories, isLoading: isUserCategoriesLoading } = useQuery({
-    queryKey: ["userCategories"],
-    queryFn: () => unwrap(categoryApi.getUserCategories()),
-  });
   const [selectedCategoryType, setSelectedCategoryType] = useState<
     CategoryType | "all"
   >("all");
@@ -42,7 +37,21 @@ function HistoryPage() {
   const [toDate, setToDate] = useState<Date>(getLastDayOfMonth());
   const [expenseToEdit, setExpenseToEdit] = useState<Expense | null>(null);
   const [expenseToDelete, setExpenseToDelete] = useState<Expense | null>(null);
-  const queryClient = useQueryClient();
+
+  const {
+    data: userCategories,
+    isLoading: isUserCategoriesLoading,
+    isSuccess: isUserCategoriesSuccess,
+    invalidateUserCategories
+  } = useUserCategories();
+
+  const { isLoading: isExpensesLoading, isSuccess: isExpensesSuccess, invalidateExpenses } = useExpenses({
+    selectedCategoryType,
+    selectedCategory,
+    fromDate,
+    toDate
+  })
+
 
   const onSelectCategoryType = (type: CategoryType | "all") => {
     setSelectedCategoryType(type);
@@ -55,13 +64,13 @@ function HistoryPage() {
 
   const updateExpense = async (expense: Expense) => {
     await expenseApi.updateExpense(expense);
-    await queryClient.invalidateQueries({ queryKey: ["expenses"] });
+    await invalidateExpenses();
     setExpenseToEdit(null);
   };
 
   const deleteExpense = async (id: string) => {
     await expenseApi.deleteExpense(id);
-    await queryClient.invalidateQueries({ queryKey: ["expenses"] });
+    await invalidateExpenses();
     setExpenseToDelete(null);
   };
 
@@ -69,11 +78,8 @@ function HistoryPage() {
     return (<Loading />)
   }
 
-  if (!userCategories) {
-    const onRefresh = async () => {
-      await queryClient.refetchQueries({ queryKey: ["userCategories"] });
-    }
-    return <ErrorScreen onRefresh={onRefresh} />
+  if (!isUserCategoriesSuccess || (!isExpensesSuccess && !isExpensesLoading)) {
+    return <ErrorScreen onRefresh={invalidateUserCategories} />
   }
 
   return (

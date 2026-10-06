@@ -58,7 +58,7 @@ export default function Login() {
     }
   };
 
-  const onGooglePress = () => {};
+  const onGooglePress = () => { };
 
   return (
     <AuthWrapper>

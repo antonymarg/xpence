@@ -6,8 +6,8 @@ import CategoryEditor from "@/components/settings/CategoryEditor";
 import DeleteCategoryModal from "@/components/settings/DeleteCategoryModal";
 import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
+import useUserCategories from "@/hooks/useUserCategories";
 import { Category } from "@/types/categories.types";
-import { useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
@@ -17,8 +17,7 @@ interface ManageCategoriesProps {
 }
 
 function ManageCategories({ categories }: ManageCategoriesProps) {
-  const queryClient = useQueryClient();
-
+  const { invalidateUserCategories } = useUserCategories();
   const [deleteModalCategory, setDeleteModalCategory] =
     useState<Category | null>(null);
   const [isAddModalVisible, setIsAddModalVisible] = useState<boolean>(false);
@@ -26,7 +25,7 @@ function ManageCategories({ categories }: ManageCategoriesProps) {
   const onAddCategory = async ({ name, type }: Omit<Category, "id">) => {
     const { success } = await categoryApi.addUserCategory({ name, type });
     if (success) {
-      await queryClient.invalidateQueries({ queryKey: ["categories"] });
+      await invalidateUserCategories();
       onCloseAddModal();
       Toast.show({
         type: "success",
@@ -41,7 +40,7 @@ function ManageCategories({ categories }: ManageCategoriesProps) {
   const onDeleteCategory = async (categoryId: string) => {
     const { success } = await categoryApi.deleteUserCategory(categoryId);
     if (success) {
-      await queryClient.invalidateQueries({ queryKey: ["categories"] });
+      await invalidateUserCategories();
       onCloseDeleteModal();
       Toast.show({
         type: "success",
