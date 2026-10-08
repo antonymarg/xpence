@@ -1,5 +1,4 @@
 import Alert from "@/components/Alert";
-import AuthWrapper from "@/components/AuthWrapper";
 import Button from "@/components/Button";
 import DividerText from "@/components/DividerText";
 import Icon from "@/components/Icon";
@@ -61,7 +60,7 @@ export default function Login() {
   const onGooglePress = () => { };
 
   return (
-    <AuthWrapper>
+    <View style={styles.container}>
       {loginError && <Alert message={loginError} type="error" />}
       <KeyboardAvoidingView
         style={styles.inputContainer}
@@ -138,11 +137,16 @@ export default function Login() {
           </Text>
         </Link>
       </View>
-    </AuthWrapper>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: theme.spacing.lg,
+    backgroundColor: theme.colors.background
+  },
   inputContainer: {
     gap: theme.spacing.lg,
   },

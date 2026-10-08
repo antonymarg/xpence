@@ -73,15 +73,14 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingBottom: theme.spacing.sm,
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
     alignItems: "center",
   },
   icons: {
-    paddingHorizontal: theme.spacing.lg,
     paddingVertical: theme.spacing.sm,
   },
   addRecordContainer: {
-    padding: theme.spacing.sm,
+    paddingVertical: theme.spacing.sm
   },
   addRecordButton: {
     width: 40,

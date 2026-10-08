@@ -8,7 +8,7 @@ const InsightsLayout = () => {
     return <View style={styles.pageContainer}>
         <View>
             <Text size="title" weight="bold">
-                Insights
+                Monthly insights
             </Text>
             <Text size="lg">Analyse your spending</Text>
         </View>
@@ -18,13 +18,13 @@ const InsightsLayout = () => {
                 tabBarActiveTintColor: theme.colors.textLight,
                 tabBarInactiveTintColor: theme.colors.textLight,
                 tabBarItemStyle: {
-                    width: 'auto', // Lets each tab take its natural width
+                    width: 'auto',
                     paddingHorizontal: 16,
                 },
                 tabBarStyle: {
                     borderBottomWidth: 0,
-                    elevation: 0,         // Removes Android shadow
-                    shadowOpacity: 0,     // Removes iOS shadow
+                    elevation: 0,
+                    shadowOpacity: 0,
                     backgroundColor: theme.colors.background
                 },
                 tabBarIndicatorStyle: {

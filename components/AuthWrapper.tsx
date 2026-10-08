@@ -1,38 +1,20 @@
 import { theme } from "@/constants/theme";
-import { useRouter, useSegments } from "expo-router";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import AuthTab from "./AuthTab";
+import Logo from '../assets/logo/xpence-logo.svg';
 
 export default function AuthWrapper({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const segments = useSegments();
-  const router = useRouter();
-  const activeTab = segments[1];
-
-  const handleTabPress = (tab: "login" | "signup") => {
-    router.replace(`/(auth)/${tab}`);
-  };
-
   return (
     <SafeAreaView style={styles.pageContainer}>
+      <Logo height='10%' style={styles.logo} />
       <View style={styles.tabContainer}>
-        <AuthTab
-          text="Login"
-          isActive={activeTab === "login"}
-          onPress={() => handleTabPress("login")}
-        />
-        <AuthTab
-          text="Sign Up"
-          isActive={activeTab === "signup"}
-          onPress={() => handleTabPress("signup")}
-        />
+        {children}
       </View>
-      {children}
     </SafeAreaView>
   );
 }
@@ -45,8 +27,11 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing.xxl,
   },
   tabContainer: {
+    flex: 3,
     flexDirection: "row",
     gap: theme.spacing.md,
-    marginBottom: theme.spacing.xl,
   },
+  logo: {
+    padding: theme.spacing.md
+  }
 });

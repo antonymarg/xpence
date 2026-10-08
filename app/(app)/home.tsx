@@ -46,18 +46,21 @@ function HomePage() {
         <OverviewCard sum={sum} budget={profile.budget} />
         <CategoryCard
           category="needs"
+          amount={expenseSummary.wants}
           percentage={(expenseSummary.needs / profile.budget) * 100}
         />
         <View style={styles.categoriesRow}>
           <View style={styles.category}>
             <CategoryCard
               category="wants"
+              amount={expenseSummary.needs}
               percentage={(expenseSummary.wants / profile.budget) * 100}
             />
           </View>
           <View style={styles.category}>
             <CategoryCard
               category="savings"
+              amount={expenseSummary.savings}
               percentage={(expenseSummary.savings / profile.budget) * 100}
             />
           </View>

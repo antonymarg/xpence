@@ -1,5 +1,4 @@
 import Alert from "@/components/Alert";
-import AuthWrapper from "@/components/AuthWrapper";
 import Button from "@/components/Button";
 import Text from "@/components/Text";
 import TextInput from "@/components/TextInput";
@@ -14,6 +13,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
+  View,
 } from "react-native";
 import z from "zod";
 
@@ -78,7 +78,7 @@ export default function Signup() {
   };
 
   return (
-    <AuthWrapper>
+    <View style={styles.container}>
       {signupError && <Alert message={signupError} type="error" />}
       <KeyboardAvoidingView
         style={styles.inputContainer}
@@ -177,17 +177,23 @@ export default function Signup() {
           {loading ? (
             <ActivityIndicator size="small" color="#fff" />
           ) : (
-            <Text weight="bold" color="white">
+            <Text weight="bold" size='xl' color="white">
               Sign Up
             </Text>
           )}
         </Button>
       </KeyboardAvoidingView>
-    </AuthWrapper>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    height: "100%",
+    flex: 1,
+    paddingTop: theme.spacing.lg,
+    backgroundColor: theme.colors.background
+  },
   inputContainer: {
     gap: theme.spacing.lg,
   },

@@ -9,6 +9,7 @@ import ProgressBar from "../ProgressBar";
 
 interface CategoryCardProps {
   category: CategoryType;
+  amount: number
   percentage: number;
 }
 
@@ -23,7 +24,7 @@ const getIconForCategory = (category: CategoryType) => {
   }
 };
 
-function CategoryCard({ category, percentage }: CategoryCardProps) {
+function CategoryCard({ category, percentage, amount }: CategoryCardProps) {
   const [color, icon, categoryPercentage] = getIconForCategory(category);
   const styling = styles(category);
   return (
@@ -32,9 +33,14 @@ function CategoryCard({ category, percentage }: CategoryCardProps) {
         <View style={styling.iconWrapper}>
           <Ionicons name={icon} size={24} color={color} />
         </View>
-        <Text weight="bold" size="lg" style={styling.percentageText}>
-          {isNaN(percentage) ? "-" : percentage.toFixed(0) + "%"}
-        </Text>
+        <View style={styling.textContainer}>
+          <Text weight="bold" size="lg" style={styling.text}>
+            {isNaN(percentage) ? "-" : (amount / 100).toFixed(2) + '€'}
+          </Text>
+          <Text style={styling.text}>
+            {isNaN(percentage) ? "-" : percentage.toFixed(0) + "%"}
+          </Text>
+        </View>
       </View>
       <Text weight="bold" style={styling.labelText}>
         {category.toLocaleUpperCase()}
@@ -62,7 +68,10 @@ const styles = (category: CategoryType) =>
       padding: theme.spacing.sm,
       borderRadius: theme.borderRadius.sm,
     },
-    percentageText: {
+    textContainer: {
+      alignItems: 'flex-end'
+    },
+    text: {
       color: theme.colors[`${category}`],
     },
     labelText: {
