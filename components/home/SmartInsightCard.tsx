@@ -1,23 +1,33 @@
 import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
+import { formatPrice } from "@/lib/utils";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import Card from "../Card";
 
-interface SmartInsightProps {}
+interface SmartInsightProps {
+  remaining: number
+}
 
-function SmartInsightCard({}: SmartInsightProps) {
+const calculateDaysForEndOfMonth = () => {
+
+}
+
+
+function SmartInsightCard({ remaining }: SmartInsightProps) {
+  const today = new Date()
+  const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59, 999);
+  const remainingDays = endOfMonth.getDate() - today.getDate()
   return (
     <Card style={styles.container}>
       <View style={styles.iconWrapper}>
         <Ionicons name="bulb" size={24} color={theme.colors.primaryOrange} />
       </View>
       <View style={styles.textContainer}>
-        <Text weight="bold" size="lg">Smart insight</Text>
+        <Text weight="bold" size="lg">Tip: your daily allowance!</Text>
         <Text style={styles.mainText}>
-          Please spend less you dum dum! Please spend less you dum dum! Please
-          spend less you dum dum!
+          If you want to hit your goal by the end of the month, you can spend <Text weight="bold">{formatPrice(remaining / remainingDays)}</Text> every day!
         </Text>
       </View>
     </Card>

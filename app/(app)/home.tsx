@@ -37,8 +37,9 @@ function HomePage() {
 
   if (!profile) return <Redirect href="/(auth)/login" />
 
-  const sum =
-    expenseSummary.needs + expenseSummary.wants + expenseSummary.savings;
+  const sum = expenseSummary.needs + expenseSummary.wants + expenseSummary.savings;
+  const remaining = profile.budget - sum
+
   return (
     <View style={styles.pageContainer}>
       <Header profile={profile} />
@@ -47,25 +48,25 @@ function HomePage() {
         <CategoryCard
           category="needs"
           amount={expenseSummary.wants}
-          percentage={(expenseSummary.needs / profile.budget) * 100}
+          budget={profile.budget}
         />
         <View style={styles.categoriesRow}>
           <View style={styles.category}>
             <CategoryCard
               category="wants"
               amount={expenseSummary.needs}
-              percentage={(expenseSummary.wants / profile.budget) * 100}
+              budget={profile.budget}
             />
           </View>
           <View style={styles.category}>
             <CategoryCard
               category="savings"
               amount={expenseSummary.savings}
-              percentage={(expenseSummary.savings / profile.budget) * 100}
+              budget={profile.budget}
             />
           </View>
         </View>
-        <SmartInsightCard />
+        <SmartInsightCard remaining={remaining} />
       </ScrollView>
     </View>
   );

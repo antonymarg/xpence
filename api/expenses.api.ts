@@ -2,7 +2,8 @@ import { supabase } from "@/lib/supabase";
 import { toError } from "@/lib/utils";
 import { Result } from "@/types/api.types";
 import { CategoryType } from "@/types/categories.types";
-import { Expense, ExpensesSummary } from "@/types/expenses.types";
+import { Database } from "@/types/database.types";
+import { Expense, ExpensesSummary, MonthlyInsights } from "@/types/expenses.types";
 import { getUserId } from "./users.api";
 
 const OFFSET_GAP = 20;
@@ -14,6 +15,12 @@ type GetExpensesParam = {
   toDate?: Date;
   offSet?: number;
 };
+
+type GetInsightsParams = {
+  fromDate: Date;
+  toDate: Date;
+  categoryType?: CategoryType
+}
 
 async function addExpense(expense: Omit<Expense, "id">): Result<Expense> {
   try {
@@ -50,7 +57,22 @@ async function getSummaryOfExpenses(): Result<ExpensesSummary> {
     const { data, error } = await supabase
       .rpc('get_current_month_expenses_by_type')
     if (error) throw error;
-    return { success: true, data: data as ExpensesSummary };
+    return { success: true, data };
+  } catch (err) {
+    return { success: false, error: toError(err) };
+  }
+}
+
+async function getMonthlyInsights(params: GetInsightsParams): Result<MonthlyInsights> {
+  try {
+    const requestParams: Database['public']['Functions']['get_monthly_insights']['Args'] = {
+      p_from_date: params.fromDate.toISOString(),
+      p_to_date: params.toDate.toISOString(),
+      p_category_type: params.categoryType
+    }
+    const { data, error } = await supabase.rpc('get_monthly_insights', requestParams)
+    if (error) throw error;
+    return { success: true, data: data as MonthlyInsights };
   } catch (err) {
     return { success: false, error: toError(err) };
   }
@@ -138,8 +160,8 @@ async function deleteExpense(expenseId: string): Result<null> {
 export {
   addExpense,
   deleteExpense,
-  getExpenses,
-  getSummaryOfExpenses,
-  updateExpense
+  getExpenses, getMonthlyInsights, getSummaryOfExpenses,
+  updateExpense,
+  type GetInsightsParams
 };
 

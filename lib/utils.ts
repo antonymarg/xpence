@@ -13,4 +13,10 @@ const unwrap = async <T>(promise: Result<T>): Promise<T> => {
   return result.data;
 };
 
-export { toError, unwrap };
+const formatPrice = (price: number) => {
+  return `${(price / 100).toFixed(2)} €`
+}
+
+const capitaliseFirst = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
+export { capitaliseFirst, formatPrice, toError, unwrap };
+

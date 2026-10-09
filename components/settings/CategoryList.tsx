@@ -16,7 +16,7 @@ function CategoryList({ categories, onClickDelete }: CategoryListProps) {
   return (
     <View style={styles.categoriesList}>
       {categories.map((category) => (
-        <Card key={category.id} padding="sm" style={styles.categoryCard}>
+        <Card key={category.id} padding="md" style={styles.categoryCard}>
           <Text>{category.name}</Text>
           <Pressable onPress={() => onClickDelete(category)}>
             <Icon name="close" color={theme.colors.textSecondaryDark} />

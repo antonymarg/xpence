@@ -12,4 +12,13 @@ type Expense = {
 
 type ExpensesSummary = Record<CategoryType, number>;
 
-export type { DBExpense, Expense, ExpensesSummary };
+type MonthlyInsights = {
+  expenses: Array<{
+    amount: number
+    category: string
+    categoryType: CategoryType
+  }>
+  expenseSummary: ExpensesSummary
+}
+
+export type { DBExpense, Expense, ExpensesSummary, MonthlyInsights };
