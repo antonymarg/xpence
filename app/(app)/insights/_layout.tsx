@@ -5,7 +5,7 @@ import Pressable from "@/components/Pressable";
 import TopBarNavigation from "@/components/TabBarNavigation";
 import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
-import { useGlobalSearchParams, useRouter } from "expo-router";
+import { InsightsProvider, useInsightsContext } from "@/context/InsightContext";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
@@ -14,22 +14,26 @@ const MONTHS = [
     'July', 'August', 'September', 'October', 'November', 'December'
 ]
 
-const covertParamToDate = (dateStr?: string) => {
-    if (!dateStr) return new Date();
-    const date = new Date(dateStr);
-    return isNaN(date.getTime()) ? new Date() : date;
+const TABS = [
+    { name: 'index', title: 'Overall', path: '/insights' },
+    { name: 'needs', title: 'Needs', path: '/insights/needs' },
+    { name: 'wants', title: 'Wants', path: '/insights/wants' },
+    { name: 'savings', title: 'Savings', path: '/insights/savings' },
+];
+
+const InsightsRoot = () => {
+    return (
+        <InsightsProvider>
+            <InsightsLayout />
+        </InsightsProvider>
+    );
 };
 
 const InsightsLayout = () => {
     const [showPicker, setShowPicker] = useState(false);
-
-    const router = useRouter()
-    const { date } = useGlobalSearchParams<{ date: string }>()
-    const selectedMonth = covertParamToDate(date)
-
+    const { month, setMonth } = useInsightsContext()
     const updateMonth = (date: Date) => {
-        console.log(date)
-        router.setParams({ date: date.toISOString() })
+        setMonth(date)
         setShowPicker(false)
     }
 
@@ -44,14 +48,14 @@ const InsightsLayout = () => {
             <Card padding="sm" style={{ alignItems: 'center', width: '50%', alignSelf: 'center' }}>
                 <Pressable onPress={() => setShowPicker(true)} style={{ flexDirection: 'row' }}>
                     <Text size='lg' weight="bold">
-                        {MONTHS[selectedMonth.getMonth()]} {selectedMonth.getFullYear()}
+                        {MONTHS[month.getMonth()]} {month.getFullYear()}
                     </Text>
                     <Icon color={theme.colors.textDark} name="chevron-down-outline" />
                 </Pressable>
             </Card>
             {showPicker && <MonthPicker
                 onClose={() => setShowPicker(false)}
-                initialValue={selectedMonth}
+                initialValue={month}
                 updateValue={updateMonth}
             />}
         </View>
@@ -82,22 +86,7 @@ const InsightsLayout = () => {
                 }
             }}
         >
-            <TopBarNavigation.Screen
-                name="index"
-                options={{ title: 'Overall' }}
-            />
-            <TopBarNavigation.Screen
-                name="needs"
-                options={{ title: 'Needs' }}
-            />
-            <TopBarNavigation.Screen
-                name="wants"
-                options={{ title: 'Wants' }}
-            />
-            <TopBarNavigation.Screen
-                name="savings"
-                options={{ title: 'Savings' }}
-            />
+            {TABS.map(({ name, title }) => (<TopBarNavigation.Screen name={name} options={{ title }} />))}
         </TopBarNavigation>
     </>
 }
@@ -110,4 +99,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default InsightsLayout;
+export default InsightsRoot;

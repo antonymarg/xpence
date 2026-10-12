@@ -34,6 +34,10 @@ export default function Login() {
     handleSubmit,
   } = useForm({
     resolver: zodResolver(schema),
+    defaultValues: {
+      email: "",
+      password: ""
+    }
   });
   const [loading, setLoading] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);

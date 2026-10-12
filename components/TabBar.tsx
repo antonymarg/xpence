@@ -17,9 +17,7 @@ function TabBar() {
   const activeTab = segments[1] as TabType;
 
   const navigateTo = (page: TabType) => {
-    if (page === 'insights') router.setParams({ date: (new Date()).toISOString().split('T')[0] })
     router.push(`/(app)/${page}`);
-
   };
 
   return (

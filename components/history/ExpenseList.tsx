@@ -35,7 +35,7 @@ const transformData = (data: InfiniteData<Expense[]>) => {
   for (let i = 0; i < expenses.length; i++) {
     const expense = expenses[i];
     const headerTitle = formatSectionDate(expense.date);
-    console.log('header', headerTitle, lastHeader)
+
     if (headerTitle !== lastHeader) {
       lastHeader = headerTitle;
       items.push({

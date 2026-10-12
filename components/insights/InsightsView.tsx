@@ -1,9 +1,9 @@
 import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
+import { useInsightsContext } from "@/context/InsightContext";
 import useMonthlyInsights from "@/hooks/useMonthlyInsights";
 import useProfile from "@/hooks/useProfile";
 import { CategoryType } from "@/types/categories.types";
-import { useGlobalSearchParams } from "expo-router";
 import React from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import ErrorScreen from "../ErrorScreen";
@@ -30,7 +30,7 @@ const BUDGET_PERCENT_PER_CATEGORY_TYPE = {
 
 
 function InsightsView({ categoryType }: InsightsViewProps) {
-    const { date } = useGlobalSearchParams<{ date: string }>()
+    const { month } = useInsightsContext()
     const {
         data: profile,
         isLoading: isLoadingProfile,
@@ -44,7 +44,7 @@ function InsightsView({ categoryType }: InsightsViewProps) {
         invalidateMonthlyInsights
     } = useMonthlyInsights({
         categoryType,
-        month: convertDateStrToDate(date)
+        month
     })
 
     if (isLoadingMonthlyInsights || isLoadingProfile) return <Loading />

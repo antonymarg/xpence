@@ -22,6 +22,12 @@ type GetInsightsParams = {
   categoryType?: CategoryType
 }
 
+const toLocalISOString = (date: Date) => {
+  const offset = date.getTimezoneOffset();
+  const localDate = new Date(date.getTime() - (offset * 60 * 1000));
+  return localDate.toISOString().split('T')[0]
+};
+
 async function addExpense(expense: Omit<Expense, "id">): Result<Expense> {
   try {
     const userId = await getUserId();
@@ -66,8 +72,8 @@ async function getSummaryOfExpenses(): Result<ExpensesSummary> {
 async function getMonthlyInsights(params: GetInsightsParams): Result<MonthlyInsights> {
   try {
     const requestParams: Database['public']['Functions']['get_monthly_insights']['Args'] = {
-      p_from_date: params.fromDate.toISOString(),
-      p_to_date: params.toDate.toISOString(),
+      p_from_date: toLocalISOString(params.fromDate),
+      p_to_date: toLocalISOString(params.toDate),
       p_category_type: params.categoryType
     }
     const { data, error } = await supabase.rpc('get_monthly_insights', requestParams)

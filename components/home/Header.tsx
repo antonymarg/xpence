@@ -2,8 +2,8 @@ import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
 import { Profile } from "@/types/users.types";
 import React from "react";
-import { Image, StyleSheet, View } from "react-native";
-import Logo from '../../assets/logo/xpence-icon.svg';
+import { StyleSheet, View } from "react-native";
+import Logo from "../Logo";
 
 interface HeaderProps {
   profile: Profile;
@@ -12,15 +12,12 @@ interface HeaderProps {
 function Header({ profile }: HeaderProps) {
   return (
     <View style={styles.container}>
-      <Logo height={50} width={50} />
+      <Logo variant='short' height={50} width={50} />
       <View style={styles.welcomeContainer}>
-        <View>
-          <Text size="xs" heading>
-            Welcome back
-          </Text>
-          <Text weight="bold">Hey, {profile.displayName}</Text>
-        </View>
-        <Image style={styles.avatar} source={{ uri: "https://i.pinimg.com/474x/55/01/40/550140140f6c9efa2cce59e986bc67c5.jpg" }} />
+        <Text size="xs" heading>
+          Welcome back
+        </Text>
+        <Text weight="bold">Hey, {profile.displayName}</Text>
       </View>
     </View >
   );
@@ -35,9 +32,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   welcomeContainer: {
-    flexDirection: 'row',
-    gap: theme.spacing.md,
-    alignItems: 'center'
+    flexDirection: 'column',
   },
   avatar: {
     width: 50,

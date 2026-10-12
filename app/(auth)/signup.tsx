@@ -42,6 +42,13 @@ export default function Signup() {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(schema),
+    defaultValues: {
+      email: "",
+      password: "",
+      confirmPassword: "",
+      name: "",
+      budget: "",
+    }
   });
 
   const onSignupPress = async (formData: FormData) => {

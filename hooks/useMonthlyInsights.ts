@@ -2,6 +2,7 @@ import * as expenseApi from "@/api/expenses.api";
 import { unwrap } from "@/lib/utils";
 import { CategoryType } from "@/types/categories.types";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useIsFocused } from "expo-router";
 import { useMemo } from "react";
 
 interface UseMonthlyInsightsParams {
@@ -19,6 +20,7 @@ const getFirstAndLastDayOfMonth = (date: Date) => {
 };
 
 const useMonthlyInsights = ({ month, categoryType }: UseMonthlyInsightsParams) => {
+    const isFocused = useIsFocused()
     const queryClient = useQueryClient();
 
     const { requestParams, dateKeys } = useMemo(() => {
@@ -36,8 +38,8 @@ const useMonthlyInsights = ({ month, categoryType }: UseMonthlyInsightsParams) =
         return {
             requestParams: params,
             dateKeys: {
-                from: firstDay.toDateString(),
-                to: lastDay.toDateString(),
+                from: firstDay.toISOString(),
+                to: lastDay.toISOString(),
             },
         };
     }, [month, categoryType]);
@@ -52,7 +54,7 @@ const useMonthlyInsights = ({ month, categoryType }: UseMonthlyInsightsParams) =
         ],
         queryFn: () => unwrap(expenseApi.getMonthlyInsights(requestParams)),
         staleTime: 1000 * 60 * 5,
-        // enabled: isFocused
+        enabled: isFocused
     });
 
     const invalidateMonthlyInsights = async () => {

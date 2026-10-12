@@ -2,7 +2,7 @@ import { theme } from "@/constants/theme";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Logo from '../assets/logo/xpence-logo.svg';
+import Logo from "./Logo";
 
 export default function AuthWrapper({
   children,
@@ -11,7 +11,7 @@ export default function AuthWrapper({
 }) {
   return (
     <SafeAreaView style={styles.pageContainer}>
-      <Logo height='10%' style={styles.logo} />
+      <Logo variant="long" height='10%' style={styles.logo} />
       <View style={styles.tabContainer}>
         {children}
       </View>
