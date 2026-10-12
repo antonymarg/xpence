@@ -2,7 +2,7 @@ import * as expenseApi from "@/api/expenses.api";
 import { unwrap } from "@/lib/utils";
 import { CategoryType } from "@/types/categories.types";
 import { Expense } from "@/types/expenses.types";
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import { InfiniteData, useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 
 export type ListItem =
     | { type: "header"; id: string; title: string }
@@ -17,13 +17,9 @@ interface UseExpensesArgs {
     toDate: Date;
 }
 
-function formatSectionDate(date: Date): string {
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const formatted = `${months[date.getMonth()]} ${date.getDate()}`;
-    return formatted;
-}
+type SelectFn = (data: InfiniteData<Expense[]>) => ListItem[]
 
-const useExpenses = (args: UseExpensesArgs) => {
+const useExpenses = (args: UseExpensesArgs, select?: SelectFn) => {
     const queryClient = useQueryClient();
     const query = useInfiniteQuery({
         queryKey: [
@@ -50,36 +46,10 @@ const useExpenses = (args: UseExpensesArgs) => {
             if (lastPage.length < PAGE_SIZE) return undefined;
             return lastPageParam + PAGE_SIZE;
         },
-        select: (data) => {
-            const expenses = data.pages.flat();
-            if (!expenses.length) return [];
+        select
+    }
+    )
 
-            const items: ListItem[] = [];
-            let lastHeader = "";
-
-            for (let i = 0; i < expenses.length; i++) {
-                const expense = expenses[i];
-                const headerTitle = formatSectionDate(expense.date);
-
-                if (headerTitle !== lastHeader) {
-                    lastHeader = headerTitle;
-                    items.push({
-                        type: "header",
-                        id: `hdr-${headerTitle}`,
-                        title: headerTitle,
-                    });
-                }
-
-                items.push({
-                    type: "expense",
-                    id: expense.id,
-                    data: expense,
-                });
-            }
-
-            return items;
-        }
-    })
 
     const invalidateExpenses = async () => {
         await queryClient.invalidateQueries({ queryKey: ["expenses"] });

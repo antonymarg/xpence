@@ -2,6 +2,7 @@ import { theme } from "@/constants/theme";
 import useExpenses, { type ListItem } from "@/hooks/useExpenses";
 import { Category, CategoryType } from "@/types/categories.types";
 import { Expense } from "@/types/expenses.types";
+import { InfiniteData } from "@tanstack/react-query";
 import React, { useCallback } from "react";
 import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
 import Loading from "../Loading";
@@ -17,6 +18,43 @@ interface ExpenseListProps {
   onEditExpensePress: (expense: Expense) => void;
   onDeleteExpensePress: (expense: Expense) => void;
 }
+
+function formatSectionDate(date: Date): string {
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const formatted = `${months[date.getMonth()]} ${date.getDate()}`;
+  return formatted;
+}
+
+const transformData = (data: InfiniteData<Expense[]>) => {
+  const expenses = data.pages.flat();
+  if (!expenses.length) return [];
+
+  const items: ListItem[] = [];
+  let lastHeader = "";
+
+  for (let i = 0; i < expenses.length; i++) {
+    const expense = expenses[i];
+    const headerTitle = formatSectionDate(expense.date);
+    console.log('header', headerTitle, lastHeader)
+    if (headerTitle !== lastHeader) {
+      lastHeader = headerTitle;
+      items.push({
+        type: "header",
+        id: `hdr-${headerTitle}`,
+        title: headerTitle,
+      });
+    }
+
+    items.push({
+      type: "expense",
+      id: expense.id,
+      data: expense,
+    });
+  }
+
+  return items;
+}
+
 
 export default function ExpenseList({
   selectedCategoryType,
@@ -39,7 +77,7 @@ export default function ExpenseList({
     selectedCategory,
     fromDate,
     toDate,
-  });
+  }, transformData);
 
   const renderItem = useCallback(
     ({ item }: { item: ListItem }) => {
