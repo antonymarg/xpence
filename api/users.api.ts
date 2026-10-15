@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import { toError } from "@/lib/utils";
 import { Result } from "@/types/api.types";
-import { Profile } from "@/types/users.types";
+import { Currency, Locale, Profile } from "@/types/users.types";
 
 async function getUserId(): Promise<string> {
   const { data, error } = await supabase.auth.getSession();
@@ -28,6 +28,8 @@ async function getUserProfile(): Result<Profile | null> {
       userId: data.user_id,
       displayName: data.display_name,
       budget: data.budget,
+      currency: data.currency,
+      locale: data.locale
     };
     return { success: true, data: profile };
   } catch (err) {
@@ -40,7 +42,7 @@ async function updateUserBudget(budget: number) {
     const userId = await getUserId();
     const { error } = await supabase
       .from("user_profiles")
-      .update({ budget: budget * 100 })
+      .update({ budget })
       .eq("user_id", userId);
     if (error) throw error;
     return { success: true, data: null };
@@ -49,4 +51,32 @@ async function updateUserBudget(budget: number) {
   }
 }
 
-export { getUserId, getUserProfile, updateUserBudget };
+async function updateUserCurrency(currency: Currency) {
+  try {
+    const userId = await getUserId();
+    const { error } = await supabase
+      .from("user_profiles")
+      .update({ currency })
+      .eq("user_id", userId);
+    if (error) throw error;
+    return { success: true, data: null };
+  } catch (err) {
+    return { success: false, error: toError(err) };
+  }
+}
+
+async function updateUserLocale(locale: Locale) {
+  try {
+    const userId = await getUserId();
+    const { error } = await supabase
+      .from("user_profiles")
+      .update({ locale })
+      .eq("user_id", userId);
+    if (error) throw error;
+    return { success: true, data: null };
+  } catch (err) {
+    return { success: false, error: toError(err) };
+  }
+}
+
+export { getUserId, getUserProfile, updateUserBudget, updateUserCurrency, updateUserLocale };
