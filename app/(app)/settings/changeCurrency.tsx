@@ -8,6 +8,7 @@ import Text from "@/components/Text";
 import { currencies } from '@/constants/currency';
 import { theme } from "@/constants/theme";
 import useProfile from "@/hooks/useProfile";
+import { Currency } from '@/types/users.types';
 import { useNavigation } from "expo-router";
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
@@ -42,10 +43,10 @@ function ChangeCurrency() {
     };
     return <View style={styles.container}>
         <SettingsHeader label='Change currency' href="/(app)/settings" />
-        <Dropdown
+        <Dropdown<Currency>
             value={currency}
             onValueChange={setCurrency}
-            items={Object.entries(currencies).map((cur) => ({ label: `${cur[0]} (${cur[1]})`, value: cur[0] }))}
+            options={Object.entries(currencies).map(([code, symbol]) => ({ label: `${code} (${symbol})`, value: code as Currency }))}
         />
         <Button onPress={onCurrencyUpdate} block background="gradient">
             <Text weight="bold" color="white">

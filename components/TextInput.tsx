@@ -7,12 +7,16 @@ import {
   type TextInputProps as RNTextInputProps,
   StyleSheet,
   View,
+  ViewProps,
 } from "react-native";
+import Icon, { IconProps } from "./Icon";
 import Text from "./Text";
 
 interface ITextInputProps extends RNTextInputProps {
   label?: string;
   error?: string;
+  icon?: IconProps['name']
+  containerStyle?: ViewProps['style']
 }
 
 export default function TextInput({ label, error, ...props }: ITextInputProps) {
@@ -35,17 +39,20 @@ export default function TextInput({ label, error, ...props }: ITextInputProps) {
           {label}
         </Text>
       )}
-      <RNTextInput
-        style={[
-          styles.input,
-          isFocused && styles.inputFocused,
-          error && styles.inputError,
-          props.style,
-        ]}
-        {...props}
-        onFocus={onFocus}
-        onBlur={onBlur}
-      />
+      <View style={[
+        styles.input,
+        isFocused && styles.inputFocused,
+        error && styles.inputError,
+        props.containerStyle
+      ]}>
+        <RNTextInput
+          {...props}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          style={styles.textInput}
+        />
+        {props.icon && <Icon name={props.icon} style={styles.icon} />}
+      </View>
       {error && <Text style={styles.error}>{error}</Text>}
     </View>
   );
@@ -62,6 +69,8 @@ const styles = StyleSheet.create({
     marginTop: theme.spacing.xs,
   },
   input: {
+    flex: 1,
+    flexDirection: 'row',
     padding: theme.spacing.md,
     backgroundColor: theme.colors.card,
     borderRadius: theme.borderRadius.md,
@@ -74,4 +83,10 @@ const styles = StyleSheet.create({
   inputError: {
     borderColor: theme.colors.error,
   },
+  icon: {
+    marginLeft: 'auto'
+  },
+  textInput: {
+    flex: 1
+  }
 });

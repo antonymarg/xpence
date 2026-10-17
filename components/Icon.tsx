@@ -1,15 +1,17 @@
 import { Theme, theme } from "@/constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, ViewProps } from "react-native";
 
-interface IconButtonBackgroundProps {
+interface IconBackgroundProps {
   background: string;
   padding: keyof Theme["spacing"];
 }
 
-type IconButtonProps = React.ComponentProps<typeof Ionicons> &
-  Partial<IconButtonBackgroundProps>;
+type IconProps = React.ComponentProps<typeof Ionicons> &
+  Partial<IconBackgroundProps> & {
+    style: ViewProps['style']
+  };
 
 function Icon({
   name,
@@ -17,15 +19,16 @@ function Icon({
   size = 16,
   background = "transparent",
   padding = "xs",
-}: IconButtonProps) {
+  ...props
+}: IconProps) {
   return (
-    <View style={styles({ background, padding }).iconWrapper}>
+    <View style={[styles({ background, padding }).iconWrapper, props.style]}>
       <Ionicons name={name} color={color} size={size} />
     </View>
   );
 }
 
-const styles = ({ background, padding }: IconButtonBackgroundProps) =>
+const styles = ({ background, padding }: IconBackgroundProps) =>
   StyleSheet.create({
     iconWrapper: {
       backgroundColor: background,
@@ -35,3 +38,5 @@ const styles = ({ background, padding }: IconButtonBackgroundProps) =>
   });
 
 export default Icon;
+export type { IconProps };
+

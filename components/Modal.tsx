@@ -24,7 +24,9 @@ function Modal({
       {...props}
     >
       <Pressable onPress={props.onClose} style={styles.modalContainer}>
-        <Pressable style={styles.modalContent}>{props.children}</Pressable>
+        <Pressable style={[styles.modalContent, props.style]}>
+          {props.children}
+        </Pressable>
       </Pressable>
     </RNModal>
   );
@@ -43,6 +45,7 @@ const styles = StyleSheet.create({
     padding: theme.spacing.lg,
     borderRadius: theme.borderRadius.md,
     gap: theme.spacing.md,
+    overflow: 'hidden'
   },
 });
 

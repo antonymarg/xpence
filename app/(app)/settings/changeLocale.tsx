@@ -45,7 +45,7 @@ function ChangeLocale() {
         <Dropdown
             value={locale}
             onValueChange={setLocale}
-            items={locales.map((loc) => ({ label: loc, value: loc }))}
+            options={locales.map((loc) => ({ label: loc, value: loc }))}
         />
         <Button onPress={onLocaleUpdate} block background="gradient">
             <Text weight="bold" color="white">
