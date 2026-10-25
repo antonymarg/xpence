@@ -67,7 +67,10 @@ function AddRecordPage() {
   };
 
   const handleSave = async (data: z.infer<typeof schema>) => {
-    const result = await expenseApi.addExpense(data);
+    const result = await expenseApi.addExpense({
+      ...data,
+      amount: Math.round(data.amount * 100),
+    });
     if (result.success) {
       Toast.show({
         type: "success",

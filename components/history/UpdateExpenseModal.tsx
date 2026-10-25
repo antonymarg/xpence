@@ -43,7 +43,7 @@ function UpdateExpenseModal({
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
-      amount: expense?.amount || 10,
+      amount: expense ? expense.amount / 100 : 10,
       description: expense?.description || "",
       categoryId: expense?.categoryId || "",
       date: expense?.date || new Date(),
@@ -53,7 +53,11 @@ function UpdateExpenseModal({
   if (!expense || !isUserCategoriesSuccess) return null;
 
   const handleSave = async (data: z.infer<typeof schema>) => {
-    onConfirm({ id: expense?.id, ...data });
+    onConfirm({
+      id: expense.id,
+      ...data,
+      amount: Math.round(data.amount * 100),
+    });
     reset();
   };
 

@@ -98,7 +98,6 @@ const styles = ({ category, compact }: { category: CategoryType, compact: boolea
       minWidth: 0,
       gap: theme.spacing.sm,
       alignItems: 'center',
-      textAlign: 'center'
     },
     iconWrapper: {
       backgroundColor: theme.colors[`${category}Bg`],

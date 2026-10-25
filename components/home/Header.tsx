@@ -37,13 +37,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'flex-end'
   },
-  avatar: {
-    width: 50,
-    height: 50,
-    borderWidth: 2,
-    borderColor: theme.colors.primaryOrange,
-    borderRadius: 25,
-  },
 });
 
 export default Header;

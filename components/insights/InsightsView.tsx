@@ -17,12 +17,6 @@ interface InsightsViewProps {
     categoryType: CategoryType | "all";
 }
 
-const convertDateStrToDate = (dateStr: string) => {
-    const date = new Date(dateStr)
-    if (isNaN(date.getTime())) return new Date()
-    return date
-}
-
 const BUDGET_PERCENT_PER_CATEGORY_TYPE = {
     needs: 0.5,
     wants: 0.3,

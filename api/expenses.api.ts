@@ -36,7 +36,7 @@ async function addExpense(expense: Omit<Expense, "id">): Result<Expense> {
       .insert({
         user_id: userId,
         category_id: expense.categoryId,
-        amount: expense.amount * 100,
+        amount: expense.amount,
         date: expense.date.toISOString(),
         description: expense.description,
       })
@@ -106,7 +106,7 @@ async function getExpenses(params: GetExpensesParam): Result<Expense[]> {
       success: true,
       data: data.map((item) => ({
         id: item.id,
-        amount: item.amount / 100,
+        amount: item.amount,
         date: new Date(item.date),
         description: item.description,
         categoryId: item.categories.id,
@@ -124,7 +124,7 @@ async function updateExpense(expense: Expense): Result<Expense> {
       .from("expenses")
       .update({
         category_id: expense.categoryId,
-        amount: expense.amount * 100,
+        amount: expense.amount,
         date: expense.date.toISOString(),
         description: expense.description,
       })

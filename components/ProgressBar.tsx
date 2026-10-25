@@ -10,25 +10,27 @@ interface ProgressBarProps {
 }
 
 function ProgressBar(props: ProgressBarProps) {
+  const styling = styles(props);
+
   if (props.type !== "generic") {
     return (
-      <View style={styles(props).container}>
-        <View style={[styles(props).topBar, styles(props).categoryType]} />
+      <View style={styling.container}>
+        <View style={[styling.topBar, styling.categoryType]} />
       </View>
     );
   }
 
   return (
-    <View style={styles(props).container}>
+    <View style={styling.container}>
       {props.percentage > 100 ? (
-        <View style={[styles(props).topBar, styles(props).overLimit]} />
+        <View style={[styling.topBar, styling.overLimit]} />
       ) : (
         <LinearGradient
           colors={[theme.colors.mainGradient[1], theme.colors.mainGradient[0]]}
           locations={[0, 1]}
           start={{ x: 1, y: 0 }}
           end={{ x: 0, y: 1 }}
-          style={[styles(props).topBar]}
+          style={styling.topBar}
         />
       )}
     </View>

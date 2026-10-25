@@ -1,6 +1,7 @@
 import { theme } from "@/constants/theme";
 import { CategoryType } from "@/types/categories.types";
 import { Expense } from "@/types/expenses.types";
+import { formatPrice } from "@/lib/utils";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
@@ -31,7 +32,7 @@ function ExpenseCard({
       </View>
       <View>
         <Text weight="bold" size="lg">
-          -€{expense.amount.toFixed(2)}
+          -{formatPrice(expense.amount)}
         </Text>
       </View>
     </Card>
