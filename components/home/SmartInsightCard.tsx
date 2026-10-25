@@ -3,6 +3,7 @@ import { theme } from "@/constants/theme";
 import { formatPrice } from "@/lib/utils";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 import Card from "../Card";
 
@@ -10,12 +11,9 @@ interface SmartInsightProps {
   remaining: number
 }
 
-const calculateDaysForEndOfMonth = () => {
-
-}
-
 
 function SmartInsightCard({ remaining }: SmartInsightProps) {
+  const { t } = useTranslation();
   const today = new Date()
   const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59, 999);
   const remainingDays = endOfMonth.getDate() - today.getDate()
@@ -25,9 +23,9 @@ function SmartInsightCard({ remaining }: SmartInsightProps) {
         <Ionicons name="bulb" size={24} color={theme.colors.primaryOrange} />
       </View>
       <View style={styles.textContainer}>
-        <Text weight="bold" size="lg">Tip: your daily allowance!</Text>
+        <Text weight="bold" size="lg">{t("home.dailyTipTitle")}</Text>
         <Text style={styles.mainText}>
-          If you want to hit your goal by the end of the month, you can spend <Text weight="bold">{formatPrice(remaining / remainingDays)}</Text> every day!
+          {t("home.dailyTip", { amount: formatPrice(remaining / remainingDays) })}
         </Text>
       </View>
     </Card>

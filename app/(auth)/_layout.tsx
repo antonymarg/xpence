@@ -2,8 +2,10 @@ import AuthWrapper from "@/components/AuthWrapper";
 import TopBarNavigation from "@/components/TabBarNavigation";
 import { theme } from "@/constants/theme";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 export default function AuthLayout() {
+  const { t } = useTranslation();
   return (
     <AuthWrapper>
       <TopBarNavigation
@@ -34,11 +36,11 @@ export default function AuthLayout() {
       >
         <TopBarNavigation.Screen
           name="login"
-          options={{ title: 'Login' }}
+          options={{ title: t('auth.loginTab') }}
         />
         <TopBarNavigation.Screen
           name="signup"
-          options={{ title: 'Signup' }}
+          options={{ title: t('auth.signupTab') }}
         />
       </TopBarNavigation>
     </AuthWrapper>

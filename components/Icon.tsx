@@ -10,7 +10,7 @@ interface IconBackgroundProps {
 
 type IconProps = React.ComponentProps<typeof Ionicons> &
   Partial<IconBackgroundProps> & {
-    style: ViewProps['style']
+    style?: ViewProps['style']
   };
 
 function Icon({

@@ -2,6 +2,7 @@ import { theme } from "@/constants/theme";
 import { CategoryType } from "@/types/categories.types";
 import { Expense } from "@/types/expenses.types";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 import Card from "../Card";
 import Pill from "../Pill";
@@ -18,12 +19,13 @@ function ExpenseCard({
   categoryName,
   categoryType,
 }: ExpenseCardProps) {
+  const { t } = useTranslation();
   return (
     <Card style={styles.container}>
       <View>
         <Text weight="bold">{expense.description}</Text>
         <View style={styles.leftSide}>
-          <Pill variant={categoryType} label={categoryType} />
+          <Pill variant={categoryType} label={t(`categories.${categoryType}`)} />
           <Pill variant="generic" label={categoryName} />
         </View>
       </View>

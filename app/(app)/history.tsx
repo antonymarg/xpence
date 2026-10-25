@@ -13,6 +13,7 @@ import useUserCategories from "@/hooks/useUserCategories";
 import { CategoryType } from "@/types/categories.types";
 import { Expense } from "@/types/expenses.types";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 
 const getFirstDayOfMonth = () => {
@@ -29,6 +30,7 @@ const getLastDayOfMonth = () => {
 };
 
 function HistoryPage() {
+  const { t } = useTranslation();
   const [selectedCategoryType, setSelectedCategoryType] = useState<
     CategoryType | "all"
   >("all");
@@ -86,9 +88,9 @@ function HistoryPage() {
     <View style={styles.pageContainer}>
       <View>
         <Text size="title" weight="bold">
-          History
+          {t("history.title")}
         </Text>
-        <Text size="lg">Track your spending</Text>
+        <Text size="lg">{t("history.subtitle")}</Text>
       </View>
       <CategoryPicker
         onSelectCategory={onSelectCategory}

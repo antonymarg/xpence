@@ -1,0 +1,145 @@
+{
+    "translation": {
+        "change_locale": "Αλλαγή γλώσσας",
+        "update_language": "Ενημέρωση γλώσσας",
+        "update_locale_success": "Η γλώσσα ενημερώθηκε με επιτυχία",
+        "common": {
+            "add": "Προσθήκη",
+            "allTypes": "Όλοι οι τύποι",
+            "amount": "Ποσό",
+            "cancel": "Ακύρωση",
+            "category": "Κατηγορία",
+            "categoryType": "Τύπος κατηγορίας",
+            "close": "Κλείσιμο",
+            "confirm": "Επιβεβαίωση",
+            "date": "Ημερομηνία",
+            "delete": "Διαγραφή",
+            "description": "Περιγραφή",
+            "email": "Email",
+            "name": "Όνομα",
+            "password": "Κωδικός πρόσβασης",
+            "retry": "Δοκιμάστε ξανά",
+            "save": "Αποθήκευση",
+            "selectOption": "Επιλέξτε μια επιλογή",
+            "update": "Ενημέρωση"
+        },
+        "auth": {
+            "loginTab": "Σύνδεση",
+            "signupTab": "Εγγραφή",
+            "continue": "Συνέχεια",
+            "or": "ή",
+            "continueWithGoogle": "Συνέχεια με Google",
+            "newHere": "Πρώτη φορά εδώ;",
+            "createAccount": "Δημιουργία λογαριασμού",
+            "nameLabel": "Πώς σας λένε;",
+            "namePlaceholder": "Το όνομά σας",
+            "emailPlaceholder": "name@example.com",
+            "passwordPlaceholder": "Κωδικός πρόσβασης",
+            "confirmPassword": "Επιβεβαίωση κωδικού πρόσβασης",
+            "monthlyGoal": "Ποιος είναι ο μηνιαίος στόχος σας;",
+            "signUp": "Εγγραφή",
+            "loginFailed": "Δεν ήταν δυνατή η σύνδεση με αυτά τα στοιχεία.",
+            "signupFailed": "Η εγγραφή απέτυχε. Δοκιμάστε ξανά.",
+            "profileCreationFailed": "Δεν ήταν δυνατή η δημιουργία του προφίλ σας.",
+            "unexpectedError": "Παρουσιάστηκε ένα απρόσμενο σφάλμα."
+        },
+        "validation": {
+            "invalidEmail": "Πληκτρολογήστε μια έγκυρη διεύθυνση email.",
+            "passwordMinLength": "Ο κωδικός πρόσβασης πρέπει να έχει τουλάχιστον {{count}} χαρακτήρες.",
+            "nameMinLength": "Το όνομα πρέπει να έχει τουλάχιστον {{count}} χαρακτήρες.",
+            "passwordsMismatch": "Οι κωδικοί πρόσβασης δεν ταιριάζουν.",
+            "validAmount": "Πληκτρολογήστε ένα έγκυρο ποσό.",
+            "invalidDate": "Επιλέξτε μια έγκυρη ημερομηνία.",
+            "descriptionRequired": "Πληκτρολογήστε μια περιγραφή.",
+            "categoryRequired": "Επιλέξτε μια κατηγορία.",
+            "categoryTypeRequired": "Επιλέξτε έναν τύπο κατηγορίας.",
+            "nameRequired": "Πληκτρολογήστε ένα όνομα.",
+            "validBudget": "Πληκτρολογήστε ένα έγκυρο ποσό προϋπολογισμού."
+        },
+        "home": {
+            "welcomeBack": "Καλώς ήρθατε ξανά",
+            "greeting": "Γεια σας, {{name}}",
+            "monthlyBudgetStatus": "Κατάσταση μηνιαίου προϋπολογισμού",
+            "overLimit": "Υπέρβαση ορίου",
+            "overBudget": "{{amount}} πάνω από τον προϋπολογισμό",
+            "remaining": "Απομένουν {{amount}}",
+            "budget": "Προϋπολογισμός: {{amount}}",
+            "dailyTipTitle": "Συμβουλή: το ημερήσιο διαθέσιμο ποσό",
+            "dailyTip": "Για να πετύχετε τον στόχο σας έως το τέλος του μήνα, μπορείτε να ξοδεύετε {{amount}} την ημέρα."
+        },
+        "expense": {
+            "addTitle": "Προσθήκη εξόδου",
+            "expenseAdded": "Η έξοδος προστέθηκε με επιτυχία",
+            "saveFailed": "Κάτι πήγε στραβά",
+            "availableCategories": "Διαθέσιμες κατηγορίες",
+            "updateTitle": "Ενημέρωση εξόδου",
+            "updated": "Η έξοδος ενημερώθηκε με επιτυχία",
+            "deleteTitle": "Διαγραφή εξόδου",
+            "deleteConfirmation": "Θέλετε σίγουρα να διαγράψετε την έξοδο «{{description}}»;"
+        },
+        "history": {
+            "title": "Ιστορικό",
+            "subtitle": "Παρακολουθήστε τις δαπάνες σας",
+            "noExpenses": "Δεν βρέθηκαν έξοδα"
+        },
+        "insights": {
+            "title": "Μηνιαία ανάλυση",
+            "subtitle": "Αναλύστε τις δαπάνες σας",
+            "overall": "Σύνολο",
+            "needs": "Ανάγκες",
+            "wants": "Επιθυμίες",
+            "savings": "Αποταμίευση",
+            "noExpenses": "Δεν υπάρχουν έξοδα αυτόν τον μήνα",
+            "categoryRanking": "Κατάταξη κατηγοριών",
+            "showMore": "Εμφάνιση περισσότερων",
+            "showLess": "Εμφάνιση λιγότερων",
+            "rightOnBudget": "Ακριβώς εντός προϋπολογισμού!",
+            "underBudget": "{{amount}} κάτω από τον προϋπολογισμό",
+            "overBudget": "{{amount}} πάνω από τον προϋπολογισμό"
+        },
+        "settings": {
+            "title": "Ρυθμίσεις",
+            "subtitle": "Προσαρμόστε την εμπειρία σας",
+            "financialPlan": "Οικονομικό πλάνο",
+            "changeMonthlyBudget": "Αλλαγή μηνιαίου προϋπολογισμού",
+            "manageCategories": "Διαχείριση κατηγοριών",
+            "accountSettings": "Ρυθμίσεις λογαριασμού",
+            "changeCurrency": "Αλλαγή νομίσματος",
+            "changeLanguage": "Αλλαγή γλώσσας",
+            "signOut": "Αποσύνδεση",
+            "budgetUpdated": "Ο προϋπολογισμός ενημερώθηκε με επιτυχία",
+            "changeBudgetTitle": "Αλλαγή προϋπολογισμού",
+            "newBudget": "Νέος προϋπολογισμός",
+            "updateBudget": "Ενημέρωση προϋπολογισμού",
+            "currencyUpdated": "Το νόμισμα ενημερώθηκε με επιτυχία",
+            "updateCurrency": "Ενημέρωση νομίσματος",
+            "categoriesUpdated": "Η κατηγορία προστέθηκε με επιτυχία",
+            "categoryDeleted": "Η κατηγορία διαγράφηκε με επιτυχία",
+            "currentCategories": "Τρέχουσες κατηγορίες"
+        },
+        "categories": {
+            "needs": "Ανάγκες",
+            "wants": "Επιθυμίες",
+            "savings": "Αποταμίευση",
+            "addTitle": "Προσθήκη νέας κατηγορίας",
+            "addAction": "Προσθήκη κατηγορίας",
+            "deleteTitle": "Διαγραφή κατηγορίας",
+            "deleteConfirmation": "Θέλετε σίγουρα να διαγράψετε αυτήν την κατηγορία;"
+        },
+        "errorScreen": {
+            "title": "Ωχ! Κάτι πήγε στραβά.",
+            "retry": "Δοκιμάστε ξανά"
+        },
+        "dropdown": {
+            "selectItem": "Επιλέξτε ένα στοιχείο"
+        },
+        "languages": {
+            "en": "Αγγλικά",
+            "gr": "Ελληνικά"
+        },
+        "monthPicker": {
+            "cancel": "Ακύρωση",
+            "confirm": "Επιβεβαίωση"
+        }
+    }
+}

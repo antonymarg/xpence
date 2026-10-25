@@ -4,6 +4,7 @@ import { Expense } from "@/types/expenses.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 import z from "zod";
 import Button from "../Button";
@@ -19,18 +20,18 @@ interface UpdateExpenseModalProps {
   onConfirm: (expense: Expense) => void;
 }
 
-const schema = z.object({
-  amount: z.coerce.number().min(0.01, "Please enter a valid amount"),
-  description: z.string().min(1, "Please enter a description"),
-  categoryId: z.string().min(1, "Please select a category"),
-  date: z.date(),
-});
-
 function UpdateExpenseModal({
   expense,
   onClose,
   onConfirm,
 }: UpdateExpenseModalProps) {
+  const { t } = useTranslation();
+  const schema = z.object({
+    amount: z.coerce.number().min(0.01, t("validation.validAmount")),
+    description: z.string().min(1, t("validation.descriptionRequired")),
+    categoryId: z.string().min(1, t("validation.categoryRequired")),
+    date: z.date({ error: t("validation.invalidDate") }),
+  });
   const { data: userCategories, isSuccess: isUserCategoriesSuccess } = useUserCategories();
 
 
@@ -59,11 +60,11 @@ function UpdateExpenseModal({
   return (
     <Modal visible={Boolean(expense)} onClose={onClose}>
       <Text size="xl" weight="bold" textAlign="center">
-        Update Expense
+        {t("expense.updateTitle")}
       </Text>
       <View style={styles.formSegment}>
         <Text size="sm" weight="bold" heading>
-          Amount
+          {t("common.amount")}
         </Text>
         <Controller
           control={control}
@@ -82,7 +83,7 @@ function UpdateExpenseModal({
       </View>
       <View style={styles.formSegment}>
         <Text size="sm" weight="bold" heading>
-          Description
+          {t("common.description")}
         </Text>
         <Controller
           control={control}
@@ -99,7 +100,7 @@ function UpdateExpenseModal({
       </View>
       <View style={styles.formSegment}>
         <Text size="sm" weight="bold" heading>
-          Available Categories
+          {t("expense.availableCategories")}
         </Text>
         <Controller
           name="categoryId"
@@ -116,7 +117,7 @@ function UpdateExpenseModal({
       </View>
       <View style={styles.formSegment}>
         <Text size="sm" weight="bold" heading>
-          Date
+          {t("common.date")}
         </Text>
         <Controller
           control={control}
@@ -129,11 +130,11 @@ function UpdateExpenseModal({
       </View>
       <Button onPress={handleSubmit(handleSave)} block background="gradient">
         <Text weight="bold" color="white">
-          Update
+          {t("common.update")}
         </Text>
       </Button>
       <Button onPress={onClose} block background="icons">
-        <Text weight="bold">Close</Text>
+        <Text weight="bold">{t("common.close")}</Text>
       </Button>
     </Modal>
   );

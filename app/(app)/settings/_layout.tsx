@@ -2,16 +2,18 @@ import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
 import { Stack } from "expo-router";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 
 function SettingsPageLayout() {
+    const { t } = useTranslation();
     return (
         <View style={styles.pageContainer}>
             <View>
                 <Text size="title" weight="bold">
-                    Settings
+                    {t("settings.title")}
                 </Text>
-                <Text size="lg">Personalise your experience</Text>
+                <Text size="lg">{t("settings.subtitle")}</Text>
             </View>
             <Stack screenOptions={{ headerShown: false }}>
                 <Stack.Screen name='index' />

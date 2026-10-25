@@ -1,12 +1,18 @@
 import TabBar from "@/components/TabBar";
 import useProfile from "@/hooks/useProfile";
+import { setAppLanguage } from "@/lib/i18n";
 import { Redirect, Stack } from "expo-router";
-import React from "react";
+import React, { useEffect } from "react";
 import { ActivityIndicator, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AppLayout() {
   const { data: profile, isLoading: isProfileLoading } = useProfile();
+  const profileLocale = profile?.locale;
+
+  useEffect(() => {
+    if (profileLocale) void setAppLanguage(profileLocale);
+  }, [profileLocale]);
 
   if (isProfileLoading) {
     return (

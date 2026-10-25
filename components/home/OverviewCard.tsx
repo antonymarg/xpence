@@ -1,6 +1,7 @@
 import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 import Card from "../Card";
 import ProgressBar from "../ProgressBar";
@@ -11,6 +12,7 @@ interface OverviewCardProps {
 }
 
 function OverviewCard({ sum, budget }: OverviewCardProps) {
+  const { t } = useTranslation();
   const remaining = budget - sum;
   const isOverLimit = remaining < 0;
   const percentage = (sum / budget) * 100;
@@ -18,7 +20,7 @@ function OverviewCard({ sum, budget }: OverviewCardProps) {
     <Card padding="lg" borderRadius="md">
       <View style={styles.topContainer}>
         <Text heading weight="bold" size="xs">
-          Monthly Budget Status
+          {t("home.monthlyBudgetStatus")}
         </Text>
         {isOverLimit && (
           <View style={styles.overLimitContainer}>
@@ -28,7 +30,7 @@ function OverviewCard({ sum, budget }: OverviewCardProps) {
               color="error"
               style={styles.overLimitPillText}
             >
-              Over limit
+              {t("home.overLimit")}
             </Text>
           </View>
         )}
@@ -41,13 +43,13 @@ function OverviewCard({ sum, budget }: OverviewCardProps) {
         <View style={styles.remainingTextContainer}>
           {isOverLimit ? (
             <Text weight="bold" color="error">
-              €{(remaining / 100 * -1).toFixed(2)} over budget
+              {t("home.overBudget", { amount: `€${(remaining / 100 * -1).toFixed(2)}` })}
             </Text>
           ) : (
-            <Text size="sm">€{(remaining / 100).toFixed(2)} remaining</Text>
+            <Text size="sm">{t("home.remaining", { amount: `€${(remaining / 100).toFixed(2)}` })}</Text>
           )}
           <Text size="sm" style={styles.budgetText}>
-            Budget: €{(budget / 100).toFixed(2)}
+            {t("home.budget", { amount: `€${(budget / 100).toFixed(2)}` })}
           </Text>
         </View>
       </View>

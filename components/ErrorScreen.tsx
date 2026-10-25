@@ -1,6 +1,7 @@
 import { theme } from "@/constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 import Button from "./Button";
 import Text from "./Text";
@@ -9,13 +10,14 @@ interface ErrorScreenProps {
 }
 
 function ErrorScreen({ onRefresh }: ErrorScreenProps) {
+  const { t } = useTranslation();
   return (
     <View style={styles.container}>
       <Ionicons name="thunderstorm" size={82} color={theme.colors.primaryRed} />
-      <Text weight="bold">Oh no! Something went wrong.</Text>
+      <Text weight="bold">{t("errorScreen.title")}</Text>
       <Button onPress={onRefresh} background="primaryRed">
         <Text weight="bold" color="white">
-          Please, try again
+          {t("errorScreen.retry")}
         </Text>
       </Button>
     </View>

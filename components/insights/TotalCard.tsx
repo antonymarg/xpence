@@ -1,5 +1,6 @@
 import { formatPrice } from '@/lib/utils'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { StyleSheet } from 'react-native'
 import Card from '../Card'
 import Text from '../Text'
@@ -8,17 +9,17 @@ interface TotalCardProps {
     sum: number
     budget: number
 }
-const getText = (remaining: number) => {
-    if (remaining === 0) return 'Right on budget!'
-    if (remaining > 0) return `${formatPrice(remaining)} under budget`
-    return `${formatPrice(remaining)} over budget`
-}
-
 function TotalCard({ sum, budget }: TotalCardProps) {
+    const { t } = useTranslation()
     const remaining = budget - sum
+    const status = remaining === 0
+        ? t('insights.rightOnBudget')
+        : remaining > 0
+            ? t('insights.underBudget', { amount: formatPrice(remaining) })
+            : t('insights.overBudget', { amount: formatPrice(Math.abs(remaining)) })
     return <Card style={styles.container}>
         <Text size='title' weight='bold'>{formatPrice(sum)}</Text>
-        <Text size='sm'>{getText(remaining)}</Text>
+        <Text size='sm'>{status}</Text>
     </Card>
 }
 

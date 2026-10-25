@@ -3,6 +3,7 @@ import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
 import { Category, CategoryType } from "@/types/categories.types";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 interface CategoryPickerProps {
@@ -20,6 +21,7 @@ function CategoryPicker({
   onSelectCategory,
   availableCategories,
 }: CategoryPickerProps) {
+  const { t } = useTranslation();
   return (
     <View style={styles.container}>
       <ScrollView
@@ -36,7 +38,7 @@ function CategoryPicker({
             weight="bold"
             color={selectedCategoryType === "all" ? "white" : "textLight"}
           >
-            All types
+            {t("common.allTypes")}
           </Text>
         </Button>
         <Button
@@ -47,7 +49,7 @@ function CategoryPicker({
             weight="bold"
             color={selectedCategoryType === "needs" ? "white" : "textLight"}
           >
-            Needs
+            {t("categories.needs")}
           </Text>
         </Button>
         <Button
@@ -58,7 +60,7 @@ function CategoryPicker({
             weight="bold"
             color={selectedCategoryType === "wants" ? "white" : "textLight"}
           >
-            Wants
+            {t("categories.wants")}
           </Text>
         </Button>
         <Button
@@ -69,7 +71,7 @@ function CategoryPicker({
             weight="bold"
             color={selectedCategoryType === "savings" ? "white" : "textLight"}
           >
-            Savings
+            {t("categories.savings")}
           </Text>
         </Button>
       </ScrollView>

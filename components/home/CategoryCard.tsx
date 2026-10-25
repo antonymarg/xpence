@@ -1,9 +1,10 @@
 import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
-import { capitaliseFirst, formatPrice } from "@/lib/utils";
+import { formatPrice } from "@/lib/utils";
 import { CategoryType } from "@/types/categories.types";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 import Card from "../Card";
 import ProgressBar from "../ProgressBar";
@@ -32,22 +33,23 @@ const BUDGET_PER_CATEGORY = {
   savings: 0.2
 }
 
-function CategoryCard({ category, budget, amount, compact }: CategoryCardProps) {
+function CategoryCard({ category, budget, amount, compact = false }: CategoryCardProps) {
+  const { t } = useTranslation();
   const [color, icon, categoryPercentage] = getIconForCategory(category);
   const goal = BUDGET_PER_CATEGORY[category] * budget
   const percentage = (amount / goal) * 100
-  const styling = styles(category);
+  const styling = styles({ category, compact });
 
   if (compact) return (
-    <Card padding='lg' style={styling.compactStyleWrapper} >
+    <Card padding='sm' style={styling.compactStyleWrapper} >
       <View style={styling.iconWrapper}>
         <Text style={styling.text}>
           {isNaN(percentage) ? "-" : percentage.toFixed(0) + "%"}
         </Text>
       </View>
-      <View>
-        <Text weight="bold" color={category} style={styling.compactLabelText}>
-          {capitaliseFirst(category)}
+      <View style={styling.textContainer}>
+        <Text size="sm" weight="bold" color={category} style={styling.compactLabelText}>
+          {t(`categories.${category}`)}
         </Text>
         <Text>
           {isNaN(percentage) ? "-" : formatPrice(amount)}
@@ -71,7 +73,7 @@ function CategoryCard({ category, budget, amount, compact }: CategoryCardProps) 
         </View>
       </View>
       <Text weight="bold" style={styling.labelText}>
-        {category.toLocaleUpperCase()}
+        {t(`categories.${category}`).toLocaleUpperCase()}
       </Text>
       <ProgressBar
         height={10}
@@ -82,7 +84,7 @@ function CategoryCard({ category, budget, amount, compact }: CategoryCardProps) 
   );
 }
 
-const styles = (category: CategoryType) =>
+const styles = ({ category, compact }: { category: CategoryType, compact: boolean }) =>
   StyleSheet.create({
     header: {
       flexDirection: "row",
@@ -92,6 +94,8 @@ const styles = (category: CategoryType) =>
       marginBottom: theme.spacing.md,
     },
     compactStyleWrapper: {
+      flex: 1,
+      minWidth: 0,
       gap: theme.spacing.sm,
       alignItems: 'center',
       textAlign: 'center'
@@ -102,7 +106,7 @@ const styles = (category: CategoryType) =>
       borderRadius: theme.borderRadius.sm,
     },
     textContainer: {
-      alignItems: 'flex-end'
+      alignItems: compact ? 'center' : 'flex-end',
     },
     text: {
       textAlign: 'center',

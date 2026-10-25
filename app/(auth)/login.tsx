@@ -10,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "expo-router";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   Keyboard,
@@ -20,14 +21,12 @@ import {
 } from "react-native";
 import z from "zod";
 
-const schema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
-});
-
-type FormData = z.infer<typeof schema>;
-
 export default function Login() {
+  const { t } = useTranslation();
+  const schema = z.object({
+    email: z.string().email(t("validation.invalidEmail")),
+    password: z.string().min(8, t("validation.passwordMinLength", { count: 8 })),
+  });
   const {
     control,
     formState: { errors },
@@ -42,7 +41,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
 
-  const onLoginPress = async (data: FormData) => {
+  const onLoginPress = async (data: z.infer<typeof schema>) => {
     setLoginError(null);
     setLoading(true);
     Keyboard.dismiss();
@@ -52,10 +51,10 @@ export default function Login() {
         password: data.password,
       });
       if (loginError) {
-        setLoginError(loginError.message);
+        setLoginError(t("auth.loginFailed"));
       }
     } catch {
-      setLoginError("An unknown error occurred");
+      setLoginError(t("auth.unexpectedError"));
     } finally {
       setLoading(false);
     }
@@ -75,8 +74,8 @@ export default function Login() {
           name="email"
           render={({ field }) => (
             <TextInput
-              placeholder="name@example.com"
-              label="Email"
+              placeholder={t("auth.emailPlaceholder")}
+              label={t("common.email")}
               value={field.value}
               onChangeText={field.onChange}
               onBlur={field.onBlur}
@@ -92,8 +91,8 @@ export default function Login() {
           name="password"
           render={({ field }) => (
             <TextInput
-              placeholder="Password"
-              label="Password"
+              placeholder={t("auth.passwordPlaceholder")}
+              label={t("common.password")}
               secureTextEntry
               value={field.value}
               onChangeText={field.onChange}
@@ -113,11 +112,11 @@ export default function Login() {
             <ActivityIndicator size="small" color="#fff" />
           ) : (
             <Text weight="bold" color="white">
-              Continue
+              {t("auth.continue")}
             </Text>
           )}
         </Button>
-        <DividerText text="or" />
+        <DividerText text={t("auth.or")} />
         <Button
           background="card"
           block
@@ -130,14 +129,14 @@ export default function Login() {
             color={theme.colors.primaryOrange}
             size={20}
           />
-          <Text weight="bold">Continue with Google</Text>
+          <Text weight="bold">{t("auth.continueWithGoogle")}</Text>
         </Button>
       </KeyboardAvoidingView>
       <View style={styles.footer}>
-        <Text>New here?</Text>
+        <Text>{t("auth.newHere")}</Text>
         <Link href="/(auth)/signup">
           <Text color="primaryRed" weight="bold">
-            Create an account
+            {t("auth.createAccount")}
           </Text>
         </Link>
       </View>

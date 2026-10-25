@@ -9,6 +9,7 @@ import { theme } from "@/constants/theme";
 import useUserCategories from "@/hooks/useUserCategories";
 import { Category } from "@/types/categories.types";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 
@@ -17,6 +18,7 @@ interface ManageCategoriesProps {
 }
 
 function ManageCategories({ categories }: ManageCategoriesProps) {
+  const { t } = useTranslation();
   const { invalidateUserCategories } = useUserCategories();
   const [deleteModalCategory, setDeleteModalCategory] =
     useState<Category | null>(null);
@@ -29,7 +31,7 @@ function ManageCategories({ categories }: ManageCategoriesProps) {
       onCloseAddModal();
       Toast.show({
         type: "success",
-        text1: "Category added successfully",
+        text1: t("settings.categoriesUpdated"),
         visibilityTime: 5000,
         autoHide: true,
       });
@@ -44,7 +46,7 @@ function ManageCategories({ categories }: ManageCategoriesProps) {
       onCloseDeleteModal();
       Toast.show({
         type: "success",
-        text1: "Category deleted successfully",
+        text1: t("settings.categoryDeleted"),
         visibilityTime: 5000,
         autoHide: true,
       });
@@ -58,7 +60,7 @@ function ManageCategories({ categories }: ManageCategoriesProps) {
       <View>
         <View style={styles.row}>
           <Text size="lg" weight="bold">
-            Manage Categories
+            {t("settings.manageCategories")}
           </Text>
           <Button
             onPress={() => setIsAddModalVisible(true)}
@@ -74,7 +76,7 @@ function ManageCategories({ categories }: ManageCategoriesProps) {
               padding="xs"
             />
             <Text weight="bold" color="primaryOrange">
-              Add
+              {t("common.add")}
             </Text>
           </Button>
         </View>

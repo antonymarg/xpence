@@ -1,13 +1,3 @@
-/**
- * XPence Theme Definition
- * Design System: Xpence Vivid
- *
- * Font: Plus Jakarta Sans
- * Install: npx expo install @expo-google-fonts/plus-jakarta-sans expo-font
- * Then load in your root layout:
- *   import { useFonts, PlusJakartaSans_400Regular, PlusJakartaSans_500Medium, PlusJakartaSans_700Bold, PlusJakartaSans_800ExtraBold } from "@expo-google-fonts/plus-jakarta-sans";
- */
-
 import { Platform } from "react-native";
 
 export const theme = {
@@ -117,10 +107,10 @@ export const theme = {
 
   typography: {
     fontFamily: {
-      regular: "PlusJakartaSans_400Regular",
-      medium: "PlusJakartaSans_500Medium",
-      bold: "PlusJakartaSans_700Bold",
-      heavy: "PlusJakartaSans_800ExtraBold",
+      regular: "Manrope_400Regular",
+      medium: "Manrope_500Medium",
+      bold: "Manrope_700Bold",
+      heavy: "Manrope_800ExtraBold",
     },
     sizes: {
       xs: 11,

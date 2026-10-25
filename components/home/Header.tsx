@@ -2,6 +2,7 @@ import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
 import { Profile } from "@/types/users.types";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 import Logo from "../Logo";
 
@@ -10,14 +11,15 @@ interface HeaderProps {
 }
 
 function Header({ profile }: HeaderProps) {
+  const { t } = useTranslation();
   return (
     <View style={styles.container}>
       <Logo variant='short' height={50} width={50} />
       <View style={styles.welcomeContainer}>
         <Text size="xs" heading>
-          Welcome back
+          {t("home.welcomeBack")}
         </Text>
-        <Text weight="bold">Hey, {profile.displayName}</Text>
+        <Text weight="bold">{t("home.greeting", { name: profile.displayName })}</Text>
       </View>
     </View >
   );
@@ -33,6 +35,7 @@ const styles = StyleSheet.create({
   },
   welcomeContainer: {
     flexDirection: 'column',
+    alignItems: 'flex-end'
   },
   avatar: {
     width: 50,

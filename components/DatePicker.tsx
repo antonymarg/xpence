@@ -1,6 +1,7 @@
 import { theme } from "@/constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Platform, StyleSheet, View } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Button from "./Button";
@@ -19,6 +20,7 @@ const formatDateForWeb = (date: Date) => {
 };
 
 function DatePicker(props: DatePickerProps) {
+  const { i18n } = useTranslation();
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
   const showDatePicker = () => {
@@ -33,6 +35,10 @@ function DatePicker(props: DatePickerProps) {
     props.onChange(date);
     hideDatePicker();
   };
+  const formattedDate = new Intl.DateTimeFormat(
+    i18n.resolvedLanguage || i18n.language,
+    { dateStyle: "medium" },
+  ).format(props.value);
 
   if (Platform.OS === "web") {
     return (
@@ -55,7 +61,7 @@ function DatePicker(props: DatePickerProps) {
         style={styles.container}
       >
         <Ionicons name="calendar" size={24} color={theme.colors.textLight} />
-        <Text weight="bold">{props.value.toDateString()}</Text>
+        <Text weight="bold">{formattedDate}</Text>
       </Button>
       <DateTimePickerModal
         isVisible={isDatePickerVisible}

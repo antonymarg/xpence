@@ -1,5 +1,6 @@
 import { theme } from '@/constants/theme';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet } from 'react-native';
 import Modal from './Modal';
 import Pressable from './Pressable';
@@ -16,15 +17,13 @@ interface DropdownProps<T> {
 }
 
 function Dropdown<T = string>({ value, heading, onValueChange, options }: DropdownProps<T>) {
-    const [textInputText, setTextInputText] = useState(() => {
-        if (!value) return 'Please select an options'
-        const option = options.find((opt) => opt.value === value)
-        return option?.label ?? value.toString()
-    })
+    const { t } = useTranslation()
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const textInputText = !value
+        ? t('common.selectOption')
+        : options.find((option) => option.value === value)?.label ?? value.toString()
 
     const onValueSelect = (opt: Option<T>) => {
-        setTextInputText(opt.label)
         onValueChange(opt.value)
         setIsModalOpen(false)
     }
@@ -33,7 +32,7 @@ function Dropdown<T = string>({ value, heading, onValueChange, options }: Dropdo
             <TextInput label={heading} readOnly value={textInputText} icon='chevron-down' />
         </Pressable>
         {isModalOpen && <Modal onClose={() => { setIsModalOpen(false) }} style={style.modal}>
-            <Text size='xl' weight='bold'> Select an item</Text>
+            <Text size='xl' weight='bold'>{t('dropdown.selectItem')}</Text>
             <ScrollView>
                 {options.map((el) => {
                     const isSelected = value === el.value

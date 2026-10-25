@@ -12,10 +12,12 @@ import { theme } from "@/constants/theme";
 import useUserCategories from "@/hooks/useUserCategories";
 import { Category } from "@/types/categories.types";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { ScrollView, StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 
 function ManageCategories() {
+    const { t } = useTranslation();
     const {
         data: categories,
         isLoading: isCategoriesLoading,
@@ -35,7 +37,7 @@ function ManageCategories() {
             onCloseAddModal();
             Toast.show({
                 type: "success",
-                text1: "Category added successfully",
+                text1: t("settings.categoriesUpdated"),
                 visibilityTime: 5000,
                 autoHide: true,
             });
@@ -50,7 +52,7 @@ function ManageCategories() {
             onCloseDeleteModal();
             Toast.show({
                 type: "success",
-                text1: "Category deleted successfully",
+                text1: t("settings.categoryDeleted"),
                 visibilityTime: 5000,
                 autoHide: true,
             });
@@ -60,11 +62,11 @@ function ManageCategories() {
     const onCloseAddModal = () => setIsAddModalVisible(false);
 
     return <ScrollView contentContainerStyle={styles.container}>
-        <SettingsHeader label='Manage categories' href="/(app)/settings" />
+        <SettingsHeader label={t("settings.manageCategories")} href="/(app)/settings" />
         <View>
             <View style={styles.row}>
                 <Text size="lg" weight="bold">
-                    Current categories
+                    {t("settings.currentCategories")}
                 </Text>
                 <Button
                     onPress={() => setIsAddModalVisible(true)}
@@ -80,7 +82,7 @@ function ManageCategories() {
                         padding="xs"
                     />
                     <Text weight="bold" color="primaryOrange">
-                        Add
+                        {t("common.add")}
                     </Text>
                 </Button>
             </View>

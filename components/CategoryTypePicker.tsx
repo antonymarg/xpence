@@ -1,6 +1,7 @@
 import { theme } from "@/constants/theme";
 import { Category, CategoryType } from "@/types/categories.types";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 import Pressable from "./Pressable";
 import Text from "./Text";
@@ -14,6 +15,7 @@ function CategoryTypePicker({
   selectedCategoryType,
   onSelectCategoryType,
 }: CategoryTypePickerProps) {
+  const { t } = useTranslation();
   return (
     <View style={styles("needs", false).container}>
       <Pressable
@@ -23,7 +25,7 @@ function CategoryTypePicker({
         }
       >
         <Text color="needs" weight="bold">
-          Needs
+          {t("categories.needs")}
         </Text>
       </Pressable>
       <Pressable
@@ -33,7 +35,7 @@ function CategoryTypePicker({
         }
       >
         <Text weight="bold" color="wants">
-          Wants
+          {t("categories.wants")}
         </Text>
       </Pressable>
       <Pressable
@@ -44,7 +46,7 @@ function CategoryTypePicker({
         }
       >
         <Text weight="bold" color="savings">
-          Savings
+          {t("categories.savings")}
         </Text>
       </Pressable>
     </View>

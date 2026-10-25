@@ -11,10 +11,12 @@ import useProfile from "@/hooks/useProfile";
 import { Currency } from '@/types/users.types';
 import { useNavigation } from "expo-router";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 
 function ChangeCurrency() {
+    const { t } = useTranslation();
     const {
         data: profile,
         isLoading: isProfileLoading,
@@ -33,7 +35,7 @@ function ChangeCurrency() {
         if (success) {
             Toast.show({
                 type: "success",
-                text1: "Currency updated successfully",
+                text1: t("settings.currencyUpdated"),
                 visibilityTime: 5000,
                 autoHide: true,
             });
@@ -42,7 +44,7 @@ function ChangeCurrency() {
         }
     };
     return <View style={styles.container}>
-        <SettingsHeader label='Change currency' href="/(app)/settings" />
+        <SettingsHeader label={t("settings.changeCurrency")} href="/(app)/settings" />
         <Dropdown<Currency>
             value={currency}
             onValueChange={setCurrency}
@@ -50,7 +52,7 @@ function ChangeCurrency() {
         />
         <Button onPress={onCurrencyUpdate} block background="gradient">
             <Text weight="bold" color="white">
-                Update Currency
+                {t("settings.updateCurrency")}
             </Text>
         </Button>
     </View>

@@ -1,6 +1,7 @@
 import { theme } from "@/constants/theme";
 import { Category } from "@/types/categories.types";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 import Button from "../Button";
 import Icon from "../Icon";
@@ -18,6 +19,7 @@ function DeleteCategoryModal({
   onClose,
   onConfirm,
 }: DeleteCategoryModalProps) {
+  const { t } = useTranslation();
   if (!category) return null;
 
   return (
@@ -33,10 +35,10 @@ function DeleteCategoryModal({
       </View>
       <View>
         <Text size="xl" weight="bold" textAlign="center">
-          Delete Category
+          {t("categories.deleteTitle")}
         </Text>
         <Text textAlign="center">
-          Are you sure you want to delete this category?
+          {t("categories.deleteConfirmation")}
         </Text>
       </View>
       <Button
@@ -45,11 +47,11 @@ function DeleteCategoryModal({
         background="primaryRed"
       >
         <Text weight="bold" color="white">
-          Delete
+          {t("common.delete")}
         </Text>
       </Button>
       <Button onPress={onClose} block background="icons">
-        <Text weight="bold">Close</Text>
+        <Text weight="bold">{t("common.close")}</Text>
       </Button>
     </Modal>
   );

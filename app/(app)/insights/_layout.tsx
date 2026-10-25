@@ -7,18 +7,14 @@ import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
 import { InsightsProvider, useInsightsContext } from "@/context/InsightContext";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 
-const MONTHS = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
-]
-
 const TABS = [
-    { name: 'index', title: 'Overall', path: '/insights' },
-    { name: 'needs', title: 'Needs', path: '/insights/needs' },
-    { name: 'wants', title: 'Wants', path: '/insights/wants' },
-    { name: 'savings', title: 'Savings', path: '/insights/savings' },
+    { name: 'index', titleKey: 'insights.overall' },
+    { name: 'needs', titleKey: 'insights.needs' },
+    { name: 'wants', titleKey: 'insights.wants' },
+    { name: 'savings', titleKey: 'insights.savings' },
 ];
 
 const InsightsRoot = () => {
@@ -30,25 +26,30 @@ const InsightsRoot = () => {
 };
 
 const InsightsLayout = () => {
+    const { t, i18n } = useTranslation()
     const [showPicker, setShowPicker] = useState(false);
     const { month, setMonth } = useInsightsContext()
     const updateMonth = (date: Date) => {
         setMonth(date)
         setShowPicker(false)
     }
+    const monthLabel = new Intl.DateTimeFormat(
+        i18n.resolvedLanguage || i18n.language,
+        { month: 'long' },
+    ).format(month)
 
     return <>
         <View style={styles.pageContainer}>
             <View>
                 <Text size="title" weight="bold">
-                    Monthly insights
+                    {t('insights.title')}
                 </Text>
-                <Text size="lg">Analyse your spending</Text>
+                <Text size="lg">{t('insights.subtitle')}</Text>
             </View>
             <Card padding="sm" style={{ alignItems: 'center', width: '50%', alignSelf: 'center' }}>
                 <Pressable onPress={() => setShowPicker(true)} style={{ flexDirection: 'row' }}>
                     <Text size='lg' weight="bold">
-                        {MONTHS[month.getMonth()]} {month.getFullYear()}
+                        {monthLabel} {month.getFullYear()}
                     </Text>
                     <Icon color={theme.colors.textDark} name="chevron-down-outline" />
                 </Pressable>
@@ -86,7 +87,9 @@ const InsightsLayout = () => {
                 }
             }}
         >
-            {TABS.map(({ name, title }) => (<TopBarNavigation.Screen name={name} options={{ title }} />))}
+            {TABS.map(({ name, titleKey }) => (
+                <TopBarNavigation.Screen key={name} name={name} options={{ title: t(titleKey) }} />
+            ))}
         </TopBarNavigation>
     </>
 }

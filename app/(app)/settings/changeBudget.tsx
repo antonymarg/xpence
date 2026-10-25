@@ -9,10 +9,12 @@ import { theme } from "@/constants/theme";
 import useProfile from "@/hooks/useProfile";
 import { useNavigation } from "expo-router";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 
 function ChangeBudget() {
+    const { t } = useTranslation();
     const {
         data: profile,
         isLoading: isProfileLoading,
@@ -29,7 +31,7 @@ function ChangeBudget() {
         if (success) {
             Toast.show({
                 type: "success",
-                text1: "Budget updated successfully",
+                text1: t("settings.budgetUpdated"),
                 visibilityTime: 5000,
                 autoHide: true,
             });
@@ -38,15 +40,15 @@ function ChangeBudget() {
         }
     };
     return <View style={styles.container}>
-        <SettingsHeader label='Change Budget' href="/(app)/settings" />
+        <SettingsHeader label={t("settings.changeBudgetTitle")} href="/(app)/settings" />
         <TextInput
-            label="New budget"
+            label={t("settings.newBudget")}
             onChangeText={(value) => setBudget(Number(value) * 100)}
             value={(budget / 100).toString()}
         />
         <Button onPress={onBudgetUpdate} block background="gradient">
             <Text weight="bold" color="white">
-                Update Budget
+                {t("settings.updateBudget")}
             </Text>
         </Button>
     </View>

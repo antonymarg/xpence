@@ -1,7 +1,8 @@
 import { theme } from '@/constants/theme'
-import { capitaliseFirst, formatPrice } from '@/lib/utils'
+import { formatPrice } from '@/lib/utils'
 import { MonthlyInsights } from '@/types/expenses.types'
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { StyleSheet, View } from 'react-native'
 import Card from '../Card'
 import Pressable from '../Pressable'
@@ -12,21 +13,22 @@ interface CategoryRankingProps {
 }
 
 function CategoryRanking({ expenses }: CategoryRankingProps) {
+    const { t } = useTranslation()
     const [showMore, setShowMore] = useState(false)
     return <View style={styles.container}>
         <Text size="lg" weight="bold">
-            Categories ranking
+            {t('insights.categoryRanking')}
         </Text>
         <View style={styles.ranking}>
             {expenses.slice(0, showMore ? expenses.length : 5).map((item, index) => {
                 return <Card padding='sm' key={item.category} style={styles.expenses}>
-                    <Text>{index + 1}. {capitaliseFirst(item.categoryType)}/ {item.category}</Text>
+                    <Text>{index + 1}. {t(`categories.${item.categoryType}`)} / {item.category}</Text>
                     <Text>{formatPrice(item.amount)}</Text>
                 </Card>
             })}
         </View>
         {expenses.length > 5 && <Pressable onPress={() => setShowMore(!showMore)} style={styles.showMore}>
-            <Text>Show {showMore ? 'less' : 'more'}</Text>
+            <Text>{showMore ? t('insights.showLess') : t('insights.showMore')}</Text>
         </Pressable>}
 
     </View>

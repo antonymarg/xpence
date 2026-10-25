@@ -2,6 +2,7 @@ import { Category } from "@/types/categories.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import z from "zod";
 import Button from "../Button";
 import CategoryTypePicker from "../CategoryTypePicker";
@@ -15,16 +16,16 @@ interface AddCategoryModalProps {
   onConfirm: (newCat: Omit<Category, "id">) => void;
 }
 
-const schema = z.object({
-  categoryName: z.string().min(1, "Please enter a name"),
-  categoryType: z.enum(["needs", "wants", "savings"]),
-});
-
 function AddCategoryModal({
   isVisible,
   onClose,
   onConfirm,
 }: AddCategoryModalProps) {
+  const { t } = useTranslation();
+  const schema = z.object({
+    categoryName: z.string().min(1, t("validation.nameRequired")),
+    categoryType: z.enum(["needs", "wants", "savings"], { error: t("validation.categoryTypeRequired") }),
+  });
   const {
     control,
     handleSubmit,
@@ -49,10 +50,10 @@ function AddCategoryModal({
   return (
     <Modal visible={Boolean(isVisible)} onClose={onClose}>
       <Text size="xl" weight="bold" textAlign="center">
-        Add new category
+        {t("categories.addTitle")}
       </Text>
       <Text size="sm" weight="bold" heading>
-        Name
+        {t("common.name")}
       </Text>
       <Controller
         control={control}
@@ -67,7 +68,7 @@ function AddCategoryModal({
         )}
       />
       <Text size="sm" weight="bold" heading>
-        Category Type
+        {t("common.categoryType")}
       </Text>
       <Controller
         name="categoryType"
@@ -81,11 +82,11 @@ function AddCategoryModal({
       />
       <Button onPress={handleSubmit(handleSave)} block background="gradient">
         <Text weight="bold" color="white">
-          Add Category
+          {t("categories.addAction")}
         </Text>
       </Button>
       <Button onPress={onClose} block background="icons">
-        <Text weight="bold">Close</Text>
+        <Text weight="bold">{t("common.close")}</Text>
       </Button>
     </Modal>
   );

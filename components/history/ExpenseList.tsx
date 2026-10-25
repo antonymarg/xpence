@@ -4,6 +4,7 @@ import { Category, CategoryType } from "@/types/categories.types";
 import { Expense } from "@/types/expenses.types";
 import { InfiniteData } from "@tanstack/react-query";
 import React, { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
 import Loading from "../Loading";
 import Text from "../Text";
@@ -19,42 +20,12 @@ interface ExpenseListProps {
   onDeleteExpensePress: (expense: Expense) => void;
 }
 
-function formatSectionDate(date: Date): string {
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  const formatted = `${months[date.getMonth()]} ${date.getDate()}`;
-  return formatted;
+function formatSectionDate(date: Date, language: string): string {
+  return new Intl.DateTimeFormat(language, {
+    month: "short",
+    day: "numeric",
+  }).format(date);
 }
-
-const transformData = (data: InfiniteData<Expense[]>) => {
-  const expenses = data.pages.flat();
-  if (!expenses.length) return [];
-
-  const items: ListItem[] = [];
-  let lastHeader = "";
-
-  for (let i = 0; i < expenses.length; i++) {
-    const expense = expenses[i];
-    const headerTitle = formatSectionDate(expense.date);
-
-    if (headerTitle !== lastHeader) {
-      lastHeader = headerTitle;
-      items.push({
-        type: "header",
-        id: `hdr-${headerTitle}`,
-        title: headerTitle,
-      });
-    }
-
-    items.push({
-      type: "expense",
-      id: expense.id,
-      data: expense,
-    });
-  }
-
-  return items;
-}
-
 
 export default function ExpenseList({
   selectedCategoryType,
@@ -65,6 +36,37 @@ export default function ExpenseList({
   onEditExpensePress,
   onDeleteExpensePress,
 }: ExpenseListProps) {
+  const { t, i18n } = useTranslation();
+  const language = i18n.resolvedLanguage || i18n.language;
+  const transformData = useCallback((data: InfiniteData<Expense[]>) => {
+    const expenses = data.pages.flat();
+    if (!expenses.length) return [];
+
+    const items: ListItem[] = [];
+    let lastHeader = "";
+
+    for (let index = 0; index < expenses.length; index++) {
+      const expense = expenses[index];
+      const headerTitle = formatSectionDate(expense.date, language);
+
+      if (headerTitle !== lastHeader) {
+        lastHeader = headerTitle;
+        items.push({
+          type: "header",
+          id: `hdr-${headerTitle}`,
+          title: headerTitle,
+        });
+      }
+
+      items.push({
+        type: "expense",
+        id: expense.id,
+        data: expense,
+      });
+    }
+
+    return items;
+  }, [language]);
   const {
     data: items = [],
     isLoading,
@@ -125,7 +127,7 @@ export default function ExpenseList({
       ListFooterComponent={isFetchingNextPage ? <ActivityIndicator size="small" /> : null}
       ListEmptyComponent={
         <View style={style.empty}>
-          <Text>No expenses found</Text>
+          <Text>{t("history.noExpenses")}</Text>
         </View>
       }
     />

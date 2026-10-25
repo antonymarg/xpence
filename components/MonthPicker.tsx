@@ -1,5 +1,6 @@
 import { theme } from "@/constants/theme";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 import Button from "./Button";
 import Icon from "./Icon";
@@ -8,11 +9,6 @@ import Pressable from "./Pressable";
 import Text from "./Text";
 
 
-const MONTHS = [
-    'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
-    'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'
-];
-
 interface MonthPickerProps {
     initialValue: Date;
     updateValue: (date: Date) => void;
@@ -20,8 +16,14 @@ interface MonthPickerProps {
 }
 
 function CustomMonthPicker({ initialValue, updateValue, onClose }: MonthPickerProps) {
+    const { t, i18n } = useTranslation()
     const [selectedMonth, setSelectedMonth] = useState(initialValue.getMonth())
     const [selectedYear, setSelectedYear] = useState(initialValue.getFullYear())
+    const monthLabels = Array.from({ length: 12 }, (_, month) =>
+        new Intl.DateTimeFormat(i18n.resolvedLanguage || i18n.language, { month: 'short' })
+            .format(new Date(2020, month, 1))
+            .toLocaleUpperCase(),
+    )
 
     const onConfirm = () => {
         updateValue(new Date(selectedYear, selectedMonth, 1))
@@ -39,7 +41,7 @@ function CustomMonthPicker({ initialValue, updateValue, onClose }: MonthPickerPr
                 </Pressable>
             </View>
             <View style={styles.monthPicker}>
-                {MONTHS.map((val, i) => (
+                {monthLabels.map((val, i) => (
                     <Pressable key={val} onPress={() => setSelectedMonth(i)} style={[styles.button, selectedMonth === i && styles.selectedButton]}>
                         <Text weight="bold">{val}</Text>
                     </Pressable>
@@ -47,10 +49,10 @@ function CustomMonthPicker({ initialValue, updateValue, onClose }: MonthPickerPr
             </View>
             <View style={styles.buttonsContainer}>
                 <Button onPress={onClose}>
-                    <Text weight="bold">Cancel</Text>
+                    <Text weight="bold">{t('monthPicker.cancel')}</Text>
                 </Button>
                 <Button background='primaryOrange' onPress={onConfirm}>
-                    <Text weight="bold" color="white">Confirm</Text>
+                    <Text weight="bold" color="white">{t('monthPicker.confirm')}</Text>
                 </Button>
             </View>
         </View>

@@ -1,6 +1,7 @@
 import { theme } from "@/constants/theme";
 import { Expense } from "@/types/expenses.types";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import Button from "../Button";
 import Icon from "../Icon";
@@ -18,6 +19,7 @@ function DeleteExpenseyModal({
   onClose,
   onConfirm,
 }: DeleteExpenseModalProps) {
+  const { t } = useTranslation();
   if (!expense) return null;
 
   return (
@@ -33,10 +35,10 @@ function DeleteExpenseyModal({
       </View>
       <View>
         <Text size="xl" weight="bold" textAlign="center">
-          Delete Expense
+          {t("expense.deleteTitle")}
         </Text>
         <Text textAlign="center">
-          Are you sure you want to delete "{expense.description}"?
+          {t("expense.deleteConfirmation", { description: expense.description })}
         </Text>
       </View>
       <Button
@@ -45,11 +47,11 @@ function DeleteExpenseyModal({
         background="primaryRed"
       >
         <Text weight="bold" color="white">
-          Delete
+          {t("common.delete")}
         </Text>
       </Button>
       <Button onPress={onClose} block background="icons">
-        <Text weight="bold">Close</Text>
+        <Text weight="bold">{t("common.close")}</Text>
       </Button>
     </Modal>
   );

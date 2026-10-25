@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabase";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   Keyboard,
@@ -17,22 +18,21 @@ import {
 } from "react-native";
 import z from "zod";
 
-const schema = z
-  .object({
-    email: z.string().email(),
-    password: z.string().min(8),
-    confirmPassword: z.string().min(8),
-    name: z.string().min(3),
-    budget: z.coerce.number().min(0),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ["confirmPassword"],
-  });
-
-type FormData = z.infer<typeof schema>;
-
 export default function Signup() {
+  const { t } = useTranslation();
+  const schema = z
+    .object({
+      email: z.string().email(t("validation.invalidEmail")),
+      password: z.string().min(8, t("validation.passwordMinLength", { count: 8 })),
+      confirmPassword: z.string().min(8, t("validation.passwordMinLength", { count: 8 })),
+      name: z.string().min(3, t("validation.nameMinLength", { count: 3 })),
+      budget: z.coerce.number({ error: t("validation.validBudget") }).min(0, t("validation.validBudget")),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: t("validation.passwordsMismatch"),
+      path: ["confirmPassword"],
+    });
+
   const [loading, setLoading] = React.useState(false);
   const [signupError, setSignupError] = React.useState<string | null>(null);
 
@@ -51,7 +51,7 @@ export default function Signup() {
     }
   });
 
-  const onSignupPress = async (formData: FormData) => {
+  const onSignupPress = async (formData: z.infer<typeof schema>) => {
     setSignupError(null);
     Keyboard.dismiss();
     setLoading(true);
@@ -63,7 +63,7 @@ export default function Signup() {
         },
       );
       if (signUpError || !authData?.user?.id) {
-        setSignupError("Failed to sign up");
+        setSignupError(t("auth.signupFailed"));
         return;
       }
       const { error: profileError } = await supabase
@@ -74,11 +74,11 @@ export default function Signup() {
           budget: formData.budget,
         });
       if (profileError) {
-        setSignupError("Failed to create profile");
+        setSignupError(t("auth.profileCreationFailed"));
         return;
       }
     } catch {
-      setSignupError("An unknown error occurred");
+      setSignupError(t("auth.unexpectedError"));
     } finally {
       setLoading(false);
     }
@@ -96,8 +96,8 @@ export default function Signup() {
           name="name"
           render={({ field }) => (
             <TextInput
-              placeholder="John"
-              label="What's your name?"
+              placeholder={t("auth.namePlaceholder")}
+              label={t("auth.nameLabel")}
               value={field.value}
               onChangeText={field.onChange}
               onBlur={field.onBlur}
@@ -111,8 +111,8 @@ export default function Signup() {
           name="email"
           render={({ field }) => (
             <TextInput
-              placeholder="name@example.com"
-              label="Email"
+              placeholder={t("auth.emailPlaceholder")}
+              label={t("common.email")}
               value={field.value}
               onChangeText={field.onChange}
               onBlur={field.onBlur}
@@ -129,8 +129,8 @@ export default function Signup() {
           name="password"
           render={({ field }) => (
             <TextInput
-              placeholder="Password"
-              label="Password"
+              placeholder={t("auth.passwordPlaceholder")}
+              label={t("common.password")}
               secureTextEntry
               value={field.value}
               onChangeText={field.onChange}
@@ -146,8 +146,8 @@ export default function Signup() {
           name="confirmPassword"
           render={({ field }) => (
             <TextInput
-              placeholder="Confirm password"
-              label="Confirm password"
+              placeholder={t("auth.confirmPassword")}
+              label={t("auth.confirmPassword")}
               secureTextEntry
               value={field.value}
               onChangeText={field.onChange}
@@ -164,7 +164,7 @@ export default function Signup() {
           render={({ field }) => (
             <TextInput
               placeholder="0"
-              label="What is your monthly goal?"
+              label={t("auth.monthlyGoal")}
               inputMode="numeric"
               value={field.value?.toString()}
               onChangeText={field.onChange}
@@ -185,7 +185,7 @@ export default function Signup() {
             <ActivityIndicator size="small" color="#fff" />
           ) : (
             <Text weight="bold" size='xl' color="white">
-              Sign Up
+              {t("auth.signUp")}
             </Text>
           )}
         </Button>

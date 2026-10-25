@@ -15,6 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -25,14 +26,14 @@ import {
 import Toast from "react-native-toast-message";
 import { z } from "zod";
 
-const schema = z.object({
-  amount: z.coerce.number().min(0.01, "Please enter a valid amount"),
-  description: z.string().min(1, "Please enter a description"),
-  categoryId: z.string().min(1, "Please select a category"),
-  date: z.date(),
-});
-
 function AddRecordPage() {
+  const { t } = useTranslation();
+  const schema = z.object({
+    amount: z.coerce.number().min(0.01, t("validation.validAmount")),
+    description: z.string().min(1, t("validation.descriptionRequired")),
+    categoryId: z.string().min(1, t("validation.categoryRequired")),
+    date: z.date({ error: t("validation.invalidDate") }),
+  });
   const {
     isLoading: isProfileLoading,
     isSuccess: isProfileSuccess,
@@ -70,7 +71,7 @@ function AddRecordPage() {
     if (result.success) {
       Toast.show({
         type: "success",
-        text1: "Expense added successfully",
+        text1: t("expense.expenseAdded"),
         visibilityTime: 5000,
         autoHide: true,
       });
@@ -78,7 +79,7 @@ function AddRecordPage() {
     } else {
       Toast.show({
         type: "error",
-        text1: "Something went wrong",
+        text1: t("expense.saveFailed"),
         visibilityTime: 5000,
         autoHide: true,
       });
@@ -112,11 +113,11 @@ function AddRecordPage() {
           <Ionicons name="close" color={theme.colors.textLight} size={32} />
         </Pressable>
         <Text size="xl" weight="bold">
-          Add Expense
+          {t("expense.addTitle")}
         </Text>
         <Pressable onPress={handleSubmit(handleSave)}>
           <Text size="lg" weight="bold" color="primaryRed">
-            Save
+            {t("common.save")}
           </Text>
         </Pressable>
       </View>
@@ -124,7 +125,7 @@ function AddRecordPage() {
         <View style={styles.mainForm}>
           <View style={styles.formSegment}>
             <Text size="sm" weight="bold" heading>
-              Amount
+              {t("common.amount")}
             </Text>
             <Controller
               control={control}
@@ -145,7 +146,7 @@ function AddRecordPage() {
           </View>
           <View style={styles.formSegment}>
             <Text size="sm" weight="bold" heading>
-              Description
+              {t("common.description")}
             </Text>
             <Controller
               control={control}
@@ -162,7 +163,7 @@ function AddRecordPage() {
           </View>
           <View style={styles.formSegment}>
             <Text size="sm" weight="bold" heading>
-              Available Categories
+              {t("expense.availableCategories")}
             </Text>
             <Controller
               name="categoryId"
@@ -179,7 +180,7 @@ function AddRecordPage() {
           </View>
           <View style={styles.formSegment}>
             <Text size="sm" weight="bold" heading>
-              Date
+              {t("common.date")}
             </Text>
             <Controller
               control={control}

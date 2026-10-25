@@ -5,6 +5,7 @@ import useMonthlyInsights from "@/hooks/useMonthlyInsights";
 import useProfile from "@/hooks/useProfile";
 import { CategoryType } from "@/types/categories.types";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { ScrollView, StyleSheet, View } from "react-native";
 import ErrorScreen from "../ErrorScreen";
 import CategoryCard from "../home/CategoryCard";
@@ -30,6 +31,7 @@ const BUDGET_PERCENT_PER_CATEGORY_TYPE = {
 
 
 function InsightsView({ categoryType }: InsightsViewProps) {
+    const { t } = useTranslation()
     const { month } = useInsightsContext()
     const {
         data: profile,
@@ -59,7 +61,7 @@ function InsightsView({ categoryType }: InsightsViewProps) {
 
     const sum = monthlyInsights.expenseSummary.needs + monthlyInsights.expenseSummary.wants + monthlyInsights.expenseSummary.savings
 
-    if (sum === 0) return <View><Text>No expenses this month</Text></View>
+    if (sum === 0) return <View><Text>{t("insights.noExpenses")}</Text></View>
 
     return (
         <ScrollView contentContainerStyle={styles.pageContainer}>
@@ -109,8 +111,8 @@ const styles = StyleSheet.create({
     },
     categoryBreakdown: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        gap: theme.spacing.sm
+        gap: theme.spacing.sm,
+        width: '100%',
     }
 })
 

@@ -9,9 +9,11 @@ import useProfile from "@/hooks/useProfile";
 import { supabase } from "@/lib/supabase";
 import { Redirect } from "expo-router";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 
 function SettingsPage() {
+    const { t } = useTranslation();
     const {
         data: profile,
         isLoading: isProfileLoading,
@@ -37,22 +39,22 @@ function SettingsPage() {
         <View style={styles.pageContainer}>
             <View style={styles.settingsGroup}>
                 <Text size="xl" weight="bold">
-                    Financial Plan
+                    {t("settings.financialPlan")}
                 </Text>
-                <SettingsOption label="Change monthly budget" href="/(app)/settings/changeBudget" />
-                <SettingsOption label="Manage categories" href="/(app)/settings/manageCategories" />
+                <SettingsOption label={t("settings.changeMonthlyBudget")} href="/(app)/settings/changeBudget" />
+                <SettingsOption label={t("settings.manageCategories")} href="/(app)/settings/manageCategories" />
             </View>
             <View style={styles.settingsGroup}>
                 <Text size="xl" weight="bold">
-                    Account settings
+                    {t("settings.accountSettings")}
                 </Text>
-                <SettingsOption label="Change currency" href="/(app)/settings/changeCurrency" />
-                <SettingsOption label="Change language" href="/(app)/settings/changeLocale" />
+                <SettingsOption label={t("settings.changeCurrency")} href="/(app)/settings/changeCurrency" />
+                <SettingsOption label={t("settings.changeLanguage")} href="/(app)/settings/changeLocale" />
             </View>
             <View style={styles.settingsGroup}>
                 <Button onPress={signOut} background="transparent" style={styles.footer}>
                     <Text size='lg' color="error" weight="bold">
-                        Sign out
+                        {t("settings.signOut")}
                     </Text>
                     <Icon color={theme.colors.error} name="exit" />
                 </Button>

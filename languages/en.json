@@ -1,0 +1,145 @@
+{
+    "translation": {
+        "change_locale": "Change language",
+        "update_language": "Update Language",
+        "update_locale_success": "Language updated successfully",
+        "common": {
+            "add": "Add",
+            "allTypes": "All types",
+            "amount": "Amount",
+            "cancel": "Cancel",
+            "category": "Category",
+            "categoryType": "Category type",
+            "close": "Close",
+            "confirm": "Confirm",
+            "date": "Date",
+            "delete": "Delete",
+            "description": "Description",
+            "email": "Email",
+            "name": "Name",
+            "password": "Password",
+            "retry": "Please try again",
+            "save": "Save",
+            "selectOption": "Please select an option",
+            "update": "Update"
+        },
+        "auth": {
+            "loginTab": "Login",
+            "signupTab": "Sign up",
+            "continue": "Continue",
+            "or": "or",
+            "continueWithGoogle": "Continue with Google",
+            "newHere": "New here?",
+            "createAccount": "Create an account",
+            "nameLabel": "What's your name?",
+            "namePlaceholder": "Your name",
+            "emailPlaceholder": "name@example.com",
+            "passwordPlaceholder": "Password",
+            "confirmPassword": "Confirm password",
+            "monthlyGoal": "What is your monthly goal?",
+            "signUp": "Sign up",
+            "loginFailed": "Unable to sign in with those credentials.",
+            "signupFailed": "Sign up failed. Please try again.",
+            "profileCreationFailed": "Unable to create your profile.",
+            "unexpectedError": "An unexpected error occurred."
+        },
+        "validation": {
+            "invalidEmail": "Please enter a valid email address.",
+            "passwordMinLength": "Password must be at least {{count}} characters.",
+            "nameMinLength": "Name must be at least {{count}} characters.",
+            "passwordsMismatch": "Passwords don't match.",
+            "validAmount": "Please enter a valid amount.",
+            "invalidDate": "Please select a valid date.",
+            "descriptionRequired": "Please enter a description.",
+            "categoryRequired": "Please select a category.",
+            "categoryTypeRequired": "Please select a category type.",
+            "nameRequired": "Please enter a name.",
+            "validBudget": "Please enter a valid budget."
+        },
+        "home": {
+            "welcomeBack": "Welcome back",
+            "greeting": "Hey, {{name}}",
+            "monthlyBudgetStatus": "Monthly budget status",
+            "overLimit": "Over limit",
+            "overBudget": "{{amount}} over budget",
+            "remaining": "{{amount}} remaining",
+            "budget": "Budget: {{amount}}",
+            "dailyTipTitle": "Tip: your daily allowance!",
+            "dailyTip": "To reach your goal by the end of the month, you can spend {{amount}} each day."
+        },
+        "expense": {
+            "addTitle": "Add expense",
+            "expenseAdded": "Expense added successfully",
+            "saveFailed": "Something went wrong",
+            "availableCategories": "Available categories",
+            "updateTitle": "Update expense",
+            "updated": "Expense updated successfully",
+            "deleteTitle": "Delete expense",
+            "deleteConfirmation": "Are you sure you want to delete \"{{description}}\"?"
+        },
+        "history": {
+            "title": "History",
+            "subtitle": "Track your spending",
+            "noExpenses": "No expenses found"
+        },
+        "insights": {
+            "title": "Monthly insights",
+            "subtitle": "Analyse your spending",
+            "overall": "Overall",
+            "needs": "Needs",
+            "wants": "Wants",
+            "savings": "Savings",
+            "noExpenses": "No expenses this month",
+            "categoryRanking": "Categories ranking",
+            "showMore": "Show more",
+            "showLess": "Show less",
+            "rightOnBudget": "Right on budget!",
+            "underBudget": "{{amount}} under budget",
+            "overBudget": "{{amount}} over budget"
+        },
+        "settings": {
+            "title": "Settings",
+            "subtitle": "Personalise your experience",
+            "financialPlan": "Financial plan",
+            "changeMonthlyBudget": "Change monthly budget",
+            "manageCategories": "Manage categories",
+            "accountSettings": "Account settings",
+            "changeCurrency": "Change currency",
+            "changeLanguage": "Change language",
+            "signOut": "Sign out",
+            "budgetUpdated": "Budget updated successfully",
+            "changeBudgetTitle": "Change budget",
+            "newBudget": "New budget",
+            "updateBudget": "Update budget",
+            "currencyUpdated": "Currency updated successfully",
+            "updateCurrency": "Update currency",
+            "categoriesUpdated": "Category added successfully",
+            "categoryDeleted": "Category deleted successfully",
+            "currentCategories": "Current categories"
+        },
+        "categories": {
+            "needs": "Needs",
+            "wants": "Wants",
+            "savings": "Savings",
+            "addTitle": "Add new category",
+            "addAction": "Add category",
+            "deleteTitle": "Delete category",
+            "deleteConfirmation": "Are you sure you want to delete this category?"
+        },
+        "errorScreen": {
+            "title": "Oh no! Something went wrong.",
+            "retry": "Please try again"
+        },
+        "dropdown": {
+            "selectItem": "Select an item"
+        },
+        "languages": {
+            "en": "English",
+            "gr": "Greek"
+        },
+        "monthPicker": {
+            "cancel": "Cancel",
+            "confirm": "Confirm"
+        }
+    }
+}
