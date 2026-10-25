@@ -25,13 +25,15 @@ function ChangeCurrency() {
     } = useProfile();
     const navigator = useNavigation()
 
-    const [currency, setCurrency] = useState(profile?.currency || 'EUR')
+    const [currency, setCurrency] = useState<Currency | null>(profile?.currency ?? null)
 
     if (isProfileLoading) return <Loading />
     if (!isProfileSuccess || !profile) return <ErrorScreen onRefresh={invalidateProfile} />
 
+    const selectedCurrency = currency ?? profile.currency;
+
     const onCurrencyUpdate = async () => {
-        const { success } = await userApi.updateUserCurrency(currency);
+        const { success } = await userApi.updateUserCurrency(selectedCurrency);
         if (success) {
             Toast.show({
                 type: "success",
@@ -46,7 +48,7 @@ function ChangeCurrency() {
     return <View style={styles.container}>
         <SettingsHeader label={t("settings.changeCurrency")} href="/(app)/settings" />
         <Dropdown<Currency>
-            value={currency}
+            value={selectedCurrency}
             onValueChange={setCurrency}
             options={Object.entries(currencies).map(([code, symbol]) => ({ label: `${code} (${symbol})`, value: code as Currency }))}
         />

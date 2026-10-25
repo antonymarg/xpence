@@ -1,6 +1,6 @@
 import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
-import { formatPrice } from "@/lib/utils";
+import usePriceFormatter from "@/hooks/usePriceFormatter";
 import { CategoryType } from "@/types/categories.types";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
@@ -35,6 +35,7 @@ const BUDGET_PER_CATEGORY = {
 
 function CategoryCard({ category, budget, amount, compact = false }: CategoryCardProps) {
   const { t } = useTranslation();
+  const formatCurrency = usePriceFormatter();
   const [color, icon, categoryPercentage] = getIconForCategory(category);
   const goal = BUDGET_PER_CATEGORY[category] * budget
   const percentage = (amount / goal) * 100
@@ -52,7 +53,7 @@ function CategoryCard({ category, budget, amount, compact = false }: CategoryCar
           {t(`categories.${category}`)}
         </Text>
         <Text>
-          {isNaN(percentage) ? "-" : formatPrice(amount)}
+          {isNaN(percentage) ? "-" : formatCurrency(amount)}
         </Text>
       </View>
     </Card >)
@@ -65,7 +66,7 @@ function CategoryCard({ category, budget, amount, compact = false }: CategoryCar
         </View>
         <View style={styling.textContainer}>
           <Text weight="bold" size="lg" style={styling.text}>
-            {isNaN(percentage) ? "-" : formatPrice(amount)}
+            {isNaN(percentage) ? "-" : formatCurrency(amount)}
           </Text>
           <Text style={styling.text}>
             {isNaN(percentage) ? "-" : percentage.toFixed(0) + "%"}

@@ -1,6 +1,6 @@
 import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
-import { formatPrice } from "@/lib/utils";
+import usePriceFormatter from "@/hooks/usePriceFormatter";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
@@ -14,6 +14,7 @@ interface OverviewCardProps {
 
 function OverviewCard({ sum, budget }: OverviewCardProps) {
   const { t } = useTranslation();
+  const formatCurrency = usePriceFormatter();
   const remaining = budget - sum;
   const isOverLimit = remaining < 0;
   const percentage = (sum / budget) * 100;
@@ -37,20 +38,20 @@ function OverviewCard({ sum, budget }: OverviewCardProps) {
         )}
       </View>
       <Text size="hero" weight="bold" style={styles.numberText}>
-        {formatPrice(sum)}
+        {formatCurrency(sum)}
       </Text>
       <View style={styles.remainingContainer}>
         <ProgressBar height={15} percentage={percentage} type="generic" />
         <View style={styles.remainingTextContainer}>
           {isOverLimit ? (
             <Text weight="bold" color="error">
-              {t("home.overBudget", { amount: formatPrice(Math.abs(remaining)) })}
+              {t("home.overBudget", { amount: formatCurrency(Math.abs(remaining)) })}
             </Text>
           ) : (
-            <Text size="sm">{t("home.remaining", { amount: formatPrice(remaining) })}</Text>
+            <Text size="sm">{t("home.remaining", { amount: formatCurrency(remaining) })}</Text>
           )}
           <Text size="sm" style={styles.budgetText}>
-            {t("home.budget", { amount: formatPrice(budget) })}
+            {t("home.budget", { amount: formatCurrency(budget) })}
           </Text>
         </View>
       </View>

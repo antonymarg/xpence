@@ -1,5 +1,5 @@
 import { theme } from '@/constants/theme'
-import { formatPrice } from '@/lib/utils'
+import usePriceFormatter from '@/hooks/usePriceFormatter'
 import { MonthlyInsights } from '@/types/expenses.types'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -14,6 +14,7 @@ interface CategoryRankingProps {
 
 function CategoryRanking({ expenses }: CategoryRankingProps) {
     const { t } = useTranslation()
+    const formatCurrency = usePriceFormatter()
     const [showMore, setShowMore] = useState(false)
     return <View style={styles.container}>
         <Text size="lg" weight="bold">
@@ -23,7 +24,7 @@ function CategoryRanking({ expenses }: CategoryRankingProps) {
             {expenses.slice(0, showMore ? expenses.length : 5).map((item, index) => {
                 return <Card padding='sm' key={item.category} style={styles.expenses}>
                     <Text>{index + 1}. {t(`categories.${item.categoryType}`)} / {item.category}</Text>
-                    <Text>{formatPrice(item.amount)}</Text>
+                    <Text>{formatCurrency(item.amount)}</Text>
                 </Card>
             })}
         </View>

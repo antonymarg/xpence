@@ -1,7 +1,7 @@
 import { theme } from "@/constants/theme";
+import usePriceFormatter from "@/hooks/usePriceFormatter";
 import { CategoryType } from "@/types/categories.types";
 import { Expense } from "@/types/expenses.types";
-import { formatPrice } from "@/lib/utils";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
@@ -21,6 +21,7 @@ function ExpenseCard({
   categoryType,
 }: ExpenseCardProps) {
   const { t } = useTranslation();
+  const formatCurrency = usePriceFormatter();
   return (
     <Card style={styles.container}>
       <View>
@@ -32,7 +33,7 @@ function ExpenseCard({
       </View>
       <View>
         <Text weight="bold" size="lg">
-          -{formatPrice(expense.amount)}
+          -{formatCurrency(expense.amount)}
         </Text>
       </View>
     </Card>

@@ -1,6 +1,6 @@
 import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
-import { formatPrice } from "@/lib/utils";
+import usePriceFormatter from "@/hooks/usePriceFormatter";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -14,6 +14,7 @@ interface SmartInsightProps {
 
 function SmartInsightCard({ remaining }: SmartInsightProps) {
   const { t } = useTranslation();
+  const formatCurrency = usePriceFormatter();
   const today = new Date()
   const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59, 999);
   const remainingDays = endOfMonth.getDate() - today.getDate()
@@ -25,7 +26,7 @@ function SmartInsightCard({ remaining }: SmartInsightProps) {
       <View style={styles.textContainer}>
         <Text weight="bold" size="lg">{t("home.dailyTipTitle")}</Text>
         <Text style={styles.mainText}>
-          {t("home.dailyTip", { amount: formatPrice(remaining / remainingDays) })}
+          {t("home.dailyTip", { amount: formatCurrency(remaining / remainingDays) })}
         </Text>
       </View>
     </Card>
