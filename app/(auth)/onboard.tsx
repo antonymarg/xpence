@@ -1,6 +1,7 @@
 import * as userApi from "@/api/users.api";
 import Button from "@/components/Button";
 import Dropdown from "@/components/Dropdown";
+import Logo from "@/components/Logo";
 import Text from "@/components/Text";
 import TextInput from "@/components/TextInput";
 import { currencies } from "@/constants/currency";
@@ -18,6 +19,7 @@ import {
     StyleSheet,
     View
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import z from "zod";
 
@@ -71,71 +73,74 @@ export default function Onboard() {
     });
 
     return (
-        <View style={styles.container}>
-            <KeyboardAvoidingView
-                style={styles.inputContainer}
-                behavior={Platform.OS === "ios" ? "padding" : undefined}
-            >
-                <Text size='xxl' weight="bold">{t("auth.welcomeTitle")}</Text>
-                <Controller
-                    control={control}
-                    name="name"
-                    render={({ field }) => (
-                        <TextInput
-                            placeholder={t("auth.namePlaceholder")}
-                            label={t("auth.nameLabel")}
-                            value={field.value}
-                            onChangeText={field.onChange}
-                            onBlur={field.onBlur}
-                            error={errors?.name?.message}
-                            editable={!loading}
-                        />
-                    )}
-                />
-                <Controller
-                    control={control}
-                    name="budget"
-                    render={({ field }) => (
-                        <TextInput
-                            placeholder="0"
-                            label={t("auth.monthlyGoal")}
-                            inputMode="numeric"
-                            value={field.value?.toString()}
-                            onChangeText={field.onChange}
-                            onBlur={field.onBlur}
-                            error={errors?.budget?.message}
-                            editable={!loading}
-                        />
-                    )}
-                />
-                <Controller
-                    control={control}
-                    name="currency"
-                    render={({ field }) => (
-                        <Dropdown<Currency>
-                            value={field.value}
-                            onValueChange={field.onChange}
-                            options={Object.entries(currencies).map(([code, symbol]) => ({ label: `${code} (${symbol})`, value: code as Currency }))}
-                        />
-                    )}
-                />
-                <Button
-                    disabled={loading}
-                    onPress={handleSubmit(onOnboardPress)}
-                    background="gradient"
-                    block
-                    style={styles.button}
+        <SafeAreaView style={styles.pageContainer}>
+            <Logo variant="long" height='10%' />
+            <View style={styles.container}>
+                <KeyboardAvoidingView
+                    style={styles.inputContainer}
+                    behavior={Platform.OS === "ios" ? "padding" : undefined}
                 >
-                    {loading ? (
-                        <ActivityIndicator size="small" color="#fff" />
-                    ) : (
-                        <Text weight="bold" size='xl' color="white">
-                            {t("auth.letsgo")}
-                        </Text>
-                    )}
-                </Button>
-            </KeyboardAvoidingView>
-        </View>
+                    <Text size='xxl' weight="bold">{t("auth.welcomeTitle")}</Text>
+                    <Controller
+                        control={control}
+                        name="name"
+                        render={({ field }) => (
+                            <TextInput
+                                placeholder={t("auth.namePlaceholder")}
+                                label={t("auth.nameLabel")}
+                                value={field.value}
+                                onChangeText={field.onChange}
+                                onBlur={field.onBlur}
+                                error={errors?.name?.message}
+                                editable={!loading}
+                            />
+                        )}
+                    />
+                    <Controller
+                        control={control}
+                        name="budget"
+                        render={({ field }) => (
+                            <TextInput
+                                placeholder="0"
+                                label={t("auth.monthlyGoal")}
+                                inputMode="numeric"
+                                value={field.value?.toString()}
+                                onChangeText={field.onChange}
+                                onBlur={field.onBlur}
+                                error={errors?.budget?.message}
+                                editable={!loading}
+                            />
+                        )}
+                    />
+                    <Controller
+                        control={control}
+                        name="currency"
+                        render={({ field }) => (
+                            <Dropdown<Currency>
+                                value={field.value}
+                                onValueChange={field.onChange}
+                                options={Object.entries(currencies).map(([code, symbol]) => ({ label: `${code} (${symbol})`, value: code as Currency }))}
+                            />
+                        )}
+                    />
+                    <Button
+                        disabled={loading}
+                        onPress={handleSubmit(onOnboardPress)}
+                        background="gradient"
+                        block
+                        style={styles.button}
+                    >
+                        {loading ? (
+                            <ActivityIndicator size="small" color="#fff" />
+                        ) : (
+                            <Text weight="bold" size='xl' color="white">
+                                {t("auth.letsgo")}
+                            </Text>
+                        )}
+                    </Button>
+                </KeyboardAvoidingView>
+            </View>
+        </SafeAreaView>
     );
 }
 
@@ -144,7 +149,6 @@ const styles = StyleSheet.create({
         height: "100%",
         flex: 1,
         paddingTop: theme.spacing.lg,
-        backgroundColor: theme.colors.background
     },
     inputContainer: {
         gap: theme.spacing.lg,
@@ -153,4 +157,10 @@ const styles = StyleSheet.create({
         borderColor: theme.colors.divider,
         borderWidth: 1,
     },
+    pageContainer: {
+        flex: 1,
+        backgroundColor: theme.colors.background,
+        paddingHorizontal: theme.spacing.lg,
+        paddingVertical: theme.spacing.xxl,
+    }
 });

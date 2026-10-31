@@ -12,17 +12,16 @@ import {
   useFonts,
 } from "@expo-google-fonts/manrope";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Stack, useRouter } from "expo-router";
+import { Stack, usePathname, useRouter } from "expo-router";
 import i18n from 'i18next';
 import React, { PropsWithChildren, useEffect } from "react";
 import { initReactI18next } from "react-i18next";
 import Toast from "react-native-toast-message";
 
 const client = new QueryClient();
-const publicAuthRoutes = [
-  "/(auth)/(tabs)/login",
-  "/(auth)/(tabs)/signup",
-  "/(auth)/onboard",
+const publicPages = [
+  "/login",
+  "/signup",
 ];
 
 i18n
@@ -55,28 +54,23 @@ export default function RootLayout() {
     Manrope_800ExtraBold,
   });
   const router = useRouter();
+  const pathname = usePathname();
+  const isOnPublicPage = publicPages.includes(pathname);
 
   useEffect(() => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
-
-      if (!session) {
-        router.replace("/(auth)/(tabs)/login");
-        return;
-      }
+      if (!isOnPublicPage && session) return;
 
       const nextRoute = await resolveAuthRoute(session);
-
-      if (!publicAuthRoutes.includes(nextRoute)) {
-        router.replace(nextRoute);
-      }
+      router.replace(nextRoute);
     });
 
     return () => {
       subscription.unsubscribe();
     };
-  }, [router]);
+  }, [isOnPublicPage, router]);
 
   if (!fontsLoaded) return <RootWrapper>
     <Loading />
