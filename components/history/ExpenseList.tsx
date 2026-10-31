@@ -95,15 +95,13 @@ export default function ExpenseList({
       if (!category) return null;
 
       return (
-        <View style={style.cardWrapper}>
-          <ExpenseCard
-            expense={item.data}
-            categoryName={category.name}
-            categoryType={category.type}
-            onEdit={onEditExpensePress}
-            onDelete={onDeleteExpensePress}
-          />
-        </View>
+        <ExpenseCard
+          expense={item.data}
+          categoryName={category.name}
+          categoryType={category.type}
+          onEdit={onEditExpensePress}
+          onDelete={onDeleteExpensePress}
+        />
       );
     },
     [availableCategories, onEditExpensePress, onDeleteExpensePress]
@@ -113,7 +111,7 @@ export default function ExpenseList({
 
   return (
     <FlatList
-      style={style.list}
+      // style={style.list}
       contentContainerStyle={style.listContent}
       data={items}
       keyExtractor={(item) => item.id}
@@ -139,13 +137,11 @@ const style = StyleSheet.create({
     flex: 1,
   },
   listContent: {
-    gap: theme.spacing.md,
+    paddingHorizontal: theme.spacing.md,
+    gap: theme.spacing.sm,
   },
   dateHeader: {
-    paddingVertical: theme.spacing.md,
-  },
-  cardWrapper: {
-    marginBottom: theme.spacing.sm
+    paddingVertical: theme.spacing.sm,
   },
   empty: {
     padding: theme.spacing.xl,

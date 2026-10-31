@@ -19,7 +19,13 @@ interface ITextInputProps extends RNTextInputProps {
   containerStyle?: ViewProps['style']
 }
 
-export default function TextInput({ label, error, ...props }: ITextInputProps) {
+export default function TextInput({
+  label,
+  error,
+  icon,
+  containerStyle,
+  ...props
+}: ITextInputProps) {
   const [isFocused, setIsFocused] = useState(false);
 
   const onFocus = (e: FocusEvent) => {
@@ -43,15 +49,15 @@ export default function TextInput({ label, error, ...props }: ITextInputProps) {
         styles.input,
         isFocused && styles.inputFocused,
         error && styles.inputError,
-        props.containerStyle
+        containerStyle
       ]}>
         <RNTextInput
           {...props}
           onFocus={onFocus}
           onBlur={onBlur}
-          style={styles.textInput}
+          style={[styles.textInput, props.style]}
         />
-        {props.icon && <Icon name={props.icon} style={styles.icon} />}
+        {icon && <Icon name={icon} style={styles.icon} />}
       </View>
       {error && <Text style={styles.error}>{error}</Text>}
     </View>
@@ -69,7 +75,6 @@ const styles = StyleSheet.create({
     marginTop: theme.spacing.xs,
   },
   input: {
-    flex: 1,
     flexDirection: 'row',
     padding: theme.spacing.md,
     backgroundColor: theme.colors.card,
@@ -87,6 +92,9 @@ const styles = StyleSheet.create({
     marginLeft: 'auto'
   },
   textInput: {
-    flex: 1
+    flex: 1,
+    color: theme.colors.textDark,
+    padding: 0,
+    textAlignVertical: "center",
   }
 });

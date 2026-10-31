@@ -58,12 +58,14 @@ const styles = (category: CategoryType, isSelected: boolean) =>
     container: {
       flexDirection: "row",
       gap: theme.spacing.sm,
+      flexWrap: "wrap"
     },
     categoryTypeButton: {
-      flex: 1,
+      flexShrink: 0,
       alignItems: "center",
       justifyContent: "center",
       paddingVertical: theme.spacing.sm,
+      paddingHorizontal: theme.spacing.sm,
       borderRadius: theme.borderRadius.md,
       borderWidth: isSelected ? 1 : 0,
       borderColor: theme.colors[category],

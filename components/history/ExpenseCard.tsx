@@ -30,7 +30,7 @@ function ExpenseCard({
 
   return (
     <>
-      <Card style={styles.container}>
+      <Card style={styles.container} padding="sm" borderRadius="sm">
         <View>
           <Text weight="bold">{expense.description}</Text>
           <View style={styles.leftSide}>
@@ -39,7 +39,7 @@ function ExpenseCard({
           </View>
         </View>
         <View style={styles.rightSide}>
-          <Text weight="bold" size="lg">
+          <Text weight="bold">
             -{formatCurrency(expense.amount)}
           </Text>
           <ExpenseActionsMenu

@@ -5,7 +5,7 @@ import Text from "./Text";
 
 interface PillProps {
   variant: "red" | "orange" | "wants" | "needs" | "savings" | "generic";
-  label: string;
+  label: string
 }
 
 const variantToColors = (variant: PillProps["variant"]) => {
@@ -21,7 +21,7 @@ const variantToColors = (variant: PillProps["variant"]) => {
     case "savings":
       return [theme.colors.savingsBg, "savings"] as const;
     default:
-      return [theme.colors.icons, "textLight"] as const;
+      return [theme.colors.background, "textLight"] as const;
   }
 };
 
@@ -29,7 +29,7 @@ function Pill({ label, variant }: PillProps) {
   const [bgColor, textColor] = variantToColors(variant);
   return (
     <View style={styles(bgColor).pill}>
-      <Text heading weight="bold" color={textColor} size="sm">
+      <Text heading weight="bold" color={textColor} size='xs'>
         {label}
       </Text>
     </View>

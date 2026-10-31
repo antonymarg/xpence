@@ -84,7 +84,7 @@
             "remaining": "{{amount}} remaining",
             "budget": "Budget: {{amount}}",
             "dailyTipTitle": "Tip: your daily allowance!",
-            "dailyTip": "To reach your goal by the end of the month, you can spend {{amount}} each day."
+            "dailyTip": "To reach your goal by the end of the month, you can spend <bold>{{amount}}</bold> each day."
         },
         "expense": {
             "addTitle": "Add expense",

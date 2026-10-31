@@ -1,4 +1,8 @@
-import * as expenseApi from "@/api/expenses.api";
+import {
+    EXPENSE_PAGE_SIZE,
+    getExpenses,
+    type ExpenseCursor,
+} from "@/api/expenses.api";
 import { unwrap } from "@/lib/utils";
 import { CategoryType } from "@/types/categories.types";
 import { Expense } from "@/types/expenses.types";
@@ -8,8 +12,6 @@ export type ListItem =
     | { type: "header"; id: string; title: string }
     | { type: "expense"; id: string; data: Expense };
 
-const PAGE_SIZE = 20;
-
 interface UseExpensesArgs {
     selectedCategoryType: CategoryType | "all";
     selectedCategory: string | null;
@@ -17,44 +19,47 @@ interface UseExpensesArgs {
     toDate: Date;
 }
 
-type SelectFn = (data: InfiniteData<Expense[]>) => ListItem[]
+type SelectFn = (data: InfiniteData<Expense[]>) => ListItem[];
 
 const useExpenses = (args: UseExpensesArgs, select?: SelectFn) => {
     const queryClient = useQueryClient();
+    const initialPageParam = null as ExpenseCursor | null;
     const query = useInfiniteQuery({
         queryKey: [
             "expenses",
             "history",
             args.selectedCategoryType,
             args.selectedCategory,
-            args.fromDate.toISOString().split('T')[0],
-            args.toDate.toISOString().split('T')[0],
+            args.fromDate.toISOString().split("T")[0],
+            args.toDate.toISOString().split("T")[0],
         ],
         queryFn: ({ pageParam }) =>
             unwrap(
-                expenseApi.getExpenses({
-                    offSet: pageParam,
+                getExpenses({
+                    after: pageParam,
                     categoryType:
-                        args.selectedCategoryType === "all" ? undefined : args.selectedCategoryType,
+                        args.selectedCategoryType === "all"
+                            ? undefined
+                            : args.selectedCategoryType,
                     categoryId: args.selectedCategory,
                     fromDate: args.fromDate,
                     toDate: args.toDate,
                 }),
             ),
-        initialPageParam: 0,
-        getNextPageParam: (lastPage, _allPages, lastPageParam) => {
-            if (lastPage.length < PAGE_SIZE) return undefined;
-            return lastPageParam + PAGE_SIZE;
+        initialPageParam,
+        getNextPageParam: (lastPage) => {
+            if (lastPage.length < EXPENSE_PAGE_SIZE) return undefined;
+            const lastExpense = lastPage[lastPage.length - 1];
+            return { date: lastExpense.date, id: lastExpense.id };
         },
-        select
-    }
-    )
-
+        select,
+    });
 
     const invalidateExpenses = async () => {
         await queryClient.invalidateQueries({ queryKey: ["expenses"] });
-    }
-    return { ...query, invalidateExpenses }
-}
+    };
+
+    return { ...query, invalidateExpenses };
+};
 
 export default useExpenses

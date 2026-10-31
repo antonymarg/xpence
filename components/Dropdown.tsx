@@ -31,7 +31,7 @@ function Dropdown<T = string>({ value, heading, onValueChange, options }: Dropdo
         <Pressable onPress={() => setIsModalOpen(true)}>
             <TextInput label={heading} readOnly value={textInputText} icon='chevron-down' />
         </Pressable>
-        {isModalOpen && <Modal onClose={() => { setIsModalOpen(false) }} style={style.modal}>
+        {isModalOpen && <Modal onClose={() => { setIsModalOpen(false) }}>
             <Text size='xl' weight='bold'>{t('dropdown.selectItem')}</Text>
             <ScrollView>
                 {options.map((el) => {
@@ -56,9 +56,6 @@ const style = StyleSheet.create({
     selectedOption: {
         backgroundColor: theme.colors.primaryOrangeBg
     },
-    modal: {
-        maxHeight: '80%'
-    }
 })
 
 export default Dropdown

@@ -88,19 +88,22 @@ function HistoryPage() {
 
   return (
     <View style={styles.pageContainer}>
-      <View>
+      <View style={styles.horizontalPadding}>
         <Text size="title" weight="bold">
           {t("history.title")}
         </Text>
         <Text size="lg">{t("history.subtitle")}</Text>
       </View>
-      <CategoryPicker
-        onSelectCategory={onSelectCategory}
-        onSelectCategoryType={onSelectCategoryType}
-        selectedCategoryType={selectedCategoryType}
-        selectedCategory={selectedCategory}
-        availableCategories={userCategories}
-      />
+      <View style={styles.horizontalPadding}>
+
+        <CategoryPicker
+          onSelectCategory={onSelectCategory}
+          onSelectCategoryType={onSelectCategoryType}
+          selectedCategoryType={selectedCategoryType}
+          selectedCategory={selectedCategory}
+          availableCategories={userCategories}
+        />
+      </View>
       <View style={styles.dateRangeSelector}>
         <DatePicker onChange={setFromDate} value={fromDate} />
         <DatePicker onChange={setToDate} value={toDate} />
@@ -134,12 +137,16 @@ const styles = StyleSheet.create({
   pageContainer: {
     flex: 1,
     backgroundColor: theme.colors.background,
-    padding: theme.spacing.md,
+    paddingTop: theme.spacing.md,
     gap: theme.spacing.md,
+  },
+  horizontalPadding: {
+    paddingHorizontal: theme.spacing.md
   },
   dateRangeSelector: {
     flexDirection: "row",
     gap: theme.spacing.md,
+    paddingHorizontal: theme.spacing.md
   },
 });
 

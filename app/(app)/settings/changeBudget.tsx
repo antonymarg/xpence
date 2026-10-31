@@ -23,6 +23,7 @@ function ChangeBudget() {
     } = useProfile();
     const navigator = useNavigation()
     const [budget, setBudget] = useState<number>(profile?.budget ?? 0 / 100);
+
     if (isProfileLoading) return <Loading />
     if (!isProfileSuccess || !profile) return <ErrorScreen onRefresh={invalidateProfile} />
 

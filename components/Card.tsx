@@ -31,7 +31,7 @@ const styles = ({ padding, borderRadius }: Required<CardOnlyProps>) =>
       backgroundColor: theme.colors.card,
       padding: theme.spacing[padding],
       borderRadius: theme.borderRadius[borderRadius],
-      ...theme.shadows.soft,
+      ...theme.shadows.whisper,
     },
   });
 

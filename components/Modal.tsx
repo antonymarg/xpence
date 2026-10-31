@@ -41,6 +41,7 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: theme.colors.card,
+    maxHeight: '65%',
     width: "80%",
     padding: theme.spacing.lg,
     borderRadius: theme.borderRadius.md,

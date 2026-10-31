@@ -19,11 +19,11 @@ interface CategoryCardProps {
 const getIconForCategory = (category: CategoryType) => {
   switch (category) {
     case "needs":
-      return [theme.colors.needs, "home", 0.5] as const;
+      return [theme.colors.needs, "home"] as const;
     case "wants":
-      return [theme.colors.wants, "heart", 0.3] as const;
+      return [theme.colors.wants, "cart"] as const;
     case "savings":
-      return [theme.colors.savings, "logo-euro", 0.2] as const;
+      return [theme.colors.savings, "wallet"] as const;
   }
 };
 
@@ -36,7 +36,7 @@ const BUDGET_PER_CATEGORY = {
 function CategoryCard({ category, budget, amount, compact = false }: CategoryCardProps) {
   const { t } = useTranslation();
   const formatCurrency = usePriceFormatter();
-  const [color, icon, categoryPercentage] = getIconForCategory(category);
+  const [color, icon] = getIconForCategory(category);
   const goal = BUDGET_PER_CATEGORY[category] * budget
   const percentage = (amount / goal) * 100
   const styling = styles({ category, compact });
@@ -48,7 +48,7 @@ function CategoryCard({ category, budget, amount, compact = false }: CategoryCar
           {isNaN(percentage) ? "-" : percentage.toFixed(0) + "%"}
         </Text>
       </View>
-      <View >
+      <View style={styling.centerAlign}>
         <Text size="sm" weight="bold" textAlign='center' color={category}>
           {t(`categories.${category}`)}
         </Text>
@@ -78,7 +78,7 @@ function CategoryCard({ category, budget, amount, compact = false }: CategoryCar
       </View>
       <ProgressBar
         height={10}
-        percentage={Math.min(percentage / categoryPercentage, 100)}
+        percentage={Math.min(percentage, 100)}
         type={category}
       />
     </Card>
@@ -113,6 +113,9 @@ const styles = ({ category }: { category: CategoryType, compact: boolean }) =>
     labelText: {
       paddingBottom: theme.spacing.sm,
     },
+    centerAlign: {
+      alignItems: 'center'
+    }
   });
 
 export default CategoryCard;

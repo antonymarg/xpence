@@ -6,14 +6,19 @@ import { Database } from "@/types/database.types";
 import { Expense, ExpensesSummary, MonthlyInsights } from "@/types/expenses.types";
 import { getUserId } from "./users.api";
 
-const OFFSET_GAP = 20;
+export const EXPENSE_PAGE_SIZE = 20;
+
+export type ExpenseCursor = {
+  date: Date;
+  id: string;
+};
 
 type GetExpensesParam = {
   categoryId?: string | null;
   categoryType?: CategoryType;
   fromDate?: Date;
   toDate?: Date;
-  offSet?: number;
+  after?: ExpenseCursor | null;
 };
 
 type GetInsightsParams = {
@@ -87,19 +92,25 @@ async function getMonthlyInsights(params: GetInsightsParams): Result<MonthlyInsi
 async function getExpenses(params: GetExpensesParam): Result<Expense[]> {
   try {
     const userId = await getUserId();
-    const offset = params.offSet ?? 0;
     let query = supabase
       .from("expenses")
       .select("id, amount, date, description, categories!inner (id, type)")
       .eq("user_id", userId)
-      .order("date", { ascending: false });
+      .order("date", { ascending: false })
+      .order("id", { ascending: false });
     if (params.categoryType && !params.categoryId)
       query = query.eq("categories.type", params.categoryType);
     if (params.categoryId) query = query.eq("categories.id", params.categoryId);
     if (params.fromDate)
       query = query.gte("date", params.fromDate.toISOString());
     if (params.toDate) query = query.lte("date", params.toDate.toISOString());
-    query = query.range(offset, offset + OFFSET_GAP - 1);
+    if (params.after) {
+      const cursorDate = params.after.date.toISOString();
+      query = query.or(
+        `date.lt.${cursorDate},and(date.eq.${cursorDate},id.lt.${params.after.id})`,
+      );
+    }
+    query = query.limit(EXPENSE_PAGE_SIZE);
     const { data, error } = await query;
     if (error) throw error;
     return {

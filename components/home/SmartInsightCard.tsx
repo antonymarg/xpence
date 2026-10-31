@@ -3,7 +3,7 @@ import { theme } from "@/constants/theme";
 import usePriceFormatter from "@/hooks/usePriceFormatter";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 import Card from "../Card";
 
@@ -19,14 +19,20 @@ function SmartInsightCard({ remaining }: SmartInsightProps) {
   const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59, 999);
   const remainingDays = (endOfMonth.getDate() - today.getDate()) || 1
   return (
-    <Card style={styles.container}>
-      <View style={styles.iconWrapper}>
-        <Ionicons name="bulb" size={24} color={theme.colors.primaryOrange} />
+    <Card>
+      <View style={styles.container}>
+        <View style={styles.iconWrapper}>
+          <Ionicons name="bulb" size={24} color={theme.colors.primaryOrange} />
+        </View>
+        <Text weight="bold" size="lg">{t("home.dailyTipTitle")}</Text>
       </View>
       <View style={styles.textContainer}>
-        <Text weight="bold" size="lg">{t("home.dailyTipTitle")}</Text>
         <Text style={styles.mainText}>
-          {t("home.dailyTip", { amount: formatCurrency(remaining / remainingDays) })}
+          <Trans
+            i18nKey="home.dailyTip"
+            values={{ amount: formatCurrency(remaining / remainingDays) }}
+            components={{ bold: <Text weight="bold" /> }}
+          />
         </Text>
       </View>
     </Card>
@@ -36,7 +42,9 @@ function SmartInsightCard({ remaining }: SmartInsightProps) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    gap: theme.spacing.sm,
+    gap: theme.spacing.md,
+    alignItems: 'center',
+    marginBottom: theme.spacing.sm
   },
   textContainer: {
     flex: 1,
