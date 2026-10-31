@@ -8,35 +8,47 @@ import { StyleSheet, View } from "react-native";
 import Card from "../Card";
 import Pill from "../Pill";
 import Text from "../Text";
+import ExpenseActionsMenu from "./ExpenseActionsMenu";
 
 interface ExpenseCardProps {
   expense: Expense;
   categoryName: string;
   categoryType: CategoryType;
+  onEdit: (expense: Expense) => void;
+  onDelete: (expense: Expense) => void;
 }
 
 function ExpenseCard({
   expense,
   categoryName,
   categoryType,
+  onEdit,
+  onDelete,
 }: ExpenseCardProps) {
   const { t } = useTranslation();
   const formatCurrency = usePriceFormatter();
+
   return (
-    <Card style={styles.container}>
-      <View>
-        <Text weight="bold">{expense.description}</Text>
-        <View style={styles.leftSide}>
-          <Pill variant={categoryType} label={t(`categories.${categoryType}`)} />
-          <Pill variant="generic" label={categoryName} />
+    <>
+      <Card style={styles.container}>
+        <View>
+          <Text weight="bold">{expense.description}</Text>
+          <View style={styles.leftSide}>
+            <Pill variant={categoryType} label={t(`categories.${categoryType}`)} />
+            <Pill variant="generic" label={categoryName} />
+          </View>
         </View>
-      </View>
-      <View>
-        <Text weight="bold" size="lg">
-          -{formatCurrency(expense.amount)}
-        </Text>
-      </View>
-    </Card>
+        <View style={styles.rightSide}>
+          <Text weight="bold" size="lg">
+            -{formatCurrency(expense.amount)}
+          </Text>
+          <ExpenseActionsMenu
+            onEdit={() => onEdit(expense)}
+            onDelete={() => onDelete(expense)}
+          />
+        </View>
+      </Card>
+    </>
   );
 }
 
@@ -50,6 +62,10 @@ const styles = StyleSheet.create({
     marginTop: theme.spacing.xs,
     flexDirection: "row",
     gap: theme.spacing.sm,
+  },
+  rightSide: {
+    flexDirection: 'row',
+    gap: theme.spacing.sm
   },
 });
 

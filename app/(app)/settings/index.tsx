@@ -7,13 +7,14 @@ import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
 import useProfile from "@/hooks/useProfile";
 import { supabase } from "@/lib/supabase";
-import { Redirect } from "expo-router";
+import { Redirect, useRouter } from "expo-router";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 
 function SettingsPage() {
     const { t } = useTranslation();
+    const router = useRouter();
     const {
         data: profile,
         isLoading: isProfileLoading,
@@ -23,6 +24,7 @@ function SettingsPage() {
 
     const signOut = async () => {
         await supabase.auth.signOut();
+        router.replace("/(auth)/(tabs)/login");
     };
 
     if (isProfileLoading) return <Loading />
@@ -33,7 +35,7 @@ function SettingsPage() {
         );
     }
 
-    if (!profile) return <Redirect href="/(auth)/login" />
+    if (!profile) return <Redirect href="/(auth)/(tabs)/login" />
 
     return (
         <View style={styles.pageContainer}>

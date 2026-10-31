@@ -24,7 +24,7 @@ function DeleteExpenseyModal({
 
   return (
     <Modal visible={Boolean(expense)} onClose={onClose}>
-      <View>
+      <View style={{ alignItems: "center" }}>
         <Icon
           name="warning"
           color={theme.colors.error}

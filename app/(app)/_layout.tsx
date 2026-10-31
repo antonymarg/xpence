@@ -23,7 +23,7 @@ export default function AppLayout() {
   }
 
   if (!profile) {
-    return <Redirect href="/(auth)/login" />;
+    return <Redirect href="/(auth)/(tabs)/login" />;
   }
 
   return (

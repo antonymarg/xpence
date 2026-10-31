@@ -14,6 +14,7 @@
             "confirm": "Επιβεβαίωση",
             "date": "Ημερομηνία",
             "delete": "Διαγραφή",
+            "edit": "Επεξεργασία",
             "description": "Περιγραφή",
             "email": "Email",
             "name": "Όνομα",
@@ -26,6 +27,22 @@
         "auth": {
             "loginTab": "Σύνδεση",
             "signupTab": "Εγγραφή",
+            "login": "Σύνδεση",
+            "signup": "Εγγραφή",
+            "noAccount": "Δεν έχετε λογαριασμό;",
+            "forgotPassword": "Ξεχάσατε τον κωδικό σας;",
+            "enterEmailToReset": "Παρακαλώ εισάγετε το email σας για να επαναφέρετε τον κωδικό σας.",
+            "resetPasswordSent": "Το email επαναφοράς κωδικού στάλθηκε.",
+            "resetPasswordFailed": "Δεν ήταν δυνατή η αποστολή του email επαναφοράς.",
+            "emailLabel": "Email",
+            "emailPlaceholder": "name@example.com",
+            "passwordLabel": "Κωδικός πρόσβασης",
+            "passwordPlaceholder": "Κωδικός πρόσβασης",
+            "confirmPasswordLabel": "Επιβεβαίωση κωδικού πρόσβασης",
+            "confirmPasswordPlaceholder": "Επιβεβαίωση κωδικού πρόσβασης",
+            "confirmPassword": "Επιβεβαίωση κωδικού πρόσβασης",
+            "signupSuccess": "Ο λογαριασμός σας είναι έτοιμος!",
+            "confirmEmail": "Ελέγξτε το email σας για να επιβεβαιώσετε τον λογαριασμό σας.",
             "continue": "Συνέχεια",
             "or": "ή",
             "continueWithGoogle": "Συνέχεια με Google",
@@ -33,15 +50,17 @@
             "createAccount": "Δημιουργία λογαριασμού",
             "nameLabel": "Πώς σας λένε;",
             "namePlaceholder": "Το όνομά σας",
-            "emailPlaceholder": "name@example.com",
-            "passwordPlaceholder": "Κωδικός πρόσβασης",
-            "confirmPassword": "Επιβεβαίωση κωδικού πρόσβασης",
+            "welcomeTitle": "Καλώς ήρθατε στο XPence!",
             "monthlyGoal": "Ποιος είναι ο μηνιαίος στόχος σας;",
+            "currency": "Νόμισμα",
             "signUp": "Εγγραφή",
+            "checkYourMail": "Ελέγξτε το email σας!",
+            "confirmationMessage": "Σας στείλαμε έναν σύνδεσμο επιβεβαίωσης στο email σας. Παρακαλούμε επιβεβαιώστε τον λογαριασμό σας.",
             "loginFailed": "Δεν ήταν δυνατή η σύνδεση με αυτά τα στοιχεία.",
             "signupFailed": "Η εγγραφή απέτυχε. Δοκιμάστε ξανά.",
             "profileCreationFailed": "Δεν ήταν δυνατή η δημιουργία του προφίλ σας.",
-            "unexpectedError": "Παρουσιάστηκε ένα απρόσμενο σφάλμα."
+            "unexpectedError": "Παρουσιάστηκε ένα απρόσμενο σφάλμα.",
+            "letsgo": "Ας ξεκινήσουμε"
         },
         "validation": {
             "invalidEmail": "Πληκτρολογήστε μια έγκυρη διεύθυνση email.",
@@ -75,11 +94,12 @@
             "updateTitle": "Ενημέρωση εξόδου",
             "updated": "Η έξοδος ενημερώθηκε με επιτυχία",
             "deleteTitle": "Διαγραφή εξόδου",
-            "deleteConfirmation": "Θέλετε σίγουρα να διαγράψετε την έξοδο «{{description}}»;"
+            "deleteConfirmation": "Θέλετε σίγουρα να διαγράψετε το έξοδο «{{description}}»;"
         },
         "history": {
             "title": "Ιστορικό",
             "subtitle": "Παρακολουθήστε τις δαπάνες σας",
+            "toggleActions": "Εμφάνιση ενεργειών εξόδου",
             "noExpenses": "Δεν βρέθηκαν έξοδα"
         },
         "insights": {

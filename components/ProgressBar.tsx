@@ -41,6 +41,7 @@ const styles = ({ height, percentage, type }: ProgressBarProps) =>
   StyleSheet.create({
     container: {
       height,
+      flex: 1,
       borderRadius: theme.borderRadius.sm,
       backgroundColor:
         type === "generic"

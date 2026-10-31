@@ -44,12 +44,12 @@ function CategoryCard({ category, budget, amount, compact = false }: CategoryCar
   if (compact) return (
     <Card padding='sm' style={styling.compactStyleWrapper} >
       <View style={styling.iconWrapper}>
-        <Text style={styling.text}>
+        <Text textAlign='center' color={category}>
           {isNaN(percentage) ? "-" : percentage.toFixed(0) + "%"}
         </Text>
       </View>
-      <View style={styling.textContainer}>
-        <Text size="sm" weight="bold" color={category} style={styling.compactLabelText}>
+      <View >
+        <Text size="sm" weight="bold" textAlign='center' color={category}>
           {t(`categories.${category}`)}
         </Text>
         <Text>
@@ -64,18 +64,18 @@ function CategoryCard({ category, budget, amount, compact = false }: CategoryCar
         <View style={styling.iconWrapper}>
           <Ionicons name={icon} size={24} color={color} />
         </View>
-        <View style={styling.textContainer}>
-          <Text weight="bold" size="lg" style={styling.text}>
-            {isNaN(percentage) ? "-" : formatCurrency(amount)}
-          </Text>
-          <Text style={styling.text}>
-            {isNaN(percentage) ? "-" : percentage.toFixed(0) + "%"}
-          </Text>
-        </View>
+        <Text weight="bold" size="lg" textAlign='center' color={category}>
+          {isNaN(percentage) ? "-" : formatCurrency(amount)}
+        </Text>
       </View>
-      <Text weight="bold" style={styling.labelText}>
-        {t(`categories.${category}`).toLocaleUpperCase()}
-      </Text>
+      <View style={styling.footerText}>
+        <Text weight="bold">
+          {t(`categories.${category}`).toLocaleUpperCase()}
+        </Text>
+        <Text textAlign="center" color={category}>
+          {isNaN(percentage) ? "-" : percentage.toFixed(0) + "%"}
+        </Text>
+      </View>
       <ProgressBar
         height={10}
         percentage={Math.min(percentage / categoryPercentage, 100)}
@@ -85,7 +85,7 @@ function CategoryCard({ category, budget, amount, compact = false }: CategoryCar
   );
 }
 
-const styles = ({ category, compact }: { category: CategoryType, compact: boolean }) =>
+const styles = ({ category }: { category: CategoryType, compact: boolean }) =>
   StyleSheet.create({
     header: {
       flexDirection: "row",
@@ -100,20 +100,15 @@ const styles = ({ category, compact }: { category: CategoryType, compact: boolea
       gap: theme.spacing.sm,
       alignItems: 'center',
     },
+    footerText: {
+      flexDirection: 'row',
+      marginBottom: theme.spacing.sm,
+      justifyContent: 'space-between',
+    },
     iconWrapper: {
       backgroundColor: theme.colors[`${category}Bg`],
       padding: theme.spacing.sm,
       borderRadius: theme.borderRadius.sm,
-    },
-    textContainer: {
-      alignItems: compact ? 'center' : 'flex-end',
-    },
-    text: {
-      textAlign: 'center',
-      color: theme.colors[`${category}`],
-    },
-    compactLabelText: {
-      textAlign: 'center',
     },
     labelText: {
       paddingBottom: theme.spacing.sm,

@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
 import Loading from "../Loading";
 import Text from "../Text";
-import SwipeableExpenseCard from "./SwipeableExpenseCard";
+import ExpenseCard from "./ExpenseCard";
 
 interface ExpenseListProps {
   selectedCategoryType: CategoryType | "all";
@@ -96,7 +96,7 @@ export default function ExpenseList({
 
       return (
         <View style={style.cardWrapper}>
-          <SwipeableExpenseCard
+          <ExpenseCard
             expense={item.data}
             categoryName={category.name}
             categoryType={category.type}

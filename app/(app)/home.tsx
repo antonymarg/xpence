@@ -35,7 +35,7 @@ function HomePage() {
     return <ErrorScreen onRefresh={onRefresh} />
   }
 
-  if (!profile) return <Redirect href="/(auth)/login" />
+  if (!profile) return <Redirect href="/(auth)/(tabs)/login" />
 
   const sum = expenseSummary.needs + expenseSummary.wants + expenseSummary.savings;
   const remaining = profile.budget - sum
@@ -47,14 +47,14 @@ function HomePage() {
         <OverviewCard sum={sum} budget={profile.budget} />
         <CategoryCard
           category="needs"
-          amount={expenseSummary.wants}
+          amount={expenseSummary.needs}
           budget={profile.budget}
         />
         <View style={styles.categoriesRow}>
           <View style={styles.category}>
             <CategoryCard
               category="wants"
-              amount={expenseSummary.needs}
+              amount={expenseSummary.wants}
               budget={profile.budget}
             />
           </View>

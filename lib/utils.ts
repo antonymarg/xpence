@@ -2,6 +2,7 @@ import { Result } from "@/types/api.types";
 import { Currency } from "@/types/users.types";
 
 const toError = (err: unknown): Error => {
+  console.log(err)
   if (err instanceof Error) {
     return err;
   }

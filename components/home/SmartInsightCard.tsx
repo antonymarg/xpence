@@ -17,7 +17,7 @@ function SmartInsightCard({ remaining }: SmartInsightProps) {
   const formatCurrency = usePriceFormatter();
   const today = new Date()
   const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59, 999);
-  const remainingDays = endOfMonth.getDate() - today.getDate()
+  const remainingDays = (endOfMonth.getDate() - today.getDate()) || 1
   return (
     <Card style={styles.container}>
       <View style={styles.iconWrapper}>

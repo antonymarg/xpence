@@ -1,19 +1,27 @@
 import Loading from "@/components/Loading";
-import useProfile from "@/hooks/useProfile";
+import { resolveAuthRoute, type AppRoute } from "@/lib/auth";
+import { supabase } from "@/lib/supabase";
 import { Redirect } from "expo-router";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 export default function RootIndex() {
-  const { data: profile, isLoading: isProfileLoading } = useProfile();
+    const [route, setRoute] = useState<AppRoute | null>(null);
 
-  if (isProfileLoading) {
-    return (<Loading />);
-  }
+    useEffect(() => {
+        const resolveRoute = async () => {
+            const {
+                data: { session },
+            } = await supabase.auth.getSession();
 
-  if (profile) {
-    return <Redirect href="/(app)/home" />;
-  }
+            setRoute(await resolveAuthRoute(session));
+        };
 
-  return <Redirect href="/(auth)/login" />;
+        void resolveRoute();
+    }, []);
+
+    if (!route) {
+        return <Loading />;
+    }
+
+    return <Redirect href={route} />;
 }
-

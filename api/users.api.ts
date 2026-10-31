@@ -37,6 +37,24 @@ async function getUserProfile(): Result<Profile | null> {
   }
 }
 
+async function createUserProfile(profile: Omit<Profile, 'userId'>) {
+  try {
+    const userId = await getUserId();
+    const { data, error } = await supabase
+      .from("user_profiles")
+      .insert({
+        user_id: userId,
+        display_name: profile.displayName,
+        budget: profile.budget,
+        currency: profile.currency
+      })
+    if (error) throw error
+    return { success: true, data }
+  } catch (err) {
+    return { success: false, error: toError(err) };
+  }
+}
+
 async function updateUserBudget(budget: number) {
   try {
     const userId = await getUserId();
@@ -79,4 +97,5 @@ async function updateUserLocale(locale: Locale) {
   }
 }
 
-export { getUserId, getUserProfile, updateUserBudget, updateUserCurrency, updateUserLocale };
+export { createUserProfile, getUserId, getUserProfile, updateUserBudget, updateUserCurrency, updateUserLocale };
+
