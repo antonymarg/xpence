@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "xpence-app",
+    "name": "XPence",
     "slug": "xpence-app",
-    "version": "1.0.0",
+    "version": "0.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "xpenceapp",
@@ -13,7 +13,7 @@
     },
     "android": {
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.xpenceapp"
+      "package": "com.antonismargaronis.xpenceapp"
     },
     "web": {
       "output": "static",
