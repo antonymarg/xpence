@@ -4,7 +4,6 @@ import { useRouter, useSegments } from "expo-router";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import Button from "./Button";
-import Pressable from "./Pressable";
 
 type TabType = "home" | "insights" | "addRecord" | "history" | "settings";
 
@@ -22,47 +21,46 @@ function TabBar() {
 
   return (
     <View style={styles.container}>
-      <Pressable onPress={() => navigateTo("home")}>
+      <Button size='sm' onPress={() => navigateTo("home")}>
         <Ionicons
           name="home"
           color={getIconColor(activeTab, "home")}
           style={styles.icons}
           size={24}
         />
-      </Pressable>
-      <Pressable onPress={() => navigateTo("history")}>
+      </Button>
+      <Button size='sm' onPress={() => navigateTo("history")} background="transparent">
         <Ionicons
           name="list"
           color={getIconColor(activeTab, "history")}
           style={styles.icons}
           size={24}
         />
-      </Pressable>
-      <View style={styles.addRecordContainer}>
-        <Button
-          onPress={() => navigateTo("addRecord")}
-          background="gradient"
-          style={styles.addRecordButton}
-        >
-          <Ionicons name="add" size={32} color="rgba(255,255,255,0.95)" />
-        </Button>
-      </View>
-      <Pressable onPress={() => navigateTo("insights")}>
+      </Button>
+      <Button
+        size='sm'
+        onPress={() => navigateTo("addRecord")}
+        background="gradient"
+        style={styles.addRecordButton}
+      >
+        <Ionicons name="add" size={32} color="rgba(255,255,255,0.95)" />
+      </Button>
+      <Button size='sm' onPress={() => navigateTo("insights")} background="transparent">
         <Ionicons
           name="pie-chart"
           color={getIconColor(activeTab, "insights")}
           style={styles.icons}
           size={24}
         />
-      </Pressable>
-      <Pressable onPress={() => navigateTo("settings")}>
+      </Button >
+      <Button size="sm" onPress={() => navigateTo("settings")} background="transparent">
         <Ionicons
           name="settings"
           color={getIconColor(activeTab, "settings")}
           size={24}
           style={styles.icons}
         />
-      </Pressable>
+      </Button>
     </View>
   );
 }
@@ -78,9 +76,6 @@ const styles = StyleSheet.create({
   },
   icons: {
     paddingVertical: theme.spacing.sm,
-  },
-  addRecordContainer: {
-    paddingVertical: theme.spacing.sm
   },
   addRecordButton: {
     width: 40,
