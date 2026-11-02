@@ -21,6 +21,14 @@ const formatPrice = (price: number, currency: Currency = "EUR", locale = "en-GB"
   }).format(price / 100);
 }
 
+const parseAmountInput = (value: string, minimum = 0.01): number | null => {
+  const trimmed = value.trim();
+  if (!/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(trimmed)) return null;
+
+  const amount = Number(trimmed);
+  return Number.isFinite(amount) && amount >= minimum ? amount : null;
+};
+
 const capitaliseFirst = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
-export { capitaliseFirst, formatPrice, toError, unwrap };
+export { capitaliseFirst, formatPrice, parseAmountInput, toError, unwrap };
 

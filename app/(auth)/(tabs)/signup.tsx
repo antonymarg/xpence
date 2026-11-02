@@ -53,12 +53,13 @@ export default function Signup() {
     const onSignupPress = async (formData: z.infer<typeof schema>) => {
         Keyboard.dismiss();
         setLoading(true);
+        const emailToRedirect = Linking.createURL("callback");
         try {
             const { data: authData, error: signUpError } = await supabase.auth.signUp({
                 email: formData.email.trim(),
                 password: formData.password,
                 options: {
-                    emailRedirectTo: Linking.createURL("/callback"),
+                    emailRedirectTo: emailToRedirect,
                 }
             });
             if (signUpError || !authData?.user?.id) {
@@ -124,6 +125,8 @@ export default function Signup() {
                                     label={t("auth.passwordLabel")}
                                     value={field.value}
                                     onChangeText={field.onChange}
+                                    autoCapitalize="none"
+                                    autoCorrect={false}
                                     onBlur={field.onBlur}
                                     secureTextEntry
                                     error={errors?.password?.message}
@@ -142,6 +145,8 @@ export default function Signup() {
                                     value={field.value}
                                     onChangeText={field.onChange}
                                     onBlur={field.onBlur}
+                                    autoCapitalize="none"
+                                    autoCorrect={false}
                                     secureTextEntry
                                     error={errors?.confirmPassword?.message}
                                     editable={!loading}

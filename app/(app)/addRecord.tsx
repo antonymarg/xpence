@@ -6,10 +6,12 @@ import Loading from "@/components/Loading";
 import Pressable from "@/components/Pressable";
 import Text from "@/components/Text";
 import TextInput from "@/components/TextInput";
+import { currencies } from "@/constants/currency";
 import { theme } from "@/constants/theme";
 import useExpenseSummary from "@/hooks/useExpenseSummary";
 import useProfile from "@/hooks/useProfile";
 import useUserCategories from "@/hooks/useUserCategories";
+import { parseAmountInput } from "@/lib/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
@@ -29,12 +31,16 @@ import { z } from "zod";
 function AddRecordPage() {
   const { t } = useTranslation();
   const schema = z.object({
-    amount: z.coerce.number().min(0.01, t("validation.validAmount")),
+    amount: z.string().refine(
+      (value) => parseAmountInput(value) !== null,
+      t("validation.validAmount")
+    ),
     description: z.string().min(1, t("validation.descriptionRequired")),
     categoryId: z.string().min(1, t("validation.categoryRequired")),
     date: z.date({ error: t("validation.invalidDate") }),
   });
   const {
+    data: profile,
     isLoading: isProfileLoading,
     isSuccess: isProfileSuccess,
     invalidateProfile
@@ -55,7 +61,7 @@ function AddRecordPage() {
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
-      amount: 0,
+      amount: "",
       description: "",
       categoryId: "",
       date: new Date(),
@@ -69,7 +75,7 @@ function AddRecordPage() {
   const handleSave = async (data: z.infer<typeof schema>) => {
     const result = await expenseApi.addExpense({
       ...data,
-      amount: Math.round(data.amount * 100),
+      amount: Math.round(Number(data.amount) * 100),
     });
     if (result.success) {
       Toast.show({
@@ -135,14 +141,13 @@ function AddRecordPage() {
               name="amount"
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
-                  onChangeText={(text) =>
-                    onChange(text.replace(/[^0-9.]/g, ""))
-                  }
-                  inputMode="numeric"
-                  value={String(value)}
+                  onChangeText={onChange}
+                  inputMode="decimal"
+                  value={value}
                   onBlur={onBlur}
                   error={errors.amount?.message}
                   placeholder="0"
+                  prefix={currencies[profile?.currency ?? "EUR"]}
                 />
               )}
             />

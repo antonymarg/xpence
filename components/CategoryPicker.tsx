@@ -27,7 +27,7 @@ function CategoryPicker({
   const selectedCategoryType = selectedCategory?.type ?? categoryTypeFilter;
 
   const handleSelectType = (type: CategoryType) => {
-    onSelectCategory(null);
+    onSelectCategory("");
     setCategoryTypeFilter(type);
   };
 

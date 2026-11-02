@@ -6,11 +6,12 @@ import Text from "@/components/Text";
 import TextInput from "@/components/TextInput";
 import { currencies } from "@/constants/currency";
 import { theme } from "@/constants/theme";
+import { parseAmountInput } from "@/lib/utils";
 import { Currency } from "@/types/users.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
 import React from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import {
     ActivityIndicator,
@@ -30,7 +31,10 @@ export default function Onboard() {
     const schema = z
         .object({
             name: z.string().min(3, t("validation.nameMinLength", { count: 3 })),
-            budget: z.coerce.number({ error: t("validation.validBudget") }).min(0, t("validation.validBudget")),
+            budget: z.string().refine(
+                (value) => parseAmountInput(value, 0) !== null,
+                t("validation.validBudget")
+            ),
             currency: z.enum(Object.keys(currencies) as [Currency, ...Currency[]], { error: t("validation.validCurrency") })
         })
 
@@ -42,7 +46,7 @@ export default function Onboard() {
             const { success } = await userApi.createUserProfile({
                 locale: 'EN',
                 displayName: data.name,
-                budget: data.budget * 100,
+                budget: Math.round(Number(data.budget) * 100),
                 currency: data.currency
             })
             if (!success) throw new Error()
@@ -67,10 +71,11 @@ export default function Onboard() {
         resolver: zodResolver(schema),
         defaultValues: {
             name: "",
-            currency: 'EUR',
+            currency: 'EUR' as Currency,
             budget: "1000",
         }
     });
+    const selectedCurrency = useWatch({ control, name: "currency" });
 
     return (
         <SafeAreaView style={styles.pageContainer}>
@@ -103,12 +108,13 @@ export default function Onboard() {
                             <TextInput
                                 placeholder="0"
                                 label={t("auth.monthlyGoal")}
-                                inputMode="numeric"
-                                value={field.value?.toString()}
+                                inputMode="decimal"
+                                value={field.value}
                                 onChangeText={field.onChange}
                                 onBlur={field.onBlur}
                                 error={errors?.budget?.message}
                                 editable={!loading}
+                                prefix={currencies[selectedCurrency]}
                             />
                         )}
                     />

@@ -102,6 +102,8 @@ export default function Login() {
                             onChangeText={field.onChange}
                             onBlur={field.onBlur}
                             secureTextEntry
+                            autoCapitalize="none"
+                            autoCorrect={false}
                             error={errors?.password?.message}
                             editable={!loading}
                         />

@@ -111,7 +111,6 @@ export default function ExpenseList({
 
   return (
     <FlatList
-      // style={style.list}
       contentContainerStyle={style.listContent}
       data={items}
       keyExtractor={(item) => item.id}
@@ -133,11 +132,9 @@ export default function ExpenseList({
 }
 
 const style = StyleSheet.create({
-  list: {
-    flex: 1,
-  },
   listContent: {
     paddingHorizontal: theme.spacing.md,
+    paddingBottom: theme.spacing.sm,
     gap: theme.spacing.sm,
   },
   dateHeader: {

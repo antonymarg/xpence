@@ -35,15 +35,14 @@ function InsightsView({ categoryType }: InsightsViewProps) {
     } = useProfile()
     const {
         data: monthlyInsights,
-        isLoading: isLoadingMonthlyInsights,
         isSuccess: isSuccessMonthlyInsights,
+        status: statusForMonthlyInsights,
         invalidateMonthlyInsights
     } = useMonthlyInsights({
         categoryType,
         month
     })
-
-    if (isLoadingMonthlyInsights || isLoadingProfile) return <Loading />
+    if (statusForMonthlyInsights === "pending" || isLoadingProfile) return <Loading />
 
     if (!isSuccessMonthlyInsights || !isSuccessProfile || !profile) {
         const onRefresh = async () => {
@@ -55,7 +54,9 @@ function InsightsView({ categoryType }: InsightsViewProps) {
 
     const sum = monthlyInsights.expenseSummary.needs + monthlyInsights.expenseSummary.wants + monthlyInsights.expenseSummary.savings
 
-    if (sum === 0) return <View><Text>{t("insights.noExpenses")}</Text></View>
+    if (sum === 0) return <View style={styles.noExpensesContainer}>
+        <Text size='lg' textAlign='center'>{t("insights.noExpensesForCategory")}</Text>
+    </View>
 
     return (
         <ScrollView contentContainerStyle={styles.pageContainer}>
@@ -99,6 +100,13 @@ const styles = StyleSheet.create({
         paddingVertical: theme.spacing.md,
         paddingHorizontal: theme.spacing.md,
         gap: theme.spacing.md
+    },
+    noExpensesContainer: {
+        alignItems: 'center',
+        paddingHorizontal: theme.spacing.lg,
+        justifyContent: 'center',
+        flex: 1,
+        backgroundColor: theme.colors.background,
     },
     categoryContainer: {
         gap: theme.spacing.sm

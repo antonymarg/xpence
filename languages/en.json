@@ -109,7 +109,7 @@
             "needs": "Needs",
             "wants": "Wants",
             "savings": "Savings",
-            "noExpenses": "No expenses this month",
+            "noExpensesForCategory": "No expenses for this category",
             "categoryRanking": "Categories ranking",
             "showMore": "Show more",
             "showLess": "Show less",

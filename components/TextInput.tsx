@@ -16,6 +16,7 @@ interface ITextInputProps extends RNTextInputProps {
   label?: string;
   error?: string;
   icon?: IconProps['name']
+  prefix?: string;
   containerStyle?: ViewProps['style']
 }
 
@@ -23,6 +24,7 @@ export default function TextInput({
   label,
   error,
   icon,
+  prefix,
   containerStyle,
   ...props
 }: ITextInputProps) {
@@ -51,6 +53,11 @@ export default function TextInput({
         error && styles.inputError,
         containerStyle
       ]}>
+        {prefix && (
+          <Text size="md" color="textSecondaryDark" style={styles.prefix}>
+            {prefix}
+          </Text>
+        )}
         <RNTextInput
           {...props}
           onFocus={onFocus}
@@ -90,6 +97,10 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginLeft: 'auto'
+  },
+  prefix: {
+    marginRight: theme.spacing.sm,
+    alignSelf: "center",
   },
   textInput: {
     flex: 1,

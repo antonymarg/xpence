@@ -1,5 +1,8 @@
+import { currencies } from "@/constants/currency";
 import { theme } from "@/constants/theme";
+import useProfile from "@/hooks/useProfile";
 import useUserCategories from "@/hooks/useUserCategories";
+import { parseAmountInput } from "@/lib/utils";
 import { Expense } from "@/types/expenses.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
@@ -27,12 +30,16 @@ function UpdateExpenseModal({
 }: UpdateExpenseModalProps) {
   const { t } = useTranslation();
   const schema = z.object({
-    amount: z.coerce.number().min(0.01, t("validation.validAmount")),
+    amount: z.string().refine(
+      (value) => parseAmountInput(value) !== null,
+      t("validation.validAmount")
+    ),
     description: z.string().min(1, t("validation.descriptionRequired")),
     categoryId: z.string().min(1, t("validation.categoryRequired")),
     date: z.date({ error: t("validation.invalidDate") }),
   });
   const { data: userCategories, isSuccess: isUserCategoriesSuccess } = useUserCategories();
+  const { data: profile } = useProfile();
 
 
   const {
@@ -43,7 +50,7 @@ function UpdateExpenseModal({
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
-      amount: expense ? expense.amount / 100 : 10,
+      amount: expense ? String(expense.amount / 100) : "10",
       description: expense?.description || "",
       categoryId: expense?.categoryId || "",
       date: expense?.date || new Date(),
@@ -56,7 +63,7 @@ function UpdateExpenseModal({
     onConfirm({
       id: expense.id,
       ...data,
-      amount: Math.round(data.amount * 100),
+      amount: Math.round(Number(data.amount) * 100),
     });
     reset();
   };
@@ -76,12 +83,13 @@ function UpdateExpenseModal({
             name="amount"
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
-                onChangeText={(text) => onChange(text.replace(/[^0-9.]/g, ""))}
-                inputMode="numeric"
-                value={String(value)}
+                onChangeText={onChange}
+                inputMode="decimal"
+                value={value}
                 onBlur={onBlur}
                 error={errors.amount?.message}
                 placeholder="0"
+                prefix={currencies[profile?.currency ?? "EUR"]}
               />
             )}
           />

@@ -5,8 +5,10 @@ import Loading from "@/components/Loading";
 import SettingsHeader from "@/components/settings/SettingsHeader";
 import Text from "@/components/Text";
 import TextInput from "@/components/TextInput";
+import { currencies } from "@/constants/currency";
 import { theme } from "@/constants/theme";
 import useProfile from "@/hooks/useProfile";
+import { parseAmountInput } from "@/lib/utils";
 import { useNavigation } from "expo-router";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -22,13 +24,20 @@ function ChangeBudget() {
         invalidateProfile
     } = useProfile();
     const navigator = useNavigation()
-    const [budget, setBudget] = useState<number>(profile?.budget ?? 0 / 100);
+    const [budgetDraft, setBudgetDraft] = useState<string | null>(null);
+    const [hasBudgetError, setHasBudgetError] = useState(false);
 
     if (isProfileLoading) return <Loading />
     if (!isProfileSuccess || !profile) return <ErrorScreen onRefresh={invalidateProfile} />
 
     const onBudgetUpdate = async () => {
-        const { success } = await updateUserBudget(budget);
+        const amount = parseAmountInput(budgetDraft ?? String(profile.budget / 100));
+        if (amount === null) {
+            setHasBudgetError(true);
+            return;
+        }
+
+        const { success } = await updateUserBudget(Math.round(amount * 100));
         if (success) {
             Toast.show({
                 type: "success",
@@ -44,8 +53,14 @@ function ChangeBudget() {
         <SettingsHeader label={t("settings.changeBudgetTitle")} href="/(app)/settings" />
         <TextInput
             label={t("settings.newBudget")}
-            onChangeText={(value) => setBudget(Number(value) * 100)}
-            value={(budget / 100).toString()}
+            onChangeText={(value) => {
+                setBudgetDraft(value);
+                setHasBudgetError(false);
+            }}
+            inputMode="decimal"
+            value={budgetDraft ?? String(profile.budget / 100)}
+            prefix={currencies[profile.currency]}
+            error={hasBudgetError ? t("validation.validAmount") : undefined}
         />
         <Button onPress={onBudgetUpdate} block background="gradient">
             <Text weight="bold" color="white">
