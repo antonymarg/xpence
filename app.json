@@ -13,7 +13,24 @@
     },
     "android": {
       "predictiveBackGestureEnabled": false,
-      "package": "com.antonismargaronis.xpenceapp"
+      "package": "com.antonismargaronis.xpenceapp",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "*antonismargaronis.com",
+              "pathPrefix": "/xpence"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ]
     },
     "web": {
       "output": "static",

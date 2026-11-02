@@ -5,6 +5,7 @@ import TextInput from "@/components/TextInput";
 import { theme } from "@/constants/theme";
 import { supabase } from "@/lib/supabase";
 import { zodResolver } from "@hookform/resolvers/zod";
+import * as Linking from "expo-linking";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -56,6 +57,9 @@ export default function Signup() {
             const { data: authData, error: signUpError } = await supabase.auth.signUp({
                 email: formData.email.trim(),
                 password: formData.password,
+                options: {
+                    emailRedirectTo: Linking.createURL("/callback"),
+                }
             });
             if (signUpError || !authData?.user?.id) {
                 Toast.show({
