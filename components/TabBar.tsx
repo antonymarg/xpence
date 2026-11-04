@@ -16,7 +16,7 @@ function TabBar() {
   const activeTab = segments[1] as TabType;
 
   const navigateTo = (page: TabType) => {
-    router.push(`/(app)/${page}`);
+    router.navigate(`/(app)/${page}`);
   };
 
   return (

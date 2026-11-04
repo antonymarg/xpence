@@ -13,7 +13,7 @@ import useUserCategories from "@/hooks/useUserCategories";
 import { Category } from "@/types/categories.types";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
 
 function ManageCategories() {
@@ -61,7 +61,7 @@ function ManageCategories() {
 
     const onCloseAddModal = () => setIsAddModalVisible(false);
 
-    return <ScrollView contentContainerStyle={styles.container}>
+    return <View style={styles.container}>
         <SettingsHeader label={t("settings.manageCategories")} href="/(app)/settings" />
         <View>
             <View style={styles.row}>
@@ -101,7 +101,7 @@ function ManageCategories() {
             onClose={onCloseDeleteModal}
             onConfirm={onDeleteCategory}
         />
-    </ScrollView>
+    </View>
 }
 
 

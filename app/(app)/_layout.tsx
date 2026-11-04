@@ -28,7 +28,7 @@ export default function AppLayout() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Stack screenOptions={{ headerShown: false }}>
+      <Stack screenOptions={{ headerShown: false, animation: "fade" }}>
         <Stack.Screen name="home" />
         <Stack.Screen name="addRecord" />
         <Stack.Screen name="settings" />

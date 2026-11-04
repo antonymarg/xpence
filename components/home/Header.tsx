@@ -16,10 +16,12 @@ function Header({ profile }: HeaderProps) {
     <View style={styles.container}>
       <Logo variant='short' height={50} width={50} />
       <View style={styles.welcomeContainer}>
-        <Text size="xs" heading>
+        <Text size="xs" heading textAlign="right">
           {t("home.welcomeBack")}
         </Text>
-        <Text weight="bold">{t("home.greeting", { name: profile.displayName })}</Text>
+        <Text weight="bold" textAlign="right" style={styles.greetingText}>
+          {t("home.greeting", { name: profile.displayName })}
+        </Text>
       </View>
     </View >
   );
@@ -35,7 +37,11 @@ const styles = StyleSheet.create({
   },
   welcomeContainer: {
     flexDirection: 'column',
-    alignItems: 'flex-end'
+    alignItems: 'flex-end',
+    flexShrink: 1,
+  },
+  greetingText: {
+    flexShrink: 1,
   },
 });
 

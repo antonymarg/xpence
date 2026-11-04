@@ -8,12 +8,12 @@ import Text from "@/components/Text";
 import TextInput from "@/components/TextInput";
 import { currencies } from "@/constants/currency";
 import { theme } from "@/constants/theme";
-import useExpenseSummary from "@/hooks/useExpenseSummary";
 import useProfile from "@/hooks/useProfile";
 import useUserCategories from "@/hooks/useUserCategories";
 import { parseAmountInput } from "@/lib/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -29,6 +29,7 @@ import Toast from "react-native-toast-message";
 import { z } from "zod";
 
 function AddRecordPage() {
+  const queryClient = useQueryClient();
   const { t } = useTranslation();
   const schema = z.object({
     amount: z.string().refine(
@@ -51,7 +52,6 @@ function AddRecordPage() {
     isSuccess: isUserCategoriesSuccess,
     invalidateUserCategories
   } = useUserCategories();
-  const { invalidateExpenseSummary } = useExpenseSummary();
 
   const {
     control,
@@ -84,7 +84,7 @@ function AddRecordPage() {
         visibilityTime: 5000,
         autoHide: true,
       });
-      await invalidateExpenseSummary();
+      queryClient.invalidateQueries({ queryKey: ["expenses"] });
     } else {
       Toast.show({
         type: "error",

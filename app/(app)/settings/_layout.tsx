@@ -15,7 +15,7 @@ function SettingsPageLayout() {
                 </Text>
                 <Text size="lg">{t("settings.subtitle")}</Text>
             </View>
-            <Stack screenOptions={{ headerShown: false }}>
+            <Stack screenOptions={{ headerShown: false, animation: "fade" }}>
                 <Stack.Screen name='index' />
                 <Stack.Screen name='changeBudget' />
                 <Stack.Screen name='manageCategories' />

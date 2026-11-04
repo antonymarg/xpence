@@ -2,7 +2,7 @@ import { theme } from "@/constants/theme";
 import { Category } from "@/types/categories.types";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 import Text from "../Text";
 import CategoryList from "./CategoryList";
 
@@ -14,7 +14,7 @@ interface CategoryEditorProps {
 function CategoryEditor({ categories, onClickDelete }: CategoryEditorProps) {
   const { t } = useTranslation();
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       <Text color="needs" weight="bold">
         {t("categories.needs")}
       </Text>
@@ -36,13 +36,14 @@ function CategoryEditor({ categories, onClickDelete }: CategoryEditorProps) {
         categories={categories.filter((cat) => cat.type === "savings")}
         onClickDelete={onClickDelete}
       />
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     gap: theme.spacing.md,
+    paddingVertical: theme.spacing.md,
   },
 });
 
