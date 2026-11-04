@@ -1,16 +1,9 @@
+import { createDefaultCategoriesForUser } from "@/api/categories.api";
+import { getUserId } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import { toError } from "@/lib/utils";
 import { Result } from "@/types/api.types";
 import { Currency, Locale, Profile } from "@/types/users.types";
-
-async function getUserId(): Promise<string> {
-  const { data, error } = await supabase.auth.getSession();
-  if (error) {
-    await supabase.auth.signOut();
-  }
-  if (!data.session) throw new Error("No session found");
-  return data.session.user.id;
-}
 
 async function getUserProfile(): Result<Profile | null> {
   try {
@@ -46,9 +39,14 @@ async function createUserProfile(profile: Omit<Profile, 'userId'>) {
         user_id: userId,
         display_name: profile.displayName,
         budget: profile.budget,
-        currency: profile.currency
+        currency: profile.currency,
+        locale: profile.locale,
       })
     if (error) throw error
+
+    const categoriesResult = await createDefaultCategoriesForUser(userId, profile.locale);
+    if (!categoriesResult.success) throw categoriesResult.error;
+
     return { success: true, data }
   } catch (err) {
     return { success: false, error: toError(err) };

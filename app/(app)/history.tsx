@@ -47,7 +47,7 @@ function HistoryPage() {
     isLoading: isUserCategoriesLoading,
     isSuccess: isUserCategoriesSuccess,
     invalidateUserCategories
-  } = useUserCategories();
+  } = useUserCategories(false);
 
   const { isLoading: isExpensesLoading, isSuccess: isExpensesSuccess, invalidateExpenses } = useExpenses({
     selectedCategoryType,

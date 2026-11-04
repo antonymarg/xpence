@@ -8,18 +8,20 @@ import CategoryList from "./CategoryList";
 
 interface CategoryEditorProps {
   categories: Category[];
+  onClickEdit: (category: Category) => void;
   onClickDelete: (category: Category) => void;
 }
 
-function CategoryEditor({ categories, onClickDelete }: CategoryEditorProps) {
+function CategoryEditor({ categories, onClickEdit, onClickDelete }: CategoryEditorProps) {
   const { t } = useTranslation();
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView style={styles.scrollView} contentContainerStyle={styles.container}>
       <Text color="needs" weight="bold">
         {t("categories.needs")}
       </Text>
       <CategoryList
         categories={categories.filter((cat) => cat.type === "needs")}
+        onClickEdit={onClickEdit}
         onClickDelete={onClickDelete}
       />
       <Text color="wants" weight="bold">
@@ -27,6 +29,7 @@ function CategoryEditor({ categories, onClickDelete }: CategoryEditorProps) {
       </Text>
       <CategoryList
         categories={categories.filter((cat) => cat.type === "wants")}
+        onClickEdit={onClickEdit}
         onClickDelete={onClickDelete}
       />
       <Text color="savings" weight="bold">
@@ -34,6 +37,7 @@ function CategoryEditor({ categories, onClickDelete }: CategoryEditorProps) {
       </Text>
       <CategoryList
         categories={categories.filter((cat) => cat.type === "savings")}
+        onClickEdit={onClickEdit}
         onClickDelete={onClickDelete}
       />
     </ScrollView>
@@ -41,6 +45,9 @@ function CategoryEditor({ categories, onClickDelete }: CategoryEditorProps) {
 }
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+  },
   container: {
     gap: theme.spacing.md,
     paddingVertical: theme.spacing.md,

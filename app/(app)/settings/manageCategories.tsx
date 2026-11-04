@@ -6,6 +6,7 @@ import Loading from '@/components/Loading';
 import AddCategoryModal from "@/components/settings/AddCategoryModal";
 import CategoryEditor from "@/components/settings/CategoryEditor";
 import DeleteCategoryModal from "@/components/settings/DeleteCategoryModal";
+import EditCategoryModal from "@/components/settings/EditCategoryModal";
 import SettingsHeader from "@/components/settings/SettingsHeader";
 import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
@@ -23,8 +24,9 @@ function ManageCategories() {
         isLoading: isCategoriesLoading,
         isSuccess: isCategoriesSuccess,
         invalidateUserCategories
-    } = useUserCategories();
+    } = useUserCategories(true);
     const [deleteModalCategory, setDeleteModalCategory] = useState<Category | null>(null);
+    const [editModalCategory, setEditModalCategory] = useState<Category | null>(null);
     const [isAddModalVisible, setIsAddModalVisible] = useState<boolean>(false);
 
     if (isCategoriesLoading) return <Loading />
@@ -45,6 +47,19 @@ function ManageCategories() {
     };
 
     const onCloseDeleteModal = () => setDeleteModalCategory(null);
+    const onRenameCategory = async (categoryId: string, name: string) => {
+        const { success } = await categoryApi.renameUserCategory(categoryId, name);
+        if (success) {
+            await invalidateUserCategories();
+            setEditModalCategory(null);
+            Toast.show({
+                type: "success",
+                text1: t("settings.categoryUpdated"),
+                visibilityTime: 5000,
+                autoHide: true,
+            });
+        }
+    };
     const onDeleteCategory = async (categoryId: string) => {
         const { success } = await categoryApi.deleteUserCategory(categoryId);
         if (success) {
@@ -63,7 +78,7 @@ function ManageCategories() {
 
     return <View style={styles.container}>
         <SettingsHeader label={t("settings.manageCategories")} href="/(app)/settings" />
-        <View>
+        <View style={styles.categorySection}>
             <View style={styles.row}>
                 <Text size="lg" weight="bold">
                     {t("settings.currentCategories")}
@@ -88,6 +103,7 @@ function ManageCategories() {
             </View>
             <CategoryEditor
                 categories={categories}
+                onClickEdit={setEditModalCategory}
                 onClickDelete={setDeleteModalCategory}
             />
         </View>
@@ -101,6 +117,11 @@ function ManageCategories() {
             onClose={onCloseDeleteModal}
             onConfirm={onDeleteCategory}
         />
+        <EditCategoryModal
+            category={editModalCategory}
+            onClose={() => setEditModalCategory(null)}
+            onConfirm={onRenameCategory}
+        />
     </View>
 }
 
@@ -110,6 +131,9 @@ const styles = StyleSheet.create({
         backgroundColor: theme.colors.background,
         gap: theme.spacing.md,
         flex: 1
+    },
+    categorySection: {
+        flex: 1,
     },
     row: {
         flexDirection: "row",

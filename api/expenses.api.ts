@@ -1,10 +1,10 @@
+import { getUserId } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import { toError } from "@/lib/utils";
 import { Result } from "@/types/api.types";
 import { CategoryType } from "@/types/categories.types";
 import { Database } from "@/types/database.types";
 import { Expense, ExpensesSummary, MonthlyInsights } from "@/types/expenses.types";
-import { getUserId } from "./users.api";
 
 export const EXPENSE_PAGE_SIZE = 20;
 

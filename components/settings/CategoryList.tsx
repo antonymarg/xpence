@@ -9,18 +9,24 @@ import Text from "../Text";
 
 interface CategoryListProps {
   categories: Category[];
+  onClickEdit: (cat: Category) => void;
   onClickDelete: (cat: Category) => void;
 }
 
-function CategoryList({ categories, onClickDelete }: CategoryListProps) {
+function CategoryList({ categories, onClickEdit, onClickDelete }: CategoryListProps) {
   return (
     <View style={styles.categoriesList}>
       {categories.map((category) => (
         <Card key={category.id} padding="md" style={styles.categoryCard}>
           <Text>{category.name}</Text>
-          <Pressable onPress={() => onClickDelete(category)}>
-            <Icon name="close" color={theme.colors.textSecondaryDark} />
-          </Pressable>
+          <View style={styles.actions}>
+            <Pressable onPress={() => onClickEdit(category)} accessibilityRole="button">
+              <Icon name="create-outline" color={theme.colors.textSecondaryDark} />
+            </Pressable>
+            <Pressable onPress={() => onClickDelete(category)} accessibilityRole="button">
+              <Icon name="close" color={theme.colors.textSecondaryDark} />
+            </Pressable>
+          </View>
         </Card>
       ))}
     </View>
@@ -36,6 +42,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+  },
+  actions: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: theme.spacing.md,
   },
 });
 

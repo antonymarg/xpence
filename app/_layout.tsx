@@ -12,6 +12,7 @@ import {
   useFonts,
 } from "@expo-google-fonts/manrope";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { getLocales } from "expo-localization";
 import { Stack, usePathname, useRouter } from "expo-router";
 import i18n from 'i18next';
 import React, { PropsWithChildren, useEffect } from "react";
@@ -23,6 +24,10 @@ const publicPages = [
   "/login",
   "/signup",
 ];
+const deviceLanguageCode = getLocales()[0]?.languageCode?.toLowerCase();
+const initialLocale = locales.find(
+  ({ languageTag }) => languageTag.split("-")[0].toLowerCase() === deviceLanguageCode,
+) ?? locales.find(({ code }) => code === "EN")!;
 
 i18n
   .use(initReactI18next)
@@ -31,7 +36,7 @@ i18n
       [locales[0].languageTag]: enTranslations,
       [locales[1].languageTag]: grTranslations
     },
-    lng: locales[0].languageTag,
+    lng: initialLocale.languageTag,
     fallbackLng: locales[0].languageTag,
     supportedLngs: locales.map(({ languageTag }) => languageTag),
     interpolation: {

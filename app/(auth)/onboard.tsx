@@ -5,11 +5,14 @@ import Logo from "@/components/Logo";
 import Text from "@/components/Text";
 import TextInput from "@/components/TextInput";
 import { currencies } from "@/constants/currency";
+import { locales } from "@/constants/locale";
 import { theme } from "@/constants/theme";
+import { setAppLanguage } from "@/lib/i18n";
 import { parseAmountInput } from "@/lib/utils";
-import { Currency } from "@/types/users.types";
+import { Currency, Locale } from "@/types/users.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
+import i18n from "i18next";
 import React from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -35,7 +38,8 @@ export default function Onboard() {
                 (value) => parseAmountInput(value, 0) !== null,
                 t("validation.validBudget")
             ),
-            currency: z.enum(Object.keys(currencies) as [Currency, ...Currency[]], { error: t("validation.validCurrency") })
+            currency: z.enum(Object.keys(currencies) as [Currency, ...Currency[]], { error: t("validation.validCurrency") }),
+            locale: z.enum(locales.map(({ code }) => code) as [Locale, ...Locale[]]),
         })
 
     const [loading, setLoading] = React.useState(false);
@@ -44,7 +48,7 @@ export default function Onboard() {
         setLoading(true);
         try {
             const { success } = await userApi.createUserProfile({
-                locale: 'EN',
+                locale: data.locale,
                 displayName: data.name,
                 budget: Math.round(Number(data.budget) * 100),
                 currency: data.currency
@@ -73,6 +77,7 @@ export default function Onboard() {
             name: "",
             currency: 'EUR' as Currency,
             budget: "1000",
+            locale: locales.find(({ languageTag }) => languageTag === i18n.resolvedLanguage)?.code ?? "EN",
         }
     });
     const selectedCurrency = useWatch({ control, name: "currency" });
@@ -126,6 +131,21 @@ export default function Onboard() {
                                 value={field.value}
                                 onValueChange={field.onChange}
                                 options={Object.entries(currencies).map(([code, symbol]) => ({ label: `${code} (${symbol})`, value: code as Currency }))}
+                            />
+                        )}
+                    />
+                    <Controller
+                        control={control}
+                        name="locale"
+                        render={({ field }) => (
+                            <Dropdown<Locale>
+                                heading={t("settings.changeLanguage")}
+                                value={field.value}
+                                onValueChange={(locale) => {
+                                    field.onChange(locale);
+                                    void setAppLanguage(locale);
+                                }}
+                                options={locales.map(({ code, labelKey }) => ({ label: t(labelKey), value: code }))}
                             />
                         )}
                     />

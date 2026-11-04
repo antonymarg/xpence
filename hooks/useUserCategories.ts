@@ -2,11 +2,11 @@ import * as categoriesApi from "@/api/categories.api";
 import { unwrap } from "@/lib/utils";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
-const useUserCategories = () => {
+const useUserCategories = (onlyActive = true) => {
     const queryClient = useQueryClient();
     const query = useQuery({
         queryKey: ["categories"],
-        queryFn: () => unwrap(categoriesApi.getUserCategories()),
+        queryFn: () => unwrap(categoriesApi.getUserCategories(onlyActive)),
         staleTime: 1000 * 60 * 5
     });
 
