@@ -38,6 +38,8 @@
             "emailPlaceholder": "name@example.com",
             "passwordLabel": "Κωδικός πρόσβασης",
             "passwordPlaceholder": "Κωδικός πρόσβασης",
+            "showPassword": "Εμφάνιση κωδικού πρόσβασης",
+            "hidePassword": "Απόκρυψη κωδικού πρόσβασης",
             "confirmPasswordLabel": "Επιβεβαίωση κωδικού πρόσβασης",
             "confirmPasswordPlaceholder": "Επιβεβαίωση κωδικού πρόσβασης",
             "confirmPassword": "Επιβεβαίωση κωδικού πρόσβασης",

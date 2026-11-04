@@ -1,8 +1,10 @@
 import { theme } from "@/constants/theme";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   BlurEvent,
   FocusEvent,
+  Pressable,
   TextInput as RNTextInput,
   type TextInputProps as RNTextInputProps,
   StyleSheet,
@@ -29,6 +31,8 @@ export default function TextInput({
   ...props
 }: ITextInputProps) {
   const [isFocused, setIsFocused] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const { t } = useTranslation();
 
   const onFocus = (e: FocusEvent) => {
     setIsFocused(true);
@@ -62,8 +66,23 @@ export default function TextInput({
           {...props}
           onFocus={onFocus}
           onBlur={onBlur}
+          secureTextEntry={props.secureTextEntry && !isPasswordVisible}
           style={[styles.textInput, props.style]}
         />
+        {props.secureTextEntry && (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t(isPasswordVisible ? "auth.hidePassword" : "auth.showPassword")}
+            onPress={() => setIsPasswordVisible(!isPasswordVisible)}
+            style={styles.passwordToggle}
+          >
+            <Icon
+              name={isPasswordVisible ? "eye-off-outline" : "eye-outline"}
+              color={theme.colors.textLight}
+              size={20}
+            />
+          </Pressable>
+        )}
         {icon && <Icon name={icon} style={styles.icon} />}
       </View>
       {error && <Text style={styles.error}>{error}</Text>}
@@ -98,12 +117,20 @@ const styles = StyleSheet.create({
   icon: {
     marginLeft: 'auto'
   },
+  passwordToggle: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: theme.spacing.sm,
+    minWidth: 40,
+    minHeight: 40,
+  },
   prefix: {
     marginRight: theme.spacing.sm,
     alignSelf: "center",
   },
   textInput: {
     flex: 1,
+    fontFamily: theme.typography.fontFamily.regular,
     color: theme.colors.textDark,
     padding: 0,
     textAlignVertical: "center",

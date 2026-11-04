@@ -38,6 +38,8 @@
             "emailPlaceholder": "name@example.com",
             "passwordLabel": "Password",
             "passwordPlaceholder": "Password",
+            "showPassword": "Show password",
+            "hidePassword": "Hide password",
             "confirmPasswordLabel": "Confirm password",
             "confirmPasswordPlaceholder": "Confirm password",
             "confirmPassword": "Confirm password",
