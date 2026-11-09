@@ -7,6 +7,7 @@
             "add": "Add",
             "allTypes": "All types",
             "amount": "Amount",
+            "allCategories": "All categories",
             "cancel": "Cancel",
             "category": "Category",
             "categoryType": "Category type",
@@ -102,6 +103,11 @@
         "history": {
             "title": "History",
             "subtitle": "Track your spending",
+            "hideFilters": "Hide filters",
+            "showFilters": "Show filters",
+            "allDates": "All dates",
+            "clearPeriod": "Clear dates",
+            "selectPeriod": "Select period",
             "toggleActions": "Show expense actions",
             "noExpenses": "No expenses found"
         },

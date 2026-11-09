@@ -30,8 +30,7 @@ function Header({ profile }: HeaderProps) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    paddingHorizontal: theme.spacing.md,
-    paddingTop: theme.spacing.md,
+    padding: theme.spacing.md,
     alignItems: "center",
     justifyContent: 'space-between'
   },

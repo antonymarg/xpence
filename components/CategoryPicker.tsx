@@ -1,7 +1,7 @@
 import { theme } from "@/constants/theme";
 import { Category, CategoryType } from "@/types/categories.types";
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { Keyboard, StyleSheet, View } from "react-native";
 import CategoryTypePicker from "./CategoryTypePicker";
 import Pressable from "./Pressable";
 import Text from "./Text";
@@ -27,6 +27,7 @@ function CategoryPicker({
   const selectedCategoryType = selectedCategory?.type ?? categoryTypeFilter;
 
   const handleSelectType = (type: CategoryType) => {
+    Keyboard.dismiss();
     onSelectCategory("");
     setCategoryTypeFilter(type);
   };

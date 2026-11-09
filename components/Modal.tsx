@@ -23,6 +23,8 @@ function Modal({
       animationType={animationType}
       transparent={transparent}
       onRequestClose={props.onClose}
+      statusBarTranslucent={Platform.OS === "android"}
+      navigationBarTranslucent={Platform.OS === "android"}
       {...props}
     >
       <KeyboardAvoidingView

@@ -4,10 +4,12 @@ import Header from "@/components/home/Header";
 import OverviewCard from "@/components/home/OverviewCard";
 import SmartInsightCard from "@/components/home/SmartInsightCard";
 import Loading from "@/components/Loading";
+import Pressable from "@/components/Pressable";
 import { theme } from "@/constants/theme";
 import useExpenseSummary from "@/hooks/useExpenseSummary";
 import useProfile from "@/hooks/useProfile";
-import { Redirect } from "expo-router";
+import { CategoryType } from "@/types/categories.types";
+import { Redirect, useRouter } from "expo-router";
 import React from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
@@ -25,6 +27,9 @@ function HomePage() {
     isSuccess: isExpenseSuccess,
     invalidateExpenseSummary
   } = useExpenseSummary();
+
+  const router = useRouter()
+
   if (isProfileLoading || isExpenseLoading) return (<Loading />)
 
   if (!isProfileSuccess || !isExpenseSuccess) {
@@ -40,30 +45,38 @@ function HomePage() {
   const sum = expenseSummary.needs + expenseSummary.wants + expenseSummary.savings;
   const remaining = profile.budget - sum
 
+  const navigateTo = (categoryType: CategoryType) => router.replace(`/(app)/history/${categoryType}`)
+
   return (
     <View style={styles.pageContainer}>
       <Header profile={profile} />
       <ScrollView contentContainerStyle={styles.mainContent}>
         <OverviewCard sum={sum} budget={profile.budget} />
-        <CategoryCard
-          category="needs"
-          amount={expenseSummary.needs}
-          budget={profile.budget}
-        />
+        <Pressable onPress={() => navigateTo('needs')}>
+          <CategoryCard
+            category="needs"
+            amount={expenseSummary.needs}
+            budget={profile.budget}
+          />
+        </Pressable>
         <View style={styles.categoriesRow}>
           <View style={styles.category}>
-            <CategoryCard
-              category="wants"
-              amount={expenseSummary.wants}
-              budget={profile.budget}
-            />
+            <Pressable onPress={() => navigateTo('wants')}>
+              <CategoryCard
+                category="wants"
+                amount={expenseSummary.wants}
+                budget={profile.budget}
+              />
+            </Pressable>
           </View>
           <View style={styles.category}>
-            <CategoryCard
-              category="savings"
-              amount={expenseSummary.savings}
-              budget={profile.budget}
-            />
+            <Pressable onPress={() => navigateTo('savings')}>
+              <CategoryCard
+                category="savings"
+                amount={expenseSummary.savings}
+                budget={profile.budget}
+              />
+            </Pressable>
           </View>
         </View>
         <SmartInsightCard remaining={remaining} />
@@ -79,6 +92,7 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     padding: theme.spacing.md,
+    paddingTop: 0,
     gap: theme.spacing.md,
     flexGrow: 1,
   },

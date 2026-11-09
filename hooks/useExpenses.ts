@@ -15,8 +15,8 @@ export type ListItem =
 interface UseExpensesArgs {
     selectedCategoryType: CategoryType | "all";
     selectedCategory: string | null;
-    fromDate: Date;
-    toDate: Date;
+    fromDate?: Date;
+    toDate?: Date;
 }
 
 type SelectFn = (data: InfiniteData<Expense[]>) => ListItem[];
@@ -30,8 +30,8 @@ const useExpenses = (args: UseExpensesArgs, select?: SelectFn) => {
             "history",
             args.selectedCategoryType,
             args.selectedCategory,
-            args.fromDate.toISOString().split("T")[0],
-            args.toDate.toISOString().split("T")[0],
+            args.fromDate?.toISOString().split("T")[0] ?? null,
+            args.toDate?.toISOString().split("T")[0] ?? null,
         ],
         queryFn: ({ pageParam }) =>
             unwrap(
@@ -42,8 +42,8 @@ const useExpenses = (args: UseExpensesArgs, select?: SelectFn) => {
                             ? undefined
                             : args.selectedCategoryType,
                     categoryId: args.selectedCategory,
-                    fromDate: args.fromDate,
-                    toDate: args.toDate,
+                    ...(args.fromDate ? { fromDate: args.fromDate } : {}),
+                    ...(args.toDate ? { toDate: args.toDate } : {}),
                 }),
             ),
         initialPageParam,

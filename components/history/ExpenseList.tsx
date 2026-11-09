@@ -14,8 +14,8 @@ interface ExpenseListProps {
   selectedCategoryType: CategoryType | "all";
   selectedCategory: string | null;
   availableCategories: Category[];
-  fromDate: Date;
-  toDate: Date;
+  fromDate?: Date;
+  toDate?: Date;
   onEditExpensePress: (expense: Expense) => void;
   onDeleteExpensePress: (expense: Expense) => void;
 }
