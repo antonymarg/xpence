@@ -1,9 +1,10 @@
+import Loading from "@/components/Loading";
 import TabBar from "@/components/TabBar";
 import useProfile from "@/hooks/useProfile";
 import { setAppLanguage } from "@/lib/i18n";
 import { Redirect, Stack } from "expo-router";
 import React, { useEffect } from "react";
-import { ActivityIndicator, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AppLayout() {
@@ -17,7 +18,7 @@ export default function AppLayout() {
   if (isProfileLoading) {
     return (
       <SafeAreaView style={styles.loadingContainer}>
-        <ActivityIndicator size="large" />
+        <Loading />
       </SafeAreaView>
     );
   }

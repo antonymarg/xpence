@@ -24,7 +24,7 @@ function CategoryTypePicker({
           styles("needs", selectedCategoryType === "needs").categoryTypeButton
         }
       >
-        <Text color="needs" weight="bold">
+        <Text color={selectedCategoryType === "needs" ? "white" : "needs"} weight="bold">
           {t("categories.needs")}
         </Text>
       </Pressable>
@@ -34,7 +34,7 @@ function CategoryTypePicker({
           styles("wants", selectedCategoryType === "wants").categoryTypeButton
         }
       >
-        <Text weight="bold" color="wants">
+        <Text weight="bold" color={selectedCategoryType === "wants" ? "white" : "wants"}>
           {t("categories.wants")}
         </Text>
       </Pressable>
@@ -45,7 +45,7 @@ function CategoryTypePicker({
             .categoryTypeButton
         }
       >
-        <Text weight="bold" color="savings">
+        <Text weight="bold" color={selectedCategoryType === "savings" ? "white" : "savings"}>
           {t("categories.savings")}
         </Text>
       </Pressable>
@@ -58,18 +58,17 @@ const styles = (category: CategoryType, isSelected: boolean) =>
     container: {
       flexDirection: "row",
       gap: theme.spacing.sm,
-      flexWrap: "wrap"
+      flexWrap: "nowrap",
     },
     categoryTypeButton: {
+      flex: 1,
       flexShrink: 0,
       alignItems: "center",
       justifyContent: "center",
       paddingVertical: theme.spacing.sm,
-      paddingHorizontal: theme.spacing.sm,
+      paddingHorizontal: theme.spacing.xs,
       borderRadius: theme.borderRadius.md,
-      borderWidth: isSelected ? 1 : 0,
-      borderColor: theme.colors[category],
-      backgroundColor: theme.colors[`${category}Bg`],
+      backgroundColor: isSelected ? theme.colors[category] : theme.colors[`${category}Bg`],
     },
   });
 

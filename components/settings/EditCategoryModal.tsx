@@ -1,8 +1,10 @@
+import { theme } from "@/constants/theme";
 import { Category } from "@/types/categories.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { Keyboard, ScrollView, StyleSheet } from "react-native";
 import z from "zod";
 import Button from "../Button";
 import Modal from "../Modal";
@@ -39,36 +41,56 @@ function EditCategoryModal({ category, onClose, onConfirm }: EditCategoryModalPr
         onConfirm(category.id, data.name);
     };
 
+    const handleSavePress = () => {
+        Keyboard.dismiss();
+        void handleSubmit(handleSave)();
+    };
+
     return (
         <Modal visible={Boolean(category)} onClose={onClose}>
-            <Text size="xl" weight="bold" textAlign="center">
-                {t("categories.editTitle")}
-            </Text>
-            <Text size="sm" weight="bold" heading>
-                {t("common.name")}
-            </Text>
-            <Controller
-                control={control}
-                name="name"
-                render={({ field }) => (
-                    <TextInput
-                        value={field.value}
-                        onChangeText={field.onChange}
-                        onBlur={field.onBlur}
-                        error={errors.name?.message}
-                    />
-                )}
-            />
-            <Button onPress={handleSubmit(handleSave)} block background="gradient">
-                <Text weight="bold" color="white">
-                    {t("common.save")}
+            <ScrollView
+                style={styles.scrollView}
+                contentContainerStyle={styles.content}
+                keyboardShouldPersistTaps="handled"
+            >
+                <Text size="xl" weight="bold" textAlign="center">
+                    {t("categories.editTitle")}
                 </Text>
-            </Button>
-            <Button onPress={onClose} block background="icons">
-                <Text weight="bold">{t("common.close")}</Text>
-            </Button>
+                <Text size="sm" weight="bold" heading>
+                    {t("common.name")}
+                </Text>
+                <Controller
+                    control={control}
+                    name="name"
+                    render={({ field }) => (
+                        <TextInput
+                            value={field.value}
+                            onChangeText={field.onChange}
+                            onBlur={field.onBlur}
+                            error={errors.name?.message}
+                        />
+                    )}
+                />
+                <Button onPress={handleSavePress} block background="gradient">
+                    <Text weight="bold" color="white">
+                        {t("common.save")}
+                    </Text>
+                </Button>
+                <Button onPress={onClose} block background="icons">
+                    <Text weight="bold">{t("common.close")}</Text>
+                </Button>
+            </ScrollView>
         </Modal>
     );
 }
+
+const styles = StyleSheet.create({
+    scrollView: {
+        flexShrink: 1,
+    },
+    content: {
+        gap: theme.spacing.md,
+    },
+});
 
 export default EditCategoryModal;

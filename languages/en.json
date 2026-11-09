@@ -21,6 +21,7 @@
             "password": "Password",
             "retry": "Please try again",
             "save": "Save",
+            "saving": "Saving...",
             "selectOption": "Please select an option",
             "update": "Update"
         },
@@ -83,7 +84,7 @@
             "monthlyBudgetStatus": "Monthly budget status",
             "overLimit": "Over limit",
             "overBudget": "{{amount}} over budget",
-            "remaining": "{{amount}} remaining",
+            "remaining": "Remaining: {{amount}}",
             "budget": "Budget: {{amount}}",
             "dailyTipTitle": "Tip: your daily allowance!",
             "dailyTip": "To reach your goal by the end of the month, you can spend <bold>{{amount}}</bold> each day."

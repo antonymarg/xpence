@@ -8,8 +8,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { ScrollView, StyleSheet, View } from "react-native";
-import z from "zod";
+import { Keyboard, ScrollView, StyleSheet, View } from "react-native";
+import { z } from "zod";
 import Button from "../Button";
 import CategoryPicker from "../CategoryPicker";
 import DatePicker from "../DatePicker";
@@ -68,12 +68,22 @@ function UpdateExpenseModal({
     reset();
   };
 
+  const handleSavePress = () => {
+    Keyboard.dismiss();
+    void handleSubmit(handleSave)();
+  };
+
   return (
     <Modal visible={Boolean(expense)} onClose={onClose}>
       <Text size="xl" weight="bold" textAlign="center">
         {t("expense.updateTitle")}
       </Text>
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator
+      >
         <View style={styles.formSegment}>
           <Text size="sm" weight="bold" heading>
             {t("common.amount")}
@@ -141,25 +151,42 @@ function UpdateExpenseModal({
           />
           {errors.date?.message && <Text>{errors.date?.message}</Text>}
         </View>
-        <Button onPress={handleSubmit(handleSave)} block background="gradient">
-          <Text weight="bold" color="white">
-            {t("common.update")}
-          </Text>
-        </Button>
-        <Button onPress={onClose} block background="icons">
+      </ScrollView>
+      <View style={styles.footer}>
+        <Button onPress={onClose} background="transparent">
           <Text weight="bold">{t("common.close")}</Text>
         </Button>
-      </ScrollView>
+        <View style={styles.updateButtonWrapper}>
+          <Button onPress={handleSavePress} background="gradient" block>
+            <Text weight="bold" color="white">
+              {t("common.update")}
+            </Text>
+          </Button>
+        </View>
+      </View>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    gap: theme.spacing.md
+    gap: theme.spacing.md,
+  },
+  scrollView: {
+    flexShrink: 1,
   },
   formSegment: {
     gap: theme.spacing.sm,
+  },
+  footer: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    gap: theme.spacing.md,
+    alignItems: 'center',
+  },
+  updateButtonWrapper: {
+    flex: 1,
   },
 });
 export default UpdateExpenseModal;

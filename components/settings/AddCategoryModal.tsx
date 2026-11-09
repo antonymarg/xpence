@@ -1,8 +1,10 @@
+import { theme } from "@/constants/theme";
 import { Category } from "@/types/categories.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { Keyboard, ScrollView, StyleSheet } from "react-native";
 import z from "zod";
 import Button from "../Button";
 import CategoryTypePicker from "../CategoryTypePicker";
@@ -47,49 +49,69 @@ function AddCategoryModal({
     reset();
   };
 
+  const handleSavePress = () => {
+    Keyboard.dismiss();
+    void handleSubmit(handleSave)();
+  };
+
   return (
     <Modal visible={Boolean(isVisible)} onClose={onClose}>
-      <Text size="xl" weight="bold" textAlign="center">
-        {t("categories.addTitle")}
-      </Text>
-      <Text size="sm" weight="bold" heading>
-        {t("common.name")}
-      </Text>
-      <Controller
-        control={control}
-        name="categoryName"
-        render={({ field }) => (
-          <TextInput
-            onChangeText={field.onChange}
-            onBlur={field.onBlur}
-            value={field.value}
-            error={errors.categoryName?.message}
-          />
-        )}
-      />
-      <Text size="sm" weight="bold" heading>
-        {t("common.categoryType")}
-      </Text>
-      <Controller
-        name="categoryType"
-        control={control}
-        render={({ field }) => (
-          <CategoryTypePicker
-            selectedCategoryType={field.value}
-            onSelectCategoryType={field.onChange}
-          />
-        )}
-      />
-      <Button onPress={handleSubmit(handleSave)} block background="gradient">
-        <Text weight="bold" color="white">
-          {t("categories.addAction")}
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
+      >
+        <Text size="xl" weight="bold" textAlign="center">
+          {t("categories.addTitle")}
         </Text>
-      </Button>
-      <Button onPress={onClose} block background="icons">
-        <Text weight="bold">{t("common.close")}</Text>
-      </Button>
+        <Text size="sm" weight="bold" heading>
+          {t("common.name")}
+        </Text>
+        <Controller
+          control={control}
+          name="categoryName"
+          render={({ field }) => (
+            <TextInput
+              onChangeText={field.onChange}
+              onBlur={field.onBlur}
+              value={field.value}
+              error={errors.categoryName?.message}
+            />
+          )}
+        />
+        <Text size="sm" weight="bold" heading>
+          {t("common.categoryType")}
+        </Text>
+        <Controller
+          name="categoryType"
+          control={control}
+          render={({ field }) => (
+            <CategoryTypePicker
+              selectedCategoryType={field.value}
+              onSelectCategoryType={field.onChange}
+            />
+          )}
+        />
+        <Button onPress={handleSavePress} block background="gradient">
+          <Text weight="bold" color="white">
+            {t("categories.addAction")}
+          </Text>
+        </Button>
+        <Button onPress={onClose} block background="icons">
+          <Text weight="bold">{t("common.close")}</Text>
+        </Button>
+      </ScrollView>
     </Modal>
   );
 }
+
+const styles = StyleSheet.create({
+  scrollView: {
+    flexShrink: 1,
+  },
+  content: {
+    gap: theme.spacing.md,
+  },
+});
 
 export default AddCategoryModal;

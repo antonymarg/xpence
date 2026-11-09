@@ -5,7 +5,7 @@ import { Expense } from "@/types/expenses.types";
 import { InfiniteData } from "@tanstack/react-query";
 import React, { useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
 import Loading from "../Loading";
 import Text from "../Text";
 import ExpenseCard from "./ExpenseCard";
@@ -121,7 +121,7 @@ export default function ExpenseList({
         if (hasNextPage && !isFetchingNextPage) fetchNextPage();
       }}
       onEndReachedThreshold={0.3}
-      ListFooterComponent={isFetchingNextPage ? <ActivityIndicator size="small" /> : null}
+      ListFooterComponent={isFetchingNextPage ? <Loading /> : null}
       ListEmptyComponent={
         <View style={style.empty}>
           <Text>{t("history.noExpenses")}</Text>

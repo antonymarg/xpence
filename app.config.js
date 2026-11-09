@@ -1,6 +1,26 @@
-{
+let name, packageName;
+const appVariant = process.env.APP_VARIANT ?? "development";
+
+switch (appVariant) {
+  case "development":
+    name = 'Xpence (dev)'
+    packageName = 'com.antonismargaronis.dev.xpence'
+    break;
+  case "preview":
+    name = 'Xpence (preview)'
+    packageName = 'com.antonismargaronis.preview.xpence'
+    break;
+  case "production":
+    name = 'Xpence'
+    packageName = 'com.antonismargaronis.xpence'
+    break;
+  default:
+    throw new Error(`Unsupported APP_VARIANT: ${appVariant}`);
+}
+
+export default {
   "expo": {
-    "name": "XPence",
+    "name": name,
     "slug": "xpence-app",
     "version": "0.0.3",
     "orientation": "portrait",
@@ -13,7 +33,7 @@
     },
     "android": {
       "predictiveBackGestureEnabled": false,
-      "package": "com.antonismargaronis.xpence",
+      "package": packageName,
       "intentFilters": [
         {
           "action": "VIEW",

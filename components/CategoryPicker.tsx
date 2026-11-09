@@ -6,7 +6,7 @@ import CategoryTypePicker from "./CategoryTypePicker";
 import Pressable from "./Pressable";
 import Text from "./Text";
 
-interface CategoryTypePickerProps {
+interface CategoryPickerProps {
   categories: Category[];
   selectedCategoryId: string | null;
   onSelectCategory: (categoryId: string | null) => void;
@@ -18,7 +18,7 @@ function CategoryPicker({
   selectedCategoryId,
   onSelectCategory,
   error,
-}: CategoryTypePickerProps) {
+}: CategoryPickerProps) {
   const [categoryTypeFilter, setCategoryTypeFilter] =
     React.useState<CategoryType | null>(null);
   const selectedCategory = categories.find(
@@ -39,28 +39,31 @@ function CategoryPicker({
   }, [selectedCategoryType, categories]);
 
   return (
-    <View style={styles.container}>
+    <View style={baseStyles.container}>
       <CategoryTypePicker
         selectedCategoryType={selectedCategoryType}
         onSelectCategoryType={handleSelectType}
       />
       {error && (
-        <Text size="sm" color="error" style={styles.error}>
+        <Text size="sm" color="error" style={baseStyles.error}>
           {error}
         </Text>
       )}
-      <View style={styles.categoriesContainer}>
+      <View style={baseStyles.categoriesContainer}>
         {Boolean(selectedCategoryType) &&
           filteredCategories.map((category) => (
             <Pressable
               key={category.id}
               onPress={() => onSelectCategory(category.id)}
-              style={[
-                styles.categoryButton,
-                selectedCategoryId === category.id && styles.selectedButton,
-              ]}
+              accessibilityState={{ selected: selectedCategoryId === category.id }}
+              style={categoryStyles(category.type, selectedCategoryId === category.id).categoryButton}
             >
-              <Text size="sm" weight="bold">
+              <Text
+                size="sm"
+                weight="bold"
+                color={selectedCategoryId === category.id ? category.type : "textLight"}
+                textAlign="center"
+              >
                 {category.name}
               </Text>
             </Pressable>
@@ -70,7 +73,7 @@ function CategoryPicker({
   );
 }
 
-const styles = StyleSheet.create({
+const baseStyles = StyleSheet.create({
   container: {
     gap: theme.spacing.xs,
   },
@@ -79,21 +82,25 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: theme.spacing.xs,
   },
-  categoryButton: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: theme.spacing.sm,
-    paddingHorizontal: theme.spacing.md,
-    borderRadius: theme.borderRadius.md,
-    borderColor: theme.colors.primaryOrange,
-    backgroundColor: theme.colors.primaryOrangeBg,
-  },
-  selectedButton: {
-    borderWidth: 1,
-  },
   error: {
     marginTop: theme.spacing.xs,
   },
 });
+
+const categoryStyles = (categoryType: CategoryType, isSelected: boolean) =>
+  StyleSheet.create({
+    categoryButton: {
+      width: "48%",
+      minHeight: 40,
+      alignItems: "center",
+      justifyContent: "center",
+      paddingVertical: theme.spacing.sm,
+      paddingHorizontal: theme.spacing.sm,
+      borderRadius: theme.borderRadius.md,
+      borderWidth: 1,
+      borderColor: isSelected ? theme.colors[categoryType] : "transparent",
+      backgroundColor: isSelected ? theme.colors[`${categoryType}Bg`] : theme.colors.background,
+    },
+  });
 
 export default CategoryPicker;

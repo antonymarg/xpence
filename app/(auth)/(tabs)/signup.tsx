@@ -1,5 +1,6 @@
 import Button from "@/components/Button";
 import Icon from "@/components/Icon";
+import Loading from "@/components/Loading";
 import Text from "@/components/Text";
 import TextInput from "@/components/TextInput";
 import { theme } from "@/constants/theme";
@@ -10,12 +11,11 @@ import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import {
-    ActivityIndicator,
     Keyboard,
     KeyboardAvoidingView,
     Platform,
     StyleSheet,
-    View,
+    View
 } from "react-native";
 import Toast from "react-native-toast-message";
 import z from "zod";
@@ -162,7 +162,7 @@ export default function Signup() {
                             style={styles.button}
                         >
                             {loading ? (
-                                <ActivityIndicator size="small" color="#fff" />
+                                <Loading />
                             ) : (
                                 <Text weight="bold" size='xl' color="white">
                                     {t("auth.signup")}

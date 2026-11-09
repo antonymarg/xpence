@@ -37,8 +37,7 @@ function CategoryCard({ category, budget, amount, compact = false }: CategoryCar
   const { t } = useTranslation();
   const formatCurrency = usePriceFormatter();
   const [color, icon] = getIconForCategory(category);
-  const goal = BUDGET_PER_CATEGORY[category] * budget
-  const percentage = (amount / goal) * 100
+  const percentage = (amount / budget) * 100
   const styling = styles({ category, compact });
 
   if (compact) return (

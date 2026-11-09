@@ -1,6 +1,7 @@
 import * as userApi from "@/api/users.api";
 import Button from "@/components/Button";
 import Dropdown from "@/components/Dropdown";
+import Loading from "@/components/Loading";
 import Logo from "@/components/Logo";
 import Text from "@/components/Text";
 import TextInput from "@/components/TextInput";
@@ -17,7 +18,6 @@ import React from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import {
-    ActivityIndicator,
     KeyboardAvoidingView,
     Platform,
     StyleSheet,
@@ -157,7 +157,7 @@ export default function Onboard() {
                         style={styles.button}
                     >
                         {loading ? (
-                            <ActivityIndicator size="small" color="#fff" />
+                            <Loading />
                         ) : (
                             <Text weight="bold" size='xl' color="white">
                                 {t("auth.letsgo")}

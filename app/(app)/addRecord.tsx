@@ -1,9 +1,9 @@
 import * as expenseApi from "@/api/expenses.api";
+import Button from "@/components/Button";
 import CategoryPicker from "@/components/CategoryPicker";
 import DatePicker from "@/components/DatePicker";
 import ErrorScreen from "@/components/ErrorScreen";
 import Loading from "@/components/Loading";
-import Pressable from "@/components/Pressable";
 import Text from "@/components/Text";
 import TextInput from "@/components/TextInput";
 import { currencies } from "@/constants/currency";
@@ -14,11 +14,12 @@ import { parseAmountInput } from "@/lib/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import { router } from "expo-router";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import {
+  ActivityIndicator,
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -31,6 +32,7 @@ import { z } from "zod";
 function AddRecordPage() {
   const queryClient = useQueryClient();
   const { t } = useTranslation();
+  const [isSaving, setIsSaving] = React.useState(false);
   const schema = z.object({
     amount: z.string().refine(
       (value) => parseAmountInput(value) !== null,
@@ -68,32 +70,38 @@ function AddRecordPage() {
     },
   });
 
-  const handleCancel = () => {
-    router.back();
+  const handleSave = async (data: z.infer<typeof schema>) => {
+    setIsSaving(true);
+    try {
+      const result = await expenseApi.addExpense({
+        ...data,
+        amount: Math.round(Number(data.amount) * 100),
+      });
+      if (result.success) {
+        Toast.show({
+          type: "success",
+          text1: t("expense.expenseAdded"),
+          visibilityTime: 5000,
+          autoHide: true,
+        });
+        queryClient.invalidateQueries({ queryKey: ["expenses"] });
+        reset();
+      } else {
+        Toast.show({
+          type: "error",
+          text1: t("expense.saveFailed"),
+          visibilityTime: 5000,
+          autoHide: true,
+        });
+      }
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  const handleSave = async (data: z.infer<typeof schema>) => {
-    const result = await expenseApi.addExpense({
-      ...data,
-      amount: Math.round(Number(data.amount) * 100),
-    });
-    if (result.success) {
-      Toast.show({
-        type: "success",
-        text1: t("expense.expenseAdded"),
-        visibilityTime: 5000,
-        autoHide: true,
-      });
-      queryClient.invalidateQueries({ queryKey: ["expenses"] });
-    } else {
-      Toast.show({
-        type: "error",
-        text1: t("expense.saveFailed"),
-        visibilityTime: 5000,
-        autoHide: true,
-      });
-    }
-    reset();
+  const handleSavePress = () => {
+    Keyboard.dismiss();
+    void handleSubmit(handleSave)();
   };
 
   if (isProfileLoading || isUserCategoriesLoading) {
@@ -115,22 +123,12 @@ function AddRecordPage() {
   return (
     <KeyboardAvoidingView
       style={styles.formContainer}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <View style={styles.header}>
-        <Pressable onPress={handleCancel}>
-          <Ionicons name="close" color={theme.colors.textLight} size={32} />
-        </Pressable>
-        <Text size="xl" weight="bold">
-          {t("expense.addTitle")}
-        </Text>
-        <Pressable onPress={handleSubmit(handleSave)}>
-          <Text size="lg" weight="bold" color="primaryRed">
-            {t("common.save")}
-          </Text>
-        </Pressable>
-      </View>
-      <ScrollView keyboardShouldPersistTaps="handled">
+      <Text size="title" weight="bold">
+        {t("expense.addTitle")}
+      </Text>
+      <ScrollView style={styles.formScrollView} keyboardShouldPersistTaps="handled">
         <View style={styles.mainForm}>
           <View style={styles.formSegment}>
             <Text size="sm" weight="bold" heading>
@@ -201,6 +199,24 @@ function AddRecordPage() {
           </View>
         </View>
       </ScrollView>
+      <View style={styles.saveFooter}>
+        <Button
+          onPress={handleSavePress}
+          background="gradient"
+          block
+          disabled={isSaving}
+          style={styles.saveButton}
+        >
+          {isSaving ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <Ionicons name="checkmark" size={20} color="white" />
+          )}
+          <Text weight="bold" color="white">
+            {isSaving ? t("common.saving") : t("common.save")}
+          </Text>
+        </Button>
+      </View>
     </KeyboardAvoidingView>
   );
 }
@@ -212,15 +228,19 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.background,
     padding: theme.spacing.md,
   },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+  formScrollView: {
+    flex: 1,
   },
   mainForm: {
     gap: theme.spacing.md,
   },
   formSegment: {
+    gap: theme.spacing.sm,
+  },
+  saveFooter: {
+    paddingTop: theme.spacing.sm,
+  },
+  saveButton: {
     gap: theme.spacing.sm,
   },
 });

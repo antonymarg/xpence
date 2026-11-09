@@ -11,16 +11,16 @@ import Pressable from "./Pressable";
 
 interface StylingButtonProps {
   background:
-    | "primaryRed"
-    | "primaryOrange"
-    | "card"
-    | "icons"
-    | "transparent"
-    | "gradient"
-    | "needs"
-    | "wants"
-    | "savings"
-    | "gray";
+  | "primaryRed"
+  | "primaryOrange"
+  | "card"
+  | "icons"
+  | "transparent"
+  | "gradient"
+  | "needs"
+  | "wants"
+  | "savings"
+  | "gray";
   size: "sm" | "md" | "lg" | "xl";
   block: boolean;
   round: boolean;
@@ -69,7 +69,7 @@ const styles = ({ block, size, background, round }: StylingButtonProps) => {
 
   return StyleSheet.create({
     block: {
-      width: block ? "100%" : "auto",
+      width: block ? "100%" : undefined,
     },
     button: {
       alignItems: "center",
