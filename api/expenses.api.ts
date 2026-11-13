@@ -33,6 +33,11 @@ const toLocalISOString = (date: Date) => {
   return localDate.toISOString().split('T')[0]
 };
 
+const fromLocalDateString = (date: string) => {
+  const [year, month, day] = date.split("-").map(Number);
+  return new Date(year, month - 1, day);
+};
+
 async function addExpense(expense: Omit<Expense, "id">): Result<Expense> {
   try {
     const userId = await getUserId();
@@ -42,7 +47,7 @@ async function addExpense(expense: Omit<Expense, "id">): Result<Expense> {
         user_id: userId,
         category_id: expense.categoryId,
         amount: expense.amount,
-        date: expense.date.toISOString(),
+        date: toLocalISOString(expense.date),
         description: expense.description,
       })
       .select()
@@ -54,7 +59,7 @@ async function addExpense(expense: Omit<Expense, "id">): Result<Expense> {
         id: data.id,
         categoryId: data.category_id,
         amount: data.amount,
-        date: new Date(data.date),
+        date: fromLocalDateString(data.date),
         description: data.description,
       },
     };
@@ -118,7 +123,7 @@ async function getExpenses(params: GetExpensesParam): Result<Expense[]> {
       data: data.map((item) => ({
         id: item.id,
         amount: item.amount,
-        date: new Date(item.date),
+        date: fromLocalDateString(item.date),
         description: item.description,
         categoryId: item.categories.id,
       })),
@@ -136,7 +141,7 @@ async function updateExpense(expense: Expense): Result<Expense> {
       .update({
         category_id: expense.categoryId,
         amount: expense.amount,
-        date: expense.date.toISOString(),
+        date: toLocalISOString(expense.date),
         description: expense.description,
       })
       .eq("id", expense.id)
@@ -150,7 +155,7 @@ async function updateExpense(expense: Expense): Result<Expense> {
         id: data.id,
         categoryId: data.category_id,
         amount: data.amount,
-        date: new Date(data.date),
+        date: fromLocalDateString(data.date),
         description: data.description,
       },
     };

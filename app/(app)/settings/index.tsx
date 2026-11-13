@@ -54,12 +54,15 @@ function SettingsPage() {
                 <SettingsOption label={t("settings.changeLanguage")} href="/(app)/settings/changeLocale" />
             </View>
             <View style={styles.settingsGroup}>
-                <Button onPress={signOut} background="transparent" style={styles.footer}>
+                <Button onPress={signOut} background="transparent" style={styles.signOut}>
                     <Text size='lg' color="error" weight="bold">
                         {t("settings.signOut")}
                     </Text>
                     <Icon color={theme.colors.error} name="exit" />
                 </Button>
+            </View>
+            <View style={styles.footer}>
+                <Text color='textSecondaryDark'>XPence: v0.0.5</Text>
             </View>
         </View>
     );
@@ -74,11 +77,15 @@ const styles = StyleSheet.create({
     settingsGroup: {
         gap: theme.spacing.sm
     },
-    footer: {
+    signOut: {
         padding: 0,
         flexDirection: "row",
         justifyContent: "space-between",
     },
+    footer: {
+        marginTop: 'auto',
+        alignItems: 'center'
+    }
 });
 
 export default SettingsPage;

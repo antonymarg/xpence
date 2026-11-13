@@ -60,7 +60,7 @@ function UpdateExpenseModal({
   if (!expense || !isUserCategoriesSuccess) return null;
 
   const handleSave = async (data: z.infer<typeof schema>) => {
-    onConfirm({
+    await onConfirm({
       id: expense.id,
       ...data,
       amount: Math.round(Number(data.amount) * 100),
