@@ -65,7 +65,8 @@ export default function RootLayout() {
   useEffect(() => {
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === "SIGNED_OUT") client.clear();
       if (!isOnPublicPage && session) return;
 
       const nextRoute = await resolveAuthRoute(session);

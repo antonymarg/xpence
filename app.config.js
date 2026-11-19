@@ -3,15 +3,15 @@ const appVariant = process.env.APP_VARIANT ?? "development";
 
 switch (appVariant) {
   case "development":
-    name = 'Xpence (dev)'
+    name = 'XPence (dev)'
     packageName = 'com.antonismargaronis.dev.xpence'
     break;
   case "preview":
-    name = 'Xpence (preview)'
+    name = 'XPence (preview)'
     packageName = 'com.antonismargaronis.preview.xpence'
     break;
   case "production":
-    name = 'Xpence'
+    name = 'XPence'
     packageName = 'com.antonismargaronis.xpence'
     break;
   default:
@@ -22,7 +22,7 @@ export default {
   "expo": {
     "name": name,
     "slug": "xpence-app",
-    "version": "0.0.3",
+    "version": "0.0.6",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "xpence",

@@ -1,17 +1,12 @@
 import * as userApi from "@/api/users.api";
+import { unwrap } from "@/lib/utils";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 const useProfile = () => {
     const queryClient = useQueryClient();
     const query = useQuery({
         queryKey: ["profile"],
-        queryFn: async () => {
-            const result = await userApi.getUserProfile();
-            if (!result.success) {
-                return null;
-            }
-            return result.data;
-        },
+        queryFn: () => unwrap(userApi.getUserProfile()),
         staleTime: 1000 * 60 * 5,
     });
 

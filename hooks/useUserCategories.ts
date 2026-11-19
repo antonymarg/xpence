@@ -5,7 +5,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 const useUserCategories = (onlyActive = true) => {
     const queryClient = useQueryClient();
     const query = useQuery({
-        queryKey: ["categories"],
+        queryKey: ["categories", onlyActive ? "active" : "all"],
         queryFn: () => unwrap(categoriesApi.getUserCategories(onlyActive)),
         staleTime: 1000 * 60 * 5
     });

@@ -12,7 +12,7 @@ async function getUserProfile(): Result<Profile | null> {
       .from("user_profiles")
       .select("*")
       .eq("user_id", userId)
-      .single();
+      .maybeSingle();
     if (error) throw error;
     if (!data) {
       return { success: true, data: null };

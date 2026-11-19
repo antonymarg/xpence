@@ -1,3 +1,4 @@
+import ErrorScreen from "@/components/ErrorScreen";
 import Loading from "@/components/Loading";
 import TabBar from "@/components/TabBar";
 import useProfile from "@/hooks/useProfile";
@@ -8,7 +9,12 @@ import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AppLayout() {
-  const { data: profile, isLoading: isProfileLoading } = useProfile();
+  const {
+    data: profile,
+    isLoading: isProfileLoading,
+    isError: isProfileError,
+    refetch: refetchProfile,
+  } = useProfile();
   const profileLocale = profile?.locale;
 
   useEffect(() => {
@@ -23,8 +29,16 @@ export default function AppLayout() {
     );
   }
 
+  if (isProfileError) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ErrorScreen onRefresh={() => void refetchProfile()} />
+      </SafeAreaView>
+    );
+  }
+
   if (!profile) {
-    return <Redirect href="/(auth)/(tabs)/login" />;
+    return <Redirect href="/(auth)/onboard" />;
   }
 
   return (

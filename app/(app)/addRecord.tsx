@@ -10,7 +10,7 @@ import { currencies } from "@/constants/currency";
 import { theme } from "@/constants/theme";
 import useProfile from "@/hooks/useProfile";
 import useUserCategories from "@/hooks/useUserCategories";
-import { parseAmountInput } from "@/lib/utils";
+import { parseAmountInput, toMinorUnits } from "@/lib/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
@@ -75,7 +75,7 @@ function AddRecordPage() {
     try {
       const result = await expenseApi.addExpense({
         ...data,
-        amount: Math.round(Number(data.amount) * 100),
+        amount: toMinorUnits(data.amount),
       });
       if (result.success) {
         Toast.show({

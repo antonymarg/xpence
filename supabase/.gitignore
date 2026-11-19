@@ -6,3 +6,6 @@
 .env.keys
 .env.local
 .env.*.local
+
+# Database dumps (may contain real user data)
+seed.sql

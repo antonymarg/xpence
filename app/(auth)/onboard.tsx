@@ -9,9 +9,10 @@ import { currencies } from "@/constants/currency";
 import { locales } from "@/constants/locale";
 import { theme } from "@/constants/theme";
 import { setAppLanguage } from "@/lib/i18n";
-import { parseAmountInput } from "@/lib/utils";
+import { parseAmountInput, toMinorUnits } from "@/lib/utils";
 import { Currency, Locale } from "@/types/users.types";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import i18n from "i18next";
 import React from "react";
@@ -30,12 +31,13 @@ import z from "zod";
 export default function Onboard() {
     const { t } = useTranslation();
     const router = useRouter();
+    const queryClient = useQueryClient();
 
     const schema = z
         .object({
             name: z.string().min(3, t("validation.nameMinLength", { count: 3 })),
             budget: z.string().refine(
-                (value) => parseAmountInput(value, 0) !== null,
+                (value) => parseAmountInput(value) !== null,
                 t("validation.validBudget")
             ),
             currency: z.enum(Object.keys(currencies) as [Currency, ...Currency[]], { error: t("validation.validCurrency") }),
@@ -50,10 +52,11 @@ export default function Onboard() {
             const { success } = await userApi.createUserProfile({
                 locale: data.locale,
                 displayName: data.name,
-                budget: Math.round(Number(data.budget) * 100),
+                budget: toMinorUnits(data.budget),
                 currency: data.currency
             })
             if (!success) throw new Error()
+            queryClient.removeQueries({ queryKey: ["profile"] });
             router.replace('/(app)/home')
         } catch {
             Toast.show({

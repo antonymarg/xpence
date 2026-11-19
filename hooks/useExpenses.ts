@@ -3,7 +3,7 @@ import {
     getExpenses,
     type ExpenseCursor,
 } from "@/api/expenses.api";
-import { unwrap } from "@/lib/utils";
+import { toLocalDateString, unwrap } from "@/lib/utils";
 import { CategoryType } from "@/types/categories.types";
 import { Expense } from "@/types/expenses.types";
 import { InfiniteData, useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
@@ -30,8 +30,8 @@ const useExpenses = (args: UseExpensesArgs, select?: SelectFn) => {
             "history",
             args.selectedCategoryType,
             args.selectedCategory,
-            args.fromDate?.toISOString().split("T")[0] ?? null,
-            args.toDate?.toISOString().split("T")[0] ?? null,
+            args.fromDate ? toLocalDateString(args.fromDate) : null,
+            args.toDate ? toLocalDateString(args.toDate) : null,
         ],
         queryFn: ({ pageParam }) =>
             unwrap(

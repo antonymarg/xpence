@@ -1,6 +1,6 @@
 import { getUserId } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
-import { toError } from "@/lib/utils";
+import { fromLocalDateString, toError, toLocalDateString } from "@/lib/utils";
 import { Result } from "@/types/api.types";
 import { CategoryType } from "@/types/categories.types";
 import { Database } from "@/types/database.types";
@@ -27,17 +27,6 @@ type GetInsightsParams = {
   categoryType?: CategoryType
 }
 
-const toLocalISOString = (date: Date) => {
-  const offset = date.getTimezoneOffset();
-  const localDate = new Date(date.getTime() - (offset * 60 * 1000));
-  return localDate.toISOString().split('T')[0]
-};
-
-const fromLocalDateString = (date: string) => {
-  const [year, month, day] = date.split("-").map(Number);
-  return new Date(year, month - 1, day);
-};
-
 async function addExpense(expense: Omit<Expense, "id">): Result<Expense> {
   try {
     const userId = await getUserId();
@@ -47,7 +36,7 @@ async function addExpense(expense: Omit<Expense, "id">): Result<Expense> {
         user_id: userId,
         category_id: expense.categoryId,
         amount: expense.amount,
-        date: toLocalISOString(expense.date),
+        date: toLocalDateString(expense.date),
         description: expense.description,
       })
       .select()
@@ -82,8 +71,8 @@ async function getSummaryOfExpenses(): Result<ExpensesSummary> {
 async function getMonthlyInsights(params: GetInsightsParams): Result<MonthlyInsights> {
   try {
     const requestParams: Database['public']['Functions']['get_monthly_insights']['Args'] = {
-      p_from_date: toLocalISOString(params.fromDate),
-      p_to_date: toLocalISOString(params.toDate),
+      p_from_date: toLocalDateString(params.fromDate),
+      p_to_date: toLocalDateString(params.toDate),
       p_category_type: params.categoryType
     }
     const { data, error } = await supabase.rpc('get_monthly_insights', requestParams)
@@ -107,10 +96,10 @@ async function getExpenses(params: GetExpensesParam): Result<Expense[]> {
       query = query.eq("categories.type", params.categoryType);
     if (params.categoryId) query = query.eq("categories.id", params.categoryId);
     if (params.fromDate)
-      query = query.gte("date", params.fromDate.toISOString());
-    if (params.toDate) query = query.lte("date", params.toDate.toISOString());
+      query = query.gte("date", toLocalDateString(params.fromDate));
+    if (params.toDate) query = query.lte("date", toLocalDateString(params.toDate));
     if (params.after) {
-      const cursorDate = params.after.date.toISOString();
+      const cursorDate = toLocalDateString(params.after.date);
       query = query.or(
         `date.lt.${cursorDate},and(date.eq.${cursorDate},id.lt.${params.after.id})`,
       );
@@ -141,7 +130,7 @@ async function updateExpense(expense: Expense): Result<Expense> {
       .update({
         category_id: expense.categoryId,
         amount: expense.amount,
-        date: toLocalISOString(expense.date),
+        date: toLocalDateString(expense.date),
         description: expense.description,
       })
       .eq("id", expense.id)

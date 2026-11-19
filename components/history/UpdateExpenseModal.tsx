@@ -2,7 +2,7 @@ import { currencies } from "@/constants/currency";
 import { theme } from "@/constants/theme";
 import useProfile from "@/hooks/useProfile";
 import useUserCategories from "@/hooks/useUserCategories";
-import { parseAmountInput } from "@/lib/utils";
+import { parseAmountInput, toMinorUnits } from "@/lib/utils";
 import { Expense } from "@/types/expenses.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
@@ -63,7 +63,7 @@ function UpdateExpenseModal({
     await onConfirm({
       id: expense.id,
       ...data,
-      amount: Math.round(Number(data.amount) * 100),
+      amount: toMinorUnits(data.amount),
     });
     reset();
   };
