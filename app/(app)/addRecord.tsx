@@ -10,6 +10,7 @@ import { currencies } from "@/constants/currency";
 import { theme } from "@/constants/theme";
 import useProfile from "@/hooks/useProfile";
 import useUserCategories from "@/hooks/useUserCategories";
+import { showErrorToast, showSuccessToast } from "@/lib/toast";
 import { parseAmountInput, toMinorUnits } from "@/lib/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,7 +27,6 @@ import {
   StyleSheet,
   View
 } from "react-native";
-import Toast from "react-native-toast-message";
 import { z } from "zod";
 
 function AddRecordPage() {
@@ -78,21 +78,11 @@ function AddRecordPage() {
         amount: toMinorUnits(data.amount),
       });
       if (result.success) {
-        Toast.show({
-          type: "success",
-          text1: t("expense.expenseAdded"),
-          visibilityTime: 5000,
-          autoHide: true,
-        });
+        showSuccessToast(t("expense.expenseAdded"));
         queryClient.invalidateQueries({ queryKey: ["expenses"] });
         reset();
       } else {
-        Toast.show({
-          type: "error",
-          text1: t("expense.saveFailed"),
-          visibilityTime: 5000,
-          autoHide: true,
-        });
+        showErrorToast(t("expense.saveFailed"));
       }
     } finally {
       setIsSaving(false);

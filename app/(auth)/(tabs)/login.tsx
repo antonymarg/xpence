@@ -3,6 +3,7 @@ import Loading from "@/components/Loading";
 import Text from "@/components/Text";
 import TextInput from "@/components/TextInput";
 import { theme } from "@/constants/theme";
+import { showErrorToast } from "@/lib/toast";
 import { supabase } from "@/lib/supabase";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "expo-router";
@@ -16,7 +17,6 @@ import {
     StyleSheet,
     View
 } from "react-native";
-import Toast from "react-native-toast-message";
 import z from "zod";
 
 export default function Login() {
@@ -48,20 +48,10 @@ export default function Login() {
                 password: data.password,
             });
             if (loginError) {
-                Toast.show({
-                    type: "error",
-                    text1: t("auth.loginFailed"),
-                    visibilityTime: 5000,
-                    autoHide: true,
-                });
+                showErrorToast(t("auth.loginFailed"));
             }
         } catch {
-            Toast.show({
-                type: "error",
-                text1: t("auth.unexpectedError"),
-                visibilityTime: 5000,
-                autoHide: true,
-            });
+            showErrorToast(t("auth.unexpectedError"));
         } finally {
             setLoading(false);
         }

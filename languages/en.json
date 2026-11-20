@@ -87,10 +87,10 @@
             "monthlyBudgetStatus": "Monthly budget status",
             "overLimit": "Over limit",
             "overBudget": "{{amount}} over budget",
-            "remaining": "Remaining: {{amount}}",
+            "remaining": "Left in budget: {{amount}}",
             "budget": "Budget: {{amount}}",
             "dailyTipTitle": "Tip: your daily allowance!",
-            "dailyTip": "To reach your goal by the end of the month, you can spend <bold>{{amount}}</bold> each day.",
+            "dailyTip": "To stay within your budget by the end of the month, you can spend <bold>{{amount}}</bold> each day.",
             "spentSoFar": "Spent so far",
             "target": "Target {{percent}}%"
         },
@@ -149,6 +149,7 @@
             "updateCurrency": "Update currency",
             "categoriesUpdated": "Category added successfully",
             "categoryDeleted": "Category deleted successfully",
+            "noCategories": "No categories yet",
             "categoryUpdated": "Category updated successfully",
             "currentCategories": "Current categories"
         },

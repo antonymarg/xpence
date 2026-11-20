@@ -8,7 +8,7 @@ import { theme } from "@/constants/theme";
 import useProfile from "@/hooks/useProfile";
 import { supabase } from "@/lib/supabase";
 import Constants from "expo-constants";
-import { Redirect, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
@@ -36,7 +36,7 @@ function SettingsPage() {
         );
     }
 
-    if (!profile) return <Redirect href="/(auth)/(tabs)/login" />
+    if (!profile) return null
 
     return (
         <View style={styles.pageContainer}>

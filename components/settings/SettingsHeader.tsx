@@ -20,7 +20,8 @@ function SettingsHeader({ label, href }: SettingsOptionProps) {
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
-        alignItems: 'baseline'
+        alignItems: 'center',
+        gap: 4
     }
 })
 

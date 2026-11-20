@@ -2,9 +2,11 @@ import { theme } from "@/constants/theme";
 import { Category } from "@/types/categories.types";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { ScrollView, StyleSheet } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import Text from "../Text";
 import CategoryList from "./CategoryList";
+
+const SECTIONS = ["needs", "wants", "savings"] as const;
 
 interface CategoryEditorProps {
   categories: Category[];
@@ -15,31 +17,29 @@ interface CategoryEditorProps {
 function CategoryEditor({ categories, onClickEdit, onClickDelete }: CategoryEditorProps) {
   const { t } = useTranslation();
   return (
-    <ScrollView style={styles.scrollView} contentContainerStyle={styles.container}>
-      <Text color="needs" weight="bold">
-        {t("categories.needs")}
-      </Text>
-      <CategoryList
-        categories={categories.filter((cat) => cat.type === "needs")}
-        onClickEdit={onClickEdit}
-        onClickDelete={onClickDelete}
-      />
-      <Text color="wants" weight="bold">
-        {t("categories.wants")}
-      </Text>
-      <CategoryList
-        categories={categories.filter((cat) => cat.type === "wants")}
-        onClickEdit={onClickEdit}
-        onClickDelete={onClickDelete}
-      />
-      <Text color="savings" weight="bold">
-        {t("categories.savings")}
-      </Text>
-      <CategoryList
-        categories={categories.filter((cat) => cat.type === "savings")}
-        onClickEdit={onClickEdit}
-        onClickDelete={onClickDelete}
-      />
+    <ScrollView
+      style={styles.scrollView}
+      contentContainerStyle={styles.container}
+      showsVerticalScrollIndicator={false}
+    >
+      {SECTIONS.map((type) => (
+        <View key={type} style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text color={type} weight="bold" size="sm" style={styles.sectionTitle}>
+              {t(`categories.${type}`)}
+            </Text>
+            <Text size="sm" color="textSecondaryDark">
+              {categories.filter((cat) => cat.type === type).length}
+            </Text>
+          </View>
+          <CategoryList
+            type={type}
+            categories={categories.filter((cat) => cat.type === type)}
+            onClickEdit={onClickEdit}
+            onClickDelete={onClickDelete}
+          />
+        </View>
+      ))}
     </ScrollView>
   );
 }
@@ -49,8 +49,22 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
-    gap: theme.spacing.md,
-    paddingVertical: theme.spacing.md,
+    gap: theme.spacing.lg,
+    paddingTop: theme.spacing.sm,
+    paddingBottom: theme.spacing.lg,
+  },
+  section: {
+    gap: theme.spacing.sm,
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: theme.spacing.xs,
+  },
+  sectionTitle: {
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
   },
 });
 

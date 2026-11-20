@@ -11,12 +11,11 @@ import SettingsHeader from "@/components/settings/SettingsHeader";
 import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
 import useUserCategories from "@/hooks/useUserCategories";
+import { showErrorToast, showSuccessToast } from "@/lib/toast";
 import { Category } from "@/types/categories.types";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
-import Toast from "react-native-toast-message";
-import { showErrorToast, showSuccessToast } from "@/lib/toast";
 
 function ManageCategories() {
     const { t } = useTranslation();
@@ -51,12 +50,7 @@ function ManageCategories() {
         if (success) {
             await invalidateUserCategories();
             setEditModalCategory(null);
-            Toast.show({
-                type: "success",
-                text1: t("settings.categoryUpdated"),
-                visibilityTime: 5000,
-                autoHide: true,
-            });
+            showSuccessToast(t("settings.categoryUpdated"));
         } else {
             showErrorToast(t("common.actionFailed"));
         }
@@ -66,12 +60,7 @@ function ManageCategories() {
         if (success) {
             await invalidateUserCategories();
             onCloseDeleteModal();
-            Toast.show({
-                type: "success",
-                text1: t("settings.categoryDeleted"),
-                visibilityTime: 5000,
-                autoHide: true,
-            });
+            showSuccessToast(t("settings.categoryDeleted"));
         } else {
             showErrorToast(t("common.actionFailed"));
         }
@@ -141,9 +130,12 @@ const styles = StyleSheet.create({
     row: {
         flexDirection: "row",
         justifyContent: "space-between",
+        alignItems: "center",
     },
     addButton: {
-        gap: theme.spacing.sm,
+        gap: theme.spacing.xs,
+        paddingVertical: 0,
+        paddingHorizontal: 0,
     },
 });
 

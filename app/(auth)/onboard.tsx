@@ -8,6 +8,7 @@ import TextInput from "@/components/TextInput";
 import { currencies } from "@/constants/currency";
 import { locales } from "@/constants/locale";
 import { theme } from "@/constants/theme";
+import { showErrorToast } from "@/lib/toast";
 import { setAppLanguage } from "@/lib/i18n";
 import { parseAmountInput, toMinorUnits } from "@/lib/utils";
 import { Currency, Locale } from "@/types/users.types";
@@ -25,7 +26,6 @@ import {
     View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Toast from "react-native-toast-message";
 import z from "zod";
 
 export default function Onboard() {
@@ -59,12 +59,7 @@ export default function Onboard() {
             queryClient.removeQueries({ queryKey: ["profile"] });
             router.replace('/(app)/home')
         } catch {
-            Toast.show({
-                type: "error",
-                text1: t("auth.unexpectedError"),
-                visibilityTime: 5000,
-                autoHide: true,
-            });
+            showErrorToast(t("auth.unexpectedError"));
         } finally {
             setLoading(false);
         }

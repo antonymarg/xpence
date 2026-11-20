@@ -9,7 +9,7 @@ import { theme } from "@/constants/theme";
 import useExpenseSummary from "@/hooks/useExpenseSummary";
 import useProfile from "@/hooks/useProfile";
 import { CategoryType } from "@/types/categories.types";
-import { Redirect, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import React from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
@@ -40,7 +40,7 @@ function HomePage() {
     return <ErrorScreen onRefresh={onRefresh} />
   }
 
-  if (!profile) return <Redirect href="/(auth)/(tabs)/login" />
+  if (!profile) return null
 
   const sum = expenseSummary.needs + expenseSummary.wants + expenseSummary.savings;
   const remaining = profile.budget - sum

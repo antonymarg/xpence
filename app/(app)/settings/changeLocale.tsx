@@ -8,14 +8,13 @@ import Text from "@/components/Text";
 import { locales } from '@/constants/locale';
 import { theme } from "@/constants/theme";
 import useProfile from "@/hooks/useProfile";
+import { showErrorToast, showSuccessToast } from "@/lib/toast";
 import { setAppLanguage } from '@/lib/i18n';
-import { showErrorToast } from "@/lib/toast";
 import { Locale } from '@/types/users.types';
 import { useNavigation } from "expo-router";
 import React, { useState } from "react";
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from "react-native";
-import Toast from "react-native-toast-message";
 
 function ChangeLocale() {
     const {
@@ -45,12 +44,7 @@ function ChangeLocale() {
         const languageTag = locales.find(({ code }) => code === selectedLocale)!.languageTag;
         await invalidateProfile();
         navigator.goBack();
-        Toast.show({
-            type: "success",
-            text1: t('update_locale_success', { lng: languageTag }),
-            visibilityTime: 5000,
-            autoHide: true,
-        });
+        showSuccessToast(t('update_locale_success', { lng: languageTag }));
     };
     return <View style={styles.container}>
         <SettingsHeader label={t('change_locale')} href="/(app)/settings" />

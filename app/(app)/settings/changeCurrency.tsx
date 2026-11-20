@@ -8,13 +8,12 @@ import Text from "@/components/Text";
 import { currencies } from '@/constants/currency';
 import { theme } from "@/constants/theme";
 import useProfile from "@/hooks/useProfile";
-import { showErrorToast } from "@/lib/toast";
+import { showErrorToast, showSuccessToast } from "@/lib/toast";
 import { Currency } from '@/types/users.types';
 import { useNavigation } from "expo-router";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
-import Toast from "react-native-toast-message";
 
 function ChangeCurrency() {
     const { t } = useTranslation();
@@ -36,12 +35,7 @@ function ChangeCurrency() {
     const onCurrencyUpdate = async () => {
         const { success } = await userApi.updateUserCurrency(selectedCurrency);
         if (success) {
-            Toast.show({
-                type: "success",
-                text1: t("settings.currencyUpdated"),
-                visibilityTime: 5000,
-                autoHide: true,
-            });
+            showSuccessToast(t("settings.currencyUpdated"));
             await invalidateProfile();
             navigator.goBack()
         } else {
