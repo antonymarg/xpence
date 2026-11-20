@@ -7,6 +7,7 @@ interface ProgressBarProps {
   height: number;
   percentage: number;
   type: CategoryType | "generic";
+  overLimit?: boolean;
 }
 
 function ProgressBar(props: ProgressBarProps) {
@@ -15,7 +16,12 @@ function ProgressBar(props: ProgressBarProps) {
   if (props.type !== "generic") {
     return (
       <View style={styling.container}>
-        <View style={[styling.topBar, styling.categoryType]} />
+        <View
+          style={[
+            styling.topBar,
+            props.overLimit ? styling.overLimit : styling.categoryType,
+          ]}
+        />
       </View>
     );
   }

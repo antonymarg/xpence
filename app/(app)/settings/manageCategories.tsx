@@ -16,6 +16,7 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { StyleSheet, View } from "react-native";
 import Toast from "react-native-toast-message";
+import { showErrorToast, showSuccessToast } from "@/lib/toast";
 
 function ManageCategories() {
     const { t } = useTranslation();
@@ -32,18 +33,16 @@ function ManageCategories() {
     if (isCategoriesLoading) return <Loading />
     if (!isCategoriesSuccess) return <ErrorScreen onRefresh={invalidateUserCategories} />
 
-    const onAddCategory = async ({ name, type }: Omit<Category, "id">) => {
+    const onAddCategory = async ({ name, type }: Omit<Category, "id">): Promise<boolean> => {
         const { success } = await categoryApi.addUserCategory({ name, type });
-        if (success) {
-            await invalidateUserCategories();
-            onCloseAddModal();
-            Toast.show({
-                type: "success",
-                text1: t("settings.categoriesUpdated"),
-                visibilityTime: 5000,
-                autoHide: true,
-            });
+        if (!success) {
+            showErrorToast(t("common.actionFailed"));
+            return false;
         }
+        await invalidateUserCategories();
+        onCloseAddModal();
+        showSuccessToast(t("settings.categoriesUpdated"));
+        return true;
     };
 
     const onCloseDeleteModal = () => setDeleteModalCategory(null);
@@ -58,6 +57,8 @@ function ManageCategories() {
                 visibilityTime: 5000,
                 autoHide: true,
             });
+        } else {
+            showErrorToast(t("common.actionFailed"));
         }
     };
     const onDeleteCategory = async (categoryId: string) => {
@@ -71,6 +72,8 @@ function ManageCategories() {
                 visibilityTime: 5000,
                 autoHide: true,
             });
+        } else {
+            showErrorToast(t("common.actionFailed"));
         }
     };
 

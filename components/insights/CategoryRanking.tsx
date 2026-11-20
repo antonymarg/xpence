@@ -22,7 +22,7 @@ function CategoryRanking({ expenses }: CategoryRankingProps) {
         </Text>
         <View style={styles.ranking}>
             {expenses.slice(0, showMore ? expenses.length : 5).map((item, index) => {
-                return <Card padding='sm' key={item.category} style={styles.expenses}>
+                return <Card padding='sm' key={`${index}-${item.categoryType}-${item.category}`} style={styles.expenses}>
                     <Text>{index + 1}. {t(`categories.${item.categoryType}`)} / {item.category}</Text>
                     <Text>{formatCurrency(item.amount)}</Text>
                 </Card>

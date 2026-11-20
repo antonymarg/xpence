@@ -20,7 +20,7 @@ import TextInput from "../TextInput";
 interface UpdateExpenseModalProps {
   expense: Expense | null;
   onClose: () => void;
-  onConfirm: (expense: Expense) => void;
+  onConfirm: (expense: Expense) => Promise<void>;
 }
 
 function UpdateExpenseModal({
@@ -45,7 +45,6 @@ function UpdateExpenseModal({
   const {
     control,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(schema),
@@ -65,7 +64,6 @@ function UpdateExpenseModal({
       ...data,
       amount: toMinorUnits(data.amount),
     });
-    reset();
   };
 
   const handleSavePress = () => {

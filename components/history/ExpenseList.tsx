@@ -1,4 +1,5 @@
 import { theme } from "@/constants/theme";
+import { toLocalDateString } from "@/lib/utils";
 import useExpenses, { type ListItem } from "@/hooks/useExpenses";
 import { Category, CategoryType } from "@/types/categories.types";
 import { Expense } from "@/types/expenses.types";
@@ -20,10 +21,13 @@ interface ExpenseListProps {
   onDeleteExpensePress: (expense: Expense) => void;
 }
 
+// Shows the year only for dates outside the current year ("8 Nov" vs "8 Nov 2025").
 function formatSectionDate(date: Date, language: string): string {
+  const isCurrentYear = date.getFullYear() === new Date().getFullYear();
   return new Intl.DateTimeFormat(language, {
     month: "short",
     day: "numeric",
+    ...(isCurrentYear ? {} : { year: "numeric" }),
   }).format(date);
 }
 
@@ -53,7 +57,7 @@ export default function ExpenseList({
         lastHeader = headerTitle;
         items.push({
           type: "header",
-          id: `hdr-${headerTitle}`,
+          id: `hdr-${toLocalDateString(expense.date)}`,
           title: headerTitle,
         });
       }
@@ -70,6 +74,7 @@ export default function ExpenseList({
   const {
     data: items = [],
     isLoading,
+    isRefetching,
     refetch,
     fetchNextPage,
     hasNextPage,
@@ -115,7 +120,7 @@ export default function ExpenseList({
       data={items}
       keyExtractor={(item) => item.id}
       renderItem={renderItem}
-      refreshing={isLoading}
+      refreshing={isRefetching && !isFetchingNextPage}
       onRefresh={refetch}
       onEndReached={() => {
         if (hasNextPage && !isFetchingNextPage) fetchNextPage();

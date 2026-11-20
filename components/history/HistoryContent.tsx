@@ -12,6 +12,7 @@ import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
 import useExpenses from "@/hooks/useExpenses";
 import useUserCategories from "@/hooks/useUserCategories";
+import { showErrorToast, showSuccessToast } from "@/lib/toast";
 import { CategoryType } from "@/types/categories.types";
 import { Expense } from "@/types/expenses.types";
 import React, { useState } from "react";
@@ -50,15 +51,25 @@ function HistoryContent({ categoryType }: HistoryContentProps) {
     };
 
     const updateExpense = async (expense: Expense) => {
-        await expenseApi.updateExpense(expense);
+        const { success } = await expenseApi.updateExpense(expense);
+        if (!success) {
+            showErrorToast(t("common.actionFailed"));
+            return;
+        }
         await invalidateExpenses();
         setExpenseToEdit(null);
+        showSuccessToast(t("expense.updated"));
     };
 
     const deleteExpense = async (id: string) => {
-        await expenseApi.deleteExpense(id);
+        const { success } = await expenseApi.deleteExpense(id);
+        if (!success) {
+            showErrorToast(t("common.actionFailed"));
+            return;
+        }
         await invalidateExpenses();
         setExpenseToDelete(null);
+        showSuccessToast(t("expense.deleted"));
     };
 
     if (isUserCategoriesLoading) {
@@ -66,7 +77,10 @@ function HistoryContent({ categoryType }: HistoryContentProps) {
     }
 
     if (!isUserCategoriesSuccess || (!isExpensesSuccess && !isExpensesLoading)) {
-        return <ErrorScreen onRefresh={invalidateUserCategories} />;
+        const onRefresh = async () => {
+            await Promise.all([invalidateUserCategories(), invalidateExpenses()]);
+        };
+        return <ErrorScreen onRefresh={onRefresh} />;
     }
 
     return (

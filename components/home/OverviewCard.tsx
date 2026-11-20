@@ -17,7 +17,7 @@ function OverviewCard({ sum, budget }: OverviewCardProps) {
   const formatCurrency = usePriceFormatter();
   const remaining = budget - sum;
   const isOverLimit = remaining < 0;
-  const percentage = (sum / budget) * 100;
+  const percentage = budget > 0 ? (sum / budget) * 100 : sum > 0 ? 101 : 0;
   return (
     <Card padding="lg" borderRadius="md">
       <View style={styles.topContainer}>
@@ -37,6 +37,7 @@ function OverviewCard({ sum, budget }: OverviewCardProps) {
           </View>
         )}
       </View>
+      <Text size="sm">{t("home.spentSoFar")}</Text>
       <Text size="hero" weight="bold" style={styles.numberText}>
         {formatCurrency(sum)}
       </Text>

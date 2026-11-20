@@ -24,7 +24,8 @@
             "save": "Save",
             "saving": "Saving...",
             "selectOption": "Please select an option",
-            "update": "Update"
+            "update": "Update",
+            "actionFailed": "Something went wrong. Please try again."
         },
         "auth": {
             "loginTab": "Login",
@@ -77,7 +78,8 @@
             "categoryRequired": "Please select a category.",
             "categoryTypeRequired": "Please select a category type.",
             "nameRequired": "Please enter a name.",
-            "validBudget": "Please enter a valid budget."
+            "validBudget": "Please enter a valid budget.",
+            "validCurrency": "Please select a valid currency."
         },
         "home": {
             "welcomeBack": "Welcome back",
@@ -88,7 +90,9 @@
             "remaining": "Remaining: {{amount}}",
             "budget": "Budget: {{amount}}",
             "dailyTipTitle": "Tip: your daily allowance!",
-            "dailyTip": "To reach your goal by the end of the month, you can spend <bold>{{amount}}</bold> each day."
+            "dailyTip": "To reach your goal by the end of the month, you can spend <bold>{{amount}}</bold> each day.",
+            "spentSoFar": "Spent so far",
+            "target": "Target {{percent}}%"
         },
         "expense": {
             "addTitle": "Add expense",
@@ -98,7 +102,8 @@
             "updateTitle": "Update expense",
             "updated": "Expense updated successfully",
             "deleteTitle": "Delete expense",
-            "deleteConfirmation": "Are you sure you want to delete \"{{description}}\"?"
+            "deleteConfirmation": "Are you sure you want to delete \"{{description}}\"?",
+            "deleted": "Expense deleted successfully"
         },
         "history": {
             "title": "History",

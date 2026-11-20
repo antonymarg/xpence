@@ -9,6 +9,7 @@ import { locales } from '@/constants/locale';
 import { theme } from "@/constants/theme";
 import useProfile from "@/hooks/useProfile";
 import { setAppLanguage } from '@/lib/i18n';
+import { showErrorToast } from "@/lib/toast";
 import { Locale } from '@/types/users.types';
 import { useNavigation } from "expo-router";
 import React, { useState } from "react";
@@ -35,7 +36,10 @@ function ChangeLocale() {
 
     const onLocaleUpdate = async () => {
         const { success } = await userApi.updateUserLocale(selectedLocale);
-        if (!success) return;
+        if (!success) {
+            showErrorToast(t("common.actionFailed"));
+            return;
+        }
 
         await setAppLanguage(selectedLocale);
         const languageTag = locales.find(({ code }) => code === selectedLocale)!.languageTag;
@@ -69,16 +73,6 @@ const styles = StyleSheet.create({
         backgroundColor: theme.colors.background,
         gap: theme.spacing.md,
         flex: 1,
-    },
-    budgetText: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        gap: theme.spacing.sm,
-    },
-    updateButton: {
-        paddingVertical: theme.spacing.md,
-        paddingHorizontal: theme.spacing.lg,
     },
 });
 

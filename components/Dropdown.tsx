@@ -37,7 +37,7 @@ function Dropdown<T = string>({ value, heading, onValueChange, options }: Dropdo
                 {options.map((el) => {
                     const isSelected = value === el.value
                     return (
-                        <Pressable key={el.label} onPress={() => onValueSelect(el)} style={[style.option, isSelected && style.selectedOption]}>
+                        <Pressable key={String(el.value)} onPress={() => onValueSelect(el)} style={[style.option, isSelected && style.selectedOption]}>
                             <Text weight={isSelected ? 'bold' : 'regular'}>{el.label}</Text>
                         </Pressable>
                     )

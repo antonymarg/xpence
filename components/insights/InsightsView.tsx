@@ -1,4 +1,5 @@
 import Text from "@/components/Text";
+import { BUDGET_SPLIT } from "@/constants/budgetSplit";
 import { theme } from "@/constants/theme";
 import { useInsightsContext } from "@/context/InsightContext";
 import useMonthlyInsights from "@/hooks/useMonthlyInsights";
@@ -15,12 +16,6 @@ import TotalCard from "./TotalCard";
 
 interface InsightsViewProps {
     categoryType: CategoryType | "all";
-}
-
-const BUDGET_PERCENT_PER_CATEGORY_TYPE = {
-    needs: 0.5,
-    wants: 0.3,
-    savings: 0.2
 }
 
 
@@ -63,7 +58,7 @@ function InsightsView({ categoryType }: InsightsViewProps) {
             <View style={styles.categoryContainer}>
                 <TotalCard
                     sum={sum}
-                    budget={categoryType === 'all' ? profile.budget : profile.budget * BUDGET_PERCENT_PER_CATEGORY_TYPE[categoryType]}
+                    budget={categoryType === 'all' ? profile.budget : profile.budget * BUDGET_SPLIT[categoryType]}
                 />
                 {categoryType === 'all' &&
                     <View style={styles.categoryBreakdown}>
@@ -95,7 +90,7 @@ function InsightsView({ categoryType }: InsightsViewProps) {
 
 const styles = StyleSheet.create({
     pageContainer: {
-        flex: 1,
+        flexGrow: 1,
         backgroundColor: theme.colors.background,
         paddingVertical: theme.spacing.md,
         paddingHorizontal: theme.spacing.md,

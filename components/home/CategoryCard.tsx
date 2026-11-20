@@ -1,4 +1,5 @@
 import Text from "@/components/Text";
+import { BUDGET_SPLIT } from "@/constants/budgetSplit";
 import { theme } from "@/constants/theme";
 import usePriceFormatter from "@/hooks/usePriceFormatter";
 import { CategoryType } from "@/types/categories.types";
@@ -27,24 +28,28 @@ const getIconForCategory = (category: CategoryType) => {
   }
 };
 
-const BUDGET_PER_CATEGORY = {
-  needs: 0.5,
-  wants: 0.3,
-  savings: 0.2
-}
-
 function CategoryCard({ category, budget, amount, compact = false }: CategoryCardProps) {
   const { t } = useTranslation();
   const formatCurrency = usePriceFormatter();
   const [color, icon] = getIconForCategory(category);
-  const percentage = (amount / budget) * 100
+
+  const percentage = budget > 0 ? (amount / budget) * 100 : 0
+  const targetPercentage = BUDGET_SPLIT[category] * 100
+
+  const targetAmount = budget * BUDGET_SPLIT[category]
+  const progressToTarget = targetAmount > 0 ? (amount / targetAmount) * 100 : 0
+
+  const isOverTarget = category !== "savings" && progressToTarget > 100
+  const percentageColor = isOverTarget ? "error" : category
+  const percentageLabel = `${percentage.toFixed(0)}%`
+  const targetLabel = t("home.target", { percent: targetPercentage })
   const styling = styles({ category, compact });
 
   if (compact) return (
     <Card padding='sm' style={styling.compactStyleWrapper} >
       <View style={styling.iconWrapper}>
-        <Text textAlign='center' color={category}>
-          {isNaN(percentage) ? "-" : percentage.toFixed(0) + "%"}
+        <Text textAlign='center' color={percentageColor}>
+          {percentageLabel}
         </Text>
       </View>
       <View style={styling.centerAlign}>
@@ -52,7 +57,10 @@ function CategoryCard({ category, budget, amount, compact = false }: CategoryCar
           {t(`categories.${category}`)}
         </Text>
         <Text>
-          {isNaN(percentage) ? "-" : formatCurrency(amount)}
+          {formatCurrency(amount)}
+        </Text>
+        <Text size="xs" color="textSecondaryDark" textAlign="center">
+          {targetLabel}
         </Text>
       </View>
     </Card >)
@@ -64,22 +72,26 @@ function CategoryCard({ category, budget, amount, compact = false }: CategoryCar
           <Ionicons name={icon} size={24} color={color} />
         </View>
         <Text weight="bold" size="lg" textAlign='center' color={category}>
-          {isNaN(percentage) ? "-" : formatCurrency(amount)}
+          {formatCurrency(amount)}
         </Text>
       </View>
       <View style={styling.footerText}>
         <Text weight="bold">
           {t(`categories.${category}`).toLocaleUpperCase()}
         </Text>
-        <Text textAlign="center" color={category}>
-          {isNaN(percentage) ? "-" : percentage.toFixed(0) + "%"}
+        <Text textAlign="center" color={percentageColor} weight={isOverTarget ? "bold" : "regular"}>
+          {percentageLabel}
         </Text>
       </View>
       <ProgressBar
         height={10}
-        percentage={Math.min(percentage, 100)}
+        percentage={Math.min(progressToTarget, 100)}
+        overLimit={isOverTarget}
         type={category}
       />
+      <Text size="xs" color="textSecondaryDark" textAlign="right" style={styling.targetText}>
+        {targetLabel}
+      </Text>
     </Card>
   );
 }
@@ -111,6 +123,9 @@ const styles = ({ category }: { category: CategoryType, compact: boolean }) =>
     },
     labelText: {
       paddingBottom: theme.spacing.sm,
+    },
+    targetText: {
+      marginTop: theme.spacing.xs,
     },
     centerAlign: {
       alignItems: 'center'

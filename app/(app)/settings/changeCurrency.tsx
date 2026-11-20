@@ -8,6 +8,7 @@ import Text from "@/components/Text";
 import { currencies } from '@/constants/currency';
 import { theme } from "@/constants/theme";
 import useProfile from "@/hooks/useProfile";
+import { showErrorToast } from "@/lib/toast";
 import { Currency } from '@/types/users.types';
 import { useNavigation } from "expo-router";
 import React, { useState } from "react";
@@ -43,6 +44,8 @@ function ChangeCurrency() {
             });
             await invalidateProfile();
             navigator.goBack()
+        } else {
+            showErrorToast(t("common.actionFailed"));
         }
     };
     return <View style={styles.container}>
@@ -66,16 +69,6 @@ const styles = StyleSheet.create({
         backgroundColor: theme.colors.background,
         gap: theme.spacing.md,
         flex: 1,
-    },
-    budgetText: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        gap: theme.spacing.sm,
-    },
-    updateButton: {
-        paddingVertical: theme.spacing.md,
-        paddingHorizontal: theme.spacing.lg,
     },
 });
 

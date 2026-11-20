@@ -7,6 +7,7 @@ import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
 import useProfile from "@/hooks/useProfile";
 import { supabase } from "@/lib/supabase";
+import Constants from "expo-constants";
 import { Redirect, useRouter } from "expo-router";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -62,7 +63,7 @@ function SettingsPage() {
                 </Button>
             </View>
             <View style={styles.footer}>
-                <Text color='textSecondaryDark'>XPence: v0.0.5</Text>
+                <Text color='textSecondaryDark'>XPence: v{Constants.expoConfig?.version}</Text>
             </View>
         </View>
     );

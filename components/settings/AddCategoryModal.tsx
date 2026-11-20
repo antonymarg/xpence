@@ -15,7 +15,7 @@ import TextInput from "../TextInput";
 interface AddCategoryModalProps {
   isVisible: boolean;
   onClose: () => void;
-  onConfirm: (newCat: Omit<Category, "id">) => void;
+  onConfirm: (newCat: Omit<Category, "id">) => Promise<boolean>;
 }
 
 function AddCategoryModal({
@@ -41,12 +41,12 @@ function AddCategoryModal({
     },
   });
 
-  const handleSave = (data: z.infer<typeof schema>) => {
-    onConfirm({
-      name: data.categoryName,
+  const handleSave = async (data: z.infer<typeof schema>) => {
+    const saved = await onConfirm({
+      name: data.categoryName.trim(),
       type: data.categoryType,
     });
-    reset();
+    if (saved) reset();
   };
 
   const handleSavePress = () => {

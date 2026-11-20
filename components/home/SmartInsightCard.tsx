@@ -16,8 +16,11 @@ function SmartInsightCard({ remaining }: SmartInsightProps) {
   const { t } = useTranslation();
   const formatCurrency = usePriceFormatter();
   const today = new Date()
-  const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59, 999);
-  const remainingDays = (endOfMonth.getDate() - today.getDate()) || 1
+  const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+
+  const remainingDays = lastDayOfMonth - today.getDate() + 1
+  const dailyAllowance = Math.max(remaining, 0) / remainingDays
+
   return (
     <Card>
       <View style={styles.container}>
@@ -30,7 +33,7 @@ function SmartInsightCard({ remaining }: SmartInsightProps) {
         <Text style={styles.mainText}>
           <Trans
             i18nKey="home.dailyTip"
-            values={{ amount: formatCurrency(remaining / remainingDays) }}
+            values={{ amount: formatCurrency(dailyAllowance) }}
             components={{ bold: <Text weight="bold" /> }}
           />
         </Text>
