@@ -65,7 +65,9 @@
             "signupFailed": "Sign up failed. Please try again.",
             "profileCreationFailed": "Unable to create your profile.",
             "unexpectedError": "An unexpected error occurred.",
-            "letsgo": "Let's go"
+            "letsgo": "Let's go",
+            "agreeTo": "I have read and agree to the",
+            "termsAndPrivacy": "Terms of Use & Privacy Policy"
         },
         "validation": {
             "invalidEmail": "Please enter a valid email address.",
@@ -79,7 +81,12 @@
             "categoryTypeRequired": "Please select a category type.",
             "nameRequired": "Please enter a name.",
             "validBudget": "Please enter a valid budget.",
-            "validCurrency": "Please select a valid currency."
+            "validCurrency": "Please select a valid currency.",
+            "policyRequired": "You must accept the Terms of Use & Privacy Policy to continue.",
+            "currentPasswordRequired": "Please enter your current password.",
+            "incorrectPassword": "Incorrect password.",
+            "newPasswordSameAsCurrent": "Your new password must be different from the current one.",
+            "typeToConfirm": "Type {{word}} to confirm."
         },
         "home": {
             "welcomeBack": "Welcome back",
@@ -151,7 +158,22 @@
             "categoryDeleted": "Category deleted successfully",
             "noCategories": "No categories yet",
             "categoryUpdated": "Category updated successfully",
-            "currentCategories": "Current categories"
+            "currentCategories": "Current categories",
+            "changePassword": "Change password",
+            "currentPassword": "Current password",
+            "newPassword": "New password",
+            "updatePassword": "Update password",
+            "passwordUpdated": "Password updated successfully",
+            "deleteAccount": "Delete account",
+            "deleteWarningTitle": "This action cannot be undone",
+            "deleteWarningBody": "Deleting your account will permanently remove:",
+            "deleteConsequenceExpenses": "All of your recorded expenses",
+            "deleteConsequenceCategories": "All of your categories",
+            "deleteConsequenceProfile": "Your profile, budget and preferences",
+            "deleteConfirmWord": "DELETE",
+            "typeToConfirmLabel": "Type {{word}} to confirm",
+            "deleteAccountPermanently": "Permanently delete account",
+            "accountDeleted": "Your account has been deleted"
         },
         "categories": {
             "needs": "Needs",
@@ -195,6 +217,50 @@
         "monthPicker": {
             "cancel": "Cancel",
             "confirm": "Confirm"
+        },
+        "policy": {
+            "title": "Terms of Use & Privacy Policy",
+            "lastUpdated": "Last updated: {{date}}",
+            "accept": "I agree",
+            "intro": "Please read these terms carefully. By creating an XPence account you agree to them and to the way we handle your data, as described below.",
+            "sections": [
+                {
+                    "title": "1. The service",
+                    "body": "XPence is a personal budgeting tool that helps you record expenses and track them against a monthly budget. It is provided for informational purposes only and does not constitute financial, tax or legal advice."
+                },
+                {
+                    "title": "2. Your account",
+                    "body": "You must provide a valid email address and keep your password secure. You are responsible for all activity that occurs under your account. You must be at least 16 years old to use XPence."
+                },
+                {
+                    "title": "3. Data we collect",
+                    "body": "We store your email address, display name, monthly budget, preferred currency and language, and the expenses and categories you enter. We do not access your bank accounts and we do not collect payment card details."
+                },
+                {
+                    "title": "4. How we use your data",
+                    "body": "Your data is used only to provide the app's features, such as summaries, insights and budget tracking. We do not sell your data, share it with advertisers, or use it for advertising."
+                },
+                {
+                    "title": "5. Storage and security",
+                    "body": "Your data is stored with our infrastructure provider (Supabase) and protected by access controls that restrict each user to their own data. No system is perfectly secure, but we take reasonable measures to protect your information."
+                },
+                {
+                    "title": "6. Your rights",
+                    "body": "You can view and update your data in the app at any time. You can permanently delete your account and all associated data from Settings › Delete account. Deletion is immediate and cannot be undone."
+                },
+                {
+                    "title": "7. Acceptable use",
+                    "body": "You agree not to misuse the service, attempt to access other users' data, or interfere with the app's normal operation. We may suspend accounts that violate these terms."
+                },
+                {
+                    "title": "8. Liability",
+                    "body": "XPence is provided \"as is\" without warranties of any kind. To the extent permitted by law, we are not liable for any loss arising from your use of the app or from decisions made based on its information."
+                },
+                {
+                    "title": "9. Changes",
+                    "body": "We may update these terms from time to time. If changes are significant, we will notify you in the app. Continuing to use XPence after an update means you accept the revised terms."
+                }
+            ]
         }
     }
 }

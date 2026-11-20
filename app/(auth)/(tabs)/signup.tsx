@@ -1,6 +1,8 @@
 import Button from "@/components/Button";
 import Icon from "@/components/Icon";
 import Loading from "@/components/Loading";
+import PolicyModal, { POLICY_VERSION } from "@/components/PolicyModal";
+import Pressable from "@/components/Pressable";
 import Text from "@/components/Text";
 import TextInput from "@/components/TextInput";
 import { theme } from "@/constants/theme";
@@ -28,6 +30,9 @@ export default function Signup() {
             email: z.string().email(t("validation.invalidEmail")),
             password: z.string().min(8, t("validation.passwordMinLength", { count: 8 })),
             confirmPassword: z.string().min(8, t("validation.passwordMinLength", { count: 8 })),
+            acceptedPolicy: z.boolean().refine((value) => value, {
+                message: t("validation.policyRequired"),
+            }),
         })
         .refine((data) => data.password === data.confirmPassword, {
             message: t("validation.passwordsMismatch"),
@@ -36,10 +41,12 @@ export default function Signup() {
 
     const [loading, setLoading] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
+    const [isPolicyVisible, setIsPolicyVisible] = useState(false);
 
     const {
         control,
         handleSubmit,
+        setValue,
         formState: { errors },
     } = useForm({
         resolver: zodResolver(schema),
@@ -47,6 +54,7 @@ export default function Signup() {
             email: "",
             password: "",
             confirmPassword: "",
+            acceptedPolicy: false,
         },
     });
 
@@ -60,6 +68,10 @@ export default function Signup() {
                 password: formData.password,
                 options: {
                     emailRedirectTo: emailToRedirect,
+                    data: {
+                        policy_version: POLICY_VERSION,
+                        policy_accepted_at: new Date().toISOString(),
+                    },
                 }
             });
             if (signUpError || !authData?.user?.id) {
@@ -144,6 +156,53 @@ export default function Signup() {
                             )}
                         />
 
+                        <Controller
+                            control={control}
+                            name="acceptedPolicy"
+                            render={({ field }) => (
+                                <View>
+                                    <View style={styles.policyRow}>
+                                        <Pressable
+                                            accessibilityRole="checkbox"
+                                            accessibilityState={{ checked: field.value }}
+                                            onPress={() => field.onChange(!field.value)}
+                                            disabled={loading}
+                                            hitSlop={8}
+                                        >
+                                            <Icon
+                                                name={field.value ? "checkbox" : "square-outline"}
+                                                size={22}
+                                                padding="xs"
+                                                color={errors.acceptedPolicy ? theme.colors.error : theme.colors.primaryRed}
+                                            />
+                                        </Pressable>
+                                        <Text style={styles.policyText}>
+                                            {t("auth.agreeTo")}{" "}
+                                            <Text
+                                                color="primaryRed"
+                                                weight="bold"
+                                                onPress={() => setIsPolicyVisible(true)}
+                                            >
+                                                {t("auth.termsAndPrivacy")}
+                                            </Text>
+                                        </Text>
+                                    </View>
+                                    {errors.acceptedPolicy && (
+                                        <Text size="sm" color="error">{errors.acceptedPolicy.message}</Text>
+                                    )}
+                                </View>
+                            )}
+                        />
+
+                        <PolicyModal
+                            visible={isPolicyVisible}
+                            onClose={() => setIsPolicyVisible(false)}
+                            onAccept={() => {
+                                setValue("acceptedPolicy", true, { shouldValidate: true });
+                                setIsPolicyVisible(false);
+                            }}
+                        />
+
                         <Button
                             disabled={loading}
                             onPress={handleSubmit(onSignupPress)}
@@ -178,6 +237,14 @@ const styles = StyleSheet.create({
     successContainer: {
         gap: theme.spacing.md,
         alignItems: "center",
+    },
+    policyRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: theme.spacing.sm,
+    },
+    policyText: {
+        flex: 1,
     },
     button: {
         borderColor: theme.colors.divider,

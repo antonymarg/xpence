@@ -21,6 +21,8 @@ function SettingsPageLayout() {
                 <Stack.Screen name='manageCategories' />
                 <Stack.Screen name='changeCurrency' />
                 <Stack.Screen name='changeLocale' />
+                <Stack.Screen name='changePassword' />
+                <Stack.Screen name='deleteAccount' />
             </Stack>
 
         </View>

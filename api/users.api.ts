@@ -95,5 +95,55 @@ async function updateUserLocale(locale: Locale) {
   }
 }
 
-export { createUserProfile, getUserId, getUserProfile, updateUserBudget, updateUserCurrency, updateUserLocale };
+type CredentialResult = { success: true; data: null } | { success: false; error: Error; invalidPassword?: boolean };
+
+async function verifyCurrentPassword(password: string): Promise<CredentialResult> {
+  try {
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError) throw userError;
+    if (!user?.email) throw new Error("No email for current user");
+
+    const { error } = await supabase.auth.signInWithPassword({ email: user.email, password });
+    if (error) return { success: false, error, invalidPassword: true };
+    return { success: true, data: null };
+  } catch (err) {
+    return { success: false, error: toError(err) };
+  }
+}
+
+async function changePassword(currentPassword: string, newPassword: string): Promise<CredentialResult> {
+  const verified = await verifyCurrentPassword(currentPassword);
+  if (!verified.success) return verified;
+  try {
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    if (error) throw error;
+    return { success: true, data: null };
+  } catch (err) {
+    return { success: false, error: toError(err) };
+  }
+}
+
+async function deleteAccount(currentPassword: string): Promise<CredentialResult> {
+  const verified = await verifyCurrentPassword(currentPassword);
+  if (!verified.success) return verified;
+  try {
+    const { error } = await supabase.rpc("delete_user");
+    if (error) throw error;
+    await supabase.auth.signOut({ scope: "local" });
+    return { success: true, data: null };
+  } catch (err) {
+    return { success: false, error: toError(err) };
+  }
+}
+
+export {
+  changePassword,
+  createUserProfile,
+  deleteAccount,
+  getUserId,
+  getUserProfile,
+  updateUserBudget,
+  updateUserCurrency,
+  updateUserLocale
+};
 

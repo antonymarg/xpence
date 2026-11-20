@@ -53,6 +53,8 @@ function SettingsPage() {
                 </Text>
                 <SettingsOption label={t("settings.changeCurrency")} href="/(app)/settings/changeCurrency" />
                 <SettingsOption label={t("settings.changeLanguage")} href="/(app)/settings/changeLocale" />
+                <SettingsOption label={t("settings.changePassword")} href="/(app)/settings/changePassword" />
+                <SettingsOption label={t("settings.deleteAccount")} href="/(app)/settings/deleteAccount" danger />
             </View>
             <View style={styles.settingsGroup}>
                 <Button onPress={signOut} background="transparent" style={styles.signOut}>
