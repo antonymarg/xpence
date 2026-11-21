@@ -26,6 +26,7 @@ function ChangeCurrency() {
     const navigator = useNavigation()
 
     const [currency, setCurrency] = useState<Currency | null>(profile?.currency ?? null)
+    const [isSaving, setIsSaving] = useState(false);
 
     if (isProfileLoading) return <Loading />
     if (!isProfileSuccess || !profile) return <ErrorScreen onRefresh={invalidateProfile} />
@@ -33,13 +34,19 @@ function ChangeCurrency() {
     const selectedCurrency = currency ?? profile.currency;
 
     const onCurrencyUpdate = async () => {
-        const { success } = await userApi.updateUserCurrency(selectedCurrency);
-        if (success) {
-            showSuccessToast(t("settings.currencyUpdated"));
-            await invalidateProfile();
-            navigator.goBack()
-        } else {
-            showErrorToast(t("common.actionFailed"));
+        if (isSaving) return;
+        setIsSaving(true);
+        try {
+            const { success } = await userApi.updateUserCurrency(selectedCurrency);
+            if (success) {
+                showSuccessToast(t("settings.currencyUpdated"));
+                await invalidateProfile();
+                navigator.goBack()
+            } else {
+                showErrorToast(t("common.actionFailed"));
+            }
+        } finally {
+            setIsSaving(false);
         }
     };
     return <View style={styles.container}>
@@ -49,10 +56,12 @@ function ChangeCurrency() {
             onValueChange={setCurrency}
             options={Object.entries(currencies).map(([code, symbol]) => ({ label: `${code} (${symbol})`, value: code as Currency }))}
         />
-        <Button onPress={onCurrencyUpdate} block background="gradient">
-            <Text weight="bold" color="white">
-                {t("settings.updateCurrency")}
-            </Text>
+        <Button onPress={onCurrencyUpdate} disabled={isSaving} block background="gradient">
+            {isSaving ? <Loading /> : (
+                <Text weight="bold" color="white">
+                    {t("settings.updateCurrency")}
+                </Text>
+            )}
         </Button>
     </View>
 }

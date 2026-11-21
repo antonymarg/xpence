@@ -134,32 +134,6 @@ export type Database = {
     }
     Functions: {
       delete_user: { Args: never; Returns: undefined }
-      expenses_by_category: {
-        Args: {
-          p_category_type?: Database["public"]["Enums"]["expense_type"]
-          p_end_date: string
-          p_start_date: string
-        }
-        Returns: {
-          category_id: string
-          category_name: string
-          category_type: Database["public"]["Enums"]["expense_type"]
-          percentage_in_total: number
-          sum_amount: number
-        }[]
-      }
-      expenses_by_category_type: {
-        Args: {
-          p_category_type?: Database["public"]["Enums"]["expense_type"]
-          p_end_date: string
-          p_start_date: string
-        }
-        Returns: {
-          category_type: Database["public"]["Enums"]["expense_type"]
-          percentage_in_total: number
-          sum_amount: number
-        }[]
-      }
       get_current_month_expenses_by_type: { Args: never; Returns: ExpensesSummary }
       get_monthly_insights: {
         Args: {

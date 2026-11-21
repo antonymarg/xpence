@@ -26,6 +26,7 @@ function ChangeBudget() {
     const navigator = useNavigation()
     const [budgetDraft, setBudgetDraft] = useState<string | null>(null);
     const [hasBudgetError, setHasBudgetError] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
 
     if (isProfileLoading) return <Loading />
     if (!isProfileSuccess || !profile) return <ErrorScreen onRefresh={invalidateProfile} />
@@ -37,13 +38,19 @@ function ChangeBudget() {
             return;
         }
 
-        const { success } = await updateUserBudget(Math.round(amount * 100));
-        if (success) {
-            showSuccessToast(t("settings.budgetUpdated"));
-            await invalidateProfile();
-            navigator.goBack()
-        } else {
-            showErrorToast(t("common.actionFailed"));
+        if (isSaving) return;
+        setIsSaving(true);
+        try {
+            const { success } = await updateUserBudget(Math.round(amount * 100));
+            if (success) {
+                showSuccessToast(t("settings.budgetUpdated"));
+                await invalidateProfile();
+                navigator.goBack()
+            } else {
+                showErrorToast(t("common.actionFailed"));
+            }
+        } finally {
+            setIsSaving(false);
         }
     };
     return <View style={styles.container}>
@@ -59,10 +66,12 @@ function ChangeBudget() {
             prefix={currencies[profile.currency]}
             error={hasBudgetError ? t("validation.validAmount") : undefined}
         />
-        <Button onPress={onBudgetUpdate} block background="gradient">
-            <Text weight="bold" color="white">
-                {t("settings.updateBudget")}
-            </Text>
+        <Button onPress={onBudgetUpdate} disabled={isSaving} block background="gradient">
+            {isSaving ? <Loading /> : (
+                <Text weight="bold" color="white">
+                    {t("settings.updateBudget")}
+                </Text>
+            )}
         </Button>
     </View>
 }

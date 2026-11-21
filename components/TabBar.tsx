@@ -7,13 +7,13 @@ import Button from "./Button";
 
 type TabType = "home" | "insights" | "addRecord" | "history" | "settings";
 
-const getIconColor = (activeTab: TabType, page: TabType) =>
+const getIconColor = (activeTab: TabType | undefined, page: TabType) =>
   activeTab === page ? theme.colors.primaryRed : theme.colors.icons;
 
 function TabBar() {
   const router = useRouter();
-  const segments = useSegments();
-  const activeTab = segments[1] as TabType;
+  const segments: string[] = useSegments();
+  const activeTab = segments[1] as TabType | undefined;
 
   const navigateTo = (page: TabType) => {
     router.navigate(`/(app)/${page}`);

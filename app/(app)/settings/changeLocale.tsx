@@ -27,6 +27,7 @@ function ChangeLocale() {
     const { t } = useTranslation()
 
     const [locale, setLocale] = useState<Locale | null>(null)
+    const [isSaving, setIsSaving] = useState(false);
 
     if (isProfileLoading) return <Loading />
     if (!isProfileSuccess || !profile) return <ErrorScreen onRefresh={invalidateProfile} />
@@ -34,17 +35,23 @@ function ChangeLocale() {
     const selectedLocale = locale ?? profile.locale;
 
     const onLocaleUpdate = async () => {
-        const { success } = await userApi.updateUserLocale(selectedLocale);
-        if (!success) {
-            showErrorToast(t("common.actionFailed"));
-            return;
-        }
+        if (isSaving) return;
+        setIsSaving(true);
+        try {
+            const { success } = await userApi.updateUserLocale(selectedLocale);
+            if (!success) {
+                showErrorToast(t("common.actionFailed"));
+                return;
+            }
 
-        await setAppLanguage(selectedLocale);
-        const languageTag = locales.find(({ code }) => code === selectedLocale)!.languageTag;
-        await invalidateProfile();
-        navigator.goBack();
-        showSuccessToast(t('update_locale_success', { lng: languageTag }));
+            await setAppLanguage(selectedLocale);
+            const languageTag = locales.find(({ code }) => code === selectedLocale)!.languageTag;
+            await invalidateProfile();
+            navigator.goBack();
+            showSuccessToast(t('update_locale_success', { lng: languageTag }));
+        } finally {
+            setIsSaving(false);
+        }
     };
     return <View style={styles.container}>
         <SettingsHeader label={t('change_locale')} href="/(app)/settings" />
@@ -53,10 +60,12 @@ function ChangeLocale() {
             onValueChange={setLocale}
             options={locales.map(({ code, labelKey }) => ({ label: t(labelKey), value: code }))}
         />
-        <Button onPress={onLocaleUpdate} block background="gradient">
-            <Text weight="bold" color="white">
-                {t('update_language')}
-            </Text>
+        <Button onPress={onLocaleUpdate} disabled={isSaving} block background="gradient">
+            {isSaving ? <Loading /> : (
+                <Text weight="bold" color="white">
+                    {t('update_language')}
+                </Text>
+            )}
         </Button>
     </View>
 }

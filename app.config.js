@@ -22,7 +22,7 @@ export default {
   "expo": {
     "name": name,
     "slug": "xpence-app",
-    "version": "0.0.6",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "xpence",
@@ -34,23 +34,12 @@ export default {
     "android": {
       "predictiveBackGestureEnabled": false,
       "package": packageName,
-      "intentFilters": [
-        {
-          "action": "VIEW",
-          "autoVerify": true,
-          "data": [
-            {
-              "scheme": "https",
-              "host": "*antonismargaronis.com",
-              "pathPrefix": "/xpence"
-            }
-          ],
-          "category": [
-            "BROWSABLE",
-            "DEFAULT"
-          ]
-        }
-      ]
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon-foreground.png",
+        "backgroundImage": "./assets/images/adaptive-icon-background.png",
+        "monochromeImage": "./assets/images/adaptive-icon-monochrome.png",
+        "backgroundColor": "#FF6A4F"
+      }
     },
     "web": {
       "output": "static",
@@ -70,7 +59,22 @@ export default {
         }
       ],
       "expo-localization",
-      "expo-notifications"
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/notification-icon.png",
+          "color": "#FF4F59"
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#F8F9FB"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

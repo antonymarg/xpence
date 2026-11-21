@@ -6,7 +6,7 @@ import Button from "./Button";
 import Modal from "./Modal";
 import Text from "./Text";
 
-export const POLICY_VERSION = "2026-11-20";
+export const POLICY_VERSION = "2026-11-21";
 
 interface PolicySection {
     title: string;

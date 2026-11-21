@@ -228,39 +228,47 @@
             "intro": "Please read these terms carefully. By creating an XPence account you agree to them and to the way we handle your data, as described below.",
             "sections": [
                 {
-                    "title": "1. The service",
+                    "title": "1. Who we are",
+                    "body": "XPence is developed and operated by Antonis Margaronis, an individual developer based in Greece, who is the data controller for the personal data processed through the app. For any question about these terms or your data, contact contact@antonismargaronis.com."
+                },
+                {
+                    "title": "2. The service",
                     "body": "XPence is a personal budgeting tool that helps you record expenses and track them against a monthly budget. It is provided for informational purposes only and does not constitute financial, tax or legal advice."
                 },
                 {
-                    "title": "2. Your account",
+                    "title": "3. Your account",
                     "body": "You must provide a valid email address and keep your password secure. You are responsible for all activity that occurs under your account. You must be at least 16 years old to use XPence."
                 },
                 {
-                    "title": "3. Data we collect",
-                    "body": "We store your email address, display name, monthly budget, preferred currency and language, and the expenses and categories you enter. We do not access your bank accounts and we do not collect payment card details."
+                    "title": "4. Data we collect",
+                    "body": "We store your email address, display name, monthly budget, preferred currency and language, the expenses and categories you enter, and the date and version of these terms you accepted. We do not access your bank accounts and we do not collect payment card details. On your device only, the app keeps your sign-in session in the device's secure storage and remembers your daily reminder setting. Reminders are scheduled locally on your device. We do not use analytics, advertising or tracking tools."
                 },
                 {
-                    "title": "4. How we use your data",
-                    "body": "Your data is used only to provide the app's features, such as summaries, insights and budget tracking. We do not sell your data, share it with advertisers, or use it for advertising."
+                    "title": "5. How we use your data and why",
+                    "body": "Your data is used only to provide the app's features, such as summaries, insights and budget tracking, and to send account emails such as sign-up confirmation. We process it because it is necessary to provide the service you signed up for (Article 6(1)(b) GDPR). We do not sell your data, share it with advertisers, use it for advertising, or use it for automated decision-making or profiling."
                 },
                 {
-                    "title": "5. Storage and security",
-                    "body": "Your data is stored with our infrastructure provider (Supabase) and protected by access controls that restrict each user to their own data. No system is perfectly secure, but we take reasonable measures to protect your information."
+                    "title": "6. Where your data is stored",
+                    "body": "Your data is stored by our infrastructure provider, Supabase, on servers in the European Union (Ireland). Supabase processes the data on our behalf and only according to our instructions. Account emails are sent through our email delivery provider. Data is encrypted in transit, and access controls restrict each user to their own data. No system is perfectly secure, but we take reasonable measures to protect your information."
                 },
                 {
-                    "title": "6. Your rights",
-                    "body": "You can view and update your data in the app at any time. You can permanently delete your account and all associated data from Settings › Delete account. Deletion is immediate and cannot be undone."
+                    "title": "7. How long we keep it",
+                    "body": "We keep your data for as long as you have an account. When you delete your account, your profile, expenses and categories are removed from our database immediately. Copies may remain in our provider's automated backups for up to 30 days before they are permanently overwritten."
                 },
                 {
-                    "title": "7. Acceptable use",
+                    "title": "8. Your rights",
+                    "body": "Under the GDPR you have the right to access, correct, delete and receive a copy of your data (portability), and to restrict or object to its processing. You can view and update your data in the app at any time, and permanently delete your account and all associated data from Settings › Delete account. Deletion cannot be undone. To exercise any other right, such as getting a copy of your data, email contact@antonismargaronis.com. We will reply within one month. You also have the right to lodge a complaint with the Hellenic Data Protection Authority (www.dpa.gr) or the data protection authority in your country."
+                },
+                {
+                    "title": "9. Acceptable use",
                     "body": "You agree not to misuse the service, attempt to access other users' data, or interfere with the app's normal operation. We may suspend accounts that violate these terms."
                 },
                 {
-                    "title": "8. Liability",
+                    "title": "10. Liability",
                     "body": "XPence is provided \"as is\" without warranties of any kind. To the extent permitted by law, we are not liable for any loss arising from your use of the app or from decisions made based on its information."
                 },
                 {
-                    "title": "9. Changes",
+                    "title": "11. Changes",
                     "body": "We may update these terms from time to time. If changes are significant, we will notify you in the app. Continuing to use XPence after an update means you accept the revised terms."
                 }
             ]
