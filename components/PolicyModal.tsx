@@ -24,7 +24,7 @@ function PolicyModal({ visible, onClose, onAccept }: PolicyModalProps) {
     const sections = t("policy.sections", { returnObjects: true }) as PolicySection[];
 
     return (
-        <Modal visible={visible} onClose={onClose} style={styles.modal}>
+        <Modal visible={visible} onClose={onClose}>
             <View>
                 <Text size="xl" weight="bold">
                     {t("policy.title")}
@@ -56,11 +56,7 @@ function PolicyModal({ visible, onClose, onAccept }: PolicyModalProps) {
 }
 
 const styles = StyleSheet.create({
-    modal: {
-        width: "90%",
-    },
     scroll: {
-        flexGrow: 0,
         flexShrink: 1,
     },
     content: {

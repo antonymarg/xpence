@@ -21,12 +21,11 @@ import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   Keyboard,
-  KeyboardAvoidingView,
-  Platform,
   ScrollView,
   StyleSheet,
   View
 } from "react-native";
+import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { z } from "zod";
 
 function AddRecordPage() {
@@ -59,6 +58,7 @@ function AddRecordPage() {
     control,
     handleSubmit,
     reset,
+    setFocus,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(schema),
@@ -113,7 +113,7 @@ function AddRecordPage() {
   return (
     <KeyboardAvoidingView
       style={styles.formContainer}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior="padding"
     >
       <Text size="title" weight="bold">
         {t("expense.addTitle")}
@@ -127,8 +127,12 @@ function AddRecordPage() {
             <Controller
               control={control}
               name="amount"
-              render={({ field: { onChange, onBlur, value } }) => (
+              render={({ field: { onChange, onBlur, value, ref } }) => (
                 <TextInput
+                  ref={ref}
+                  returnKeyType="next"
+                  submitBehavior="submit"
+                  onSubmitEditing={() => setFocus("description")}
                   onChangeText={onChange}
                   inputMode="decimal"
                   value={value}
@@ -149,6 +153,8 @@ function AddRecordPage() {
               name="description"
               render={({ field }) => (
                 <TextInput
+                  ref={field.ref}
+                  returnKeyType="done"
                   onChangeText={field.onChange}
                   onBlur={field.onBlur}
                   value={field.value}

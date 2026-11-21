@@ -6,8 +6,8 @@ import Pressable from "@/components/Pressable";
 import Text from "@/components/Text";
 import TextInput from "@/components/TextInput";
 import { theme } from "@/constants/theme";
-import { showErrorToast } from "@/lib/toast";
 import { supabase } from "@/lib/supabase";
+import { showErrorToast } from "@/lib/toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as Linking from "expo-linking";
 import React, { useState } from "react";
@@ -15,11 +15,10 @@ import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import {
     Keyboard,
-    KeyboardAvoidingView,
-    Platform,
     StyleSheet,
     View
 } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import z from "zod";
 
 export default function Signup() {
@@ -47,6 +46,7 @@ export default function Signup() {
         control,
         handleSubmit,
         setValue,
+        setFocus,
         formState: { errors },
     } = useForm({
         resolver: zodResolver(schema),
@@ -88,9 +88,10 @@ export default function Signup() {
 
     return (
         <View style={styles.container}>
-            <KeyboardAvoidingView
-                style={styles.inputContainer}
-                behavior={Platform.OS === "ios" ? "padding" : undefined}
+            <KeyboardAwareScrollView
+                contentContainerStyle={styles.inputContainer}
+                keyboardShouldPersistTaps="handled"
+                bottomOffset={theme.spacing.lg}
             >
                 {isSuccess ? (
                     <View style={styles.successContainer}>
@@ -105,6 +106,10 @@ export default function Signup() {
                             name="email"
                             render={({ field }) => (
                                 <TextInput
+                                    ref={field.ref}
+                                    returnKeyType="next"
+                                    submitBehavior="submit"
+                                    onSubmitEditing={() => setFocus("password")}
                                     placeholder={t("auth.emailPlaceholder")}
                                     label={t("auth.emailLabel")}
                                     value={field.value}
@@ -123,6 +128,10 @@ export default function Signup() {
                             name="password"
                             render={({ field }) => (
                                 <TextInput
+                                    ref={field.ref}
+                                    returnKeyType="next"
+                                    submitBehavior="submit"
+                                    onSubmitEditing={() => setFocus("confirmPassword")}
                                     placeholder={t("auth.passwordPlaceholder")}
                                     label={t("auth.passwordLabel")}
                                     value={field.value}
@@ -142,6 +151,8 @@ export default function Signup() {
                             name="confirmPassword"
                             render={({ field }) => (
                                 <TextInput
+                                    ref={field.ref}
+                                    returnKeyType="done"
                                     placeholder={t("auth.confirmPasswordPlaceholder")}
                                     label={t("auth.confirmPasswordLabel")}
                                     value={field.value}
@@ -220,7 +231,7 @@ export default function Signup() {
                         </Button>
                     </>
                 )}
-            </KeyboardAvoidingView>
+            </KeyboardAwareScrollView>
         </View>
     );
 }

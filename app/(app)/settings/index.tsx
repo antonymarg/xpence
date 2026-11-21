@@ -2,10 +2,12 @@ import Button from "@/components/Button";
 import ErrorScreen from "@/components/ErrorScreen";
 import Icon from "@/components/Icon";
 import Loading from "@/components/Loading";
+import ReminderToggle from "@/components/settings/ReminderToggle";
 import SettingsOption from "@/components/settings/SettingsOption";
 import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
 import useProfile from "@/hooks/useProfile";
+import { areRemindersSupported } from "@/lib/notifications";
 import { supabase } from "@/lib/supabase";
 import Constants from "expo-constants";
 import { useRouter } from "expo-router";
@@ -56,6 +58,14 @@ function SettingsPage() {
                 <SettingsOption label={t("settings.changePassword")} href="/(app)/settings/changePassword" />
                 <SettingsOption label={t("settings.deleteAccount")} href="/(app)/settings/deleteAccount" danger />
             </View>
+            {areRemindersSupported && (
+                <View style={styles.settingsGroup}>
+                    <Text size="xl" weight="bold">
+                        {t("settings.notifications")}
+                    </Text>
+                    <ReminderToggle />
+                </View>
+            )}
             <View style={styles.settingsGroup}>
                 <Button onPress={signOut} background="transparent" style={styles.signOut}>
                     <Text size='lg' color="error" weight="bold">

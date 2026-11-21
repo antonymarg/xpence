@@ -20,11 +20,10 @@ import React from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import {
-    KeyboardAvoidingView,
-    Platform,
     StyleSheet,
     View
 } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { SafeAreaView } from "react-native-safe-area-context";
 import z from "zod";
 
@@ -68,6 +67,7 @@ export default function Onboard() {
     const {
         control,
         handleSubmit,
+        setFocus,
         formState: { errors },
     } = useForm({
         resolver: zodResolver(schema),
@@ -84,9 +84,10 @@ export default function Onboard() {
         <SafeAreaView style={styles.pageContainer}>
             <Logo variant="long" height='10%' />
             <View style={styles.container}>
-                <KeyboardAvoidingView
-                    style={styles.inputContainer}
-                    behavior={Platform.OS === "ios" ? "padding" : undefined}
+                <KeyboardAwareScrollView
+                    contentContainerStyle={styles.inputContainer}
+                    keyboardShouldPersistTaps="handled"
+                    bottomOffset={theme.spacing.lg}
                 >
                     <Text size='xxl' weight="bold">{t("auth.welcomeTitle")}</Text>
                     <Controller
@@ -94,6 +95,10 @@ export default function Onboard() {
                         name="name"
                         render={({ field }) => (
                             <TextInput
+                                ref={field.ref}
+                                returnKeyType="next"
+                                submitBehavior="submit"
+                                onSubmitEditing={() => setFocus("budget")}
                                 placeholder={t("auth.namePlaceholder")}
                                 label={t("auth.nameLabel")}
                                 value={field.value}
@@ -109,6 +114,8 @@ export default function Onboard() {
                         name="budget"
                         render={({ field }) => (
                             <TextInput
+                                ref={field.ref}
+                                returnKeyType="done"
                                 placeholder="0"
                                 label={t("auth.monthlyGoal")}
                                 inputMode="decimal"
@@ -162,7 +169,7 @@ export default function Onboard() {
                             </Text>
                         )}
                     </Button>
-                </KeyboardAvoidingView>
+                </KeyboardAwareScrollView>
             </View>
         </SafeAreaView>
     );

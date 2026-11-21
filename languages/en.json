@@ -173,7 +173,10 @@
             "deleteConfirmWord": "DELETE",
             "typeToConfirmLabel": "Type {{word}} to confirm",
             "deleteAccountPermanently": "Permanently delete account",
-            "accountDeleted": "Your account has been deleted"
+            "accountDeleted": "Your account has been deleted",
+            "notifications": "Notifications",
+            "dailyReminder": "Daily reminder at 20:00",
+            "notificationsDenied": "Notifications are blocked. Enable them in your phone's settings."
         },
         "categories": {
             "needs": "Needs",
@@ -261,6 +264,11 @@
                     "body": "We may update these terms from time to time. If changes are significant, we will notify you in the app. Continuing to use XPence after an update means you accept the revised terms."
                 }
             ]
+        },
+        "notifications": {
+            "channelName": "Daily reminder",
+            "reminderTitle": "XPence",
+            "reminderBody": "Haaaave you tracked your expenses yet?"
         }
     }
 }

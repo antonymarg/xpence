@@ -3,6 +3,7 @@ import { locales } from "@/constants/locale";
 import enTranslations from '@/languages/en.json';
 import grTranslations from '@/languages/gr.json';
 import { resolveAuthRoute } from "@/lib/auth";
+import { cancelDailyReminders } from "@/lib/notifications";
 import { supabase } from "@/lib/supabase";
 import {
   Manrope_400Regular,
@@ -17,6 +18,7 @@ import { Stack, usePathname, useRouter } from "expo-router";
 import i18n from 'i18next';
 import React, { PropsWithChildren, useEffect } from "react";
 import { initReactI18next } from "react-i18next";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 import Toast from "react-native-toast-message";
 
 const client = new QueryClient();
@@ -45,10 +47,12 @@ i18n
   })
 
 const RootWrapper = ({ children }: PropsWithChildren) => {
-  return <QueryClientProvider client={client}>
-    {children}
-    <Toast />
-  </QueryClientProvider>
+  return <KeyboardProvider>
+    <QueryClientProvider client={client}>
+      {children}
+      <Toast />
+    </QueryClientProvider>
+  </KeyboardProvider>
 
 }
 export default function RootLayout() {
@@ -66,7 +70,10 @@ export default function RootLayout() {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === "SIGNED_OUT") client.clear();
+      if (event === "SIGNED_OUT") {
+        client.clear();
+        void cancelDailyReminders()
+      }
       if (!isOnPublicPage && session) return;
 
       const nextRoute = await resolveAuthRoute(session);

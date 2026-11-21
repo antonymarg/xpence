@@ -15,6 +15,7 @@ import Icon, { IconProps } from "./Icon";
 import Text from "./Text";
 
 interface ITextInputProps extends RNTextInputProps {
+  ref?: React.Ref<RNTextInput>;
   label?: string;
   error?: string;
   icon?: IconProps['name']
@@ -23,6 +24,7 @@ interface ITextInputProps extends RNTextInputProps {
 }
 
 export default function TextInput({
+  ref,
   label,
   error,
   icon,
@@ -64,6 +66,7 @@ export default function TextInput({
         )}
         <RNTextInput
           {...props}
+          ref={ref}
           onFocus={onFocus}
           onBlur={onBlur}
           secureTextEntry={props.secureTextEntry && !isPasswordVisible}

@@ -3,9 +3,10 @@ import Loading from "@/components/Loading";
 import TabBar from "@/components/TabBar";
 import useProfile from "@/hooks/useProfile";
 import { setAppLanguage } from "@/lib/i18n";
+import { refreshDailyReminders } from "@/lib/notifications";
 import { Redirect, Stack } from "expo-router";
 import React, { useEffect } from "react";
-import { StyleSheet } from "react-native";
+import { AppState, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AppLayout() {
@@ -18,7 +19,14 @@ export default function AppLayout() {
   const profileLocale = profile?.locale;
 
   useEffect(() => {
-    if (profileLocale) void setAppLanguage(profileLocale);
+    if (!profileLocale) return;
+
+    void setAppLanguage(profileLocale).finally(refreshDailyReminders);
+
+    const subscription = AppState.addEventListener("change", (state) => {
+      if (state === "active") void refreshDailyReminders();
+    });
+    return () => subscription.remove();
   }, [profileLocale]);
 
   if (isProfileLoading) {

@@ -12,11 +12,10 @@ import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import {
     Keyboard,
-    KeyboardAvoidingView,
-    Platform,
     StyleSheet,
     View
 } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import z from "zod";
 
 export default function Login() {
@@ -30,6 +29,7 @@ export default function Login() {
         control,
         formState: { errors },
         handleSubmit,
+        setFocus,
     } = useForm({
         resolver: zodResolver(schema),
         defaultValues: {
@@ -59,15 +59,20 @@ export default function Login() {
 
     return (
         <View style={styles.container}>
-            <KeyboardAvoidingView
-                style={styles.inputContainer}
-                behavior={Platform.OS === "ios" ? "padding" : undefined}
+            <KeyboardAwareScrollView
+                contentContainerStyle={styles.inputContainer}
+                keyboardShouldPersistTaps="handled"
+                bottomOffset={theme.spacing.lg}
             >
                 <Controller
                     control={control}
                     name="email"
                     render={({ field }) => (
                         <TextInput
+                            ref={field.ref}
+                            returnKeyType="next"
+                            submitBehavior="submit"
+                            onSubmitEditing={() => setFocus("password")}
                             placeholder={t("auth.emailPlaceholder")}
                             label={t("auth.emailLabel")}
                             value={field.value}
@@ -86,6 +91,9 @@ export default function Login() {
                     name="password"
                     render={({ field }) => (
                         <TextInput
+                            ref={field.ref}
+                            returnKeyType="go"
+                            onSubmitEditing={handleSubmit(onLoginPress)}
                             placeholder={t("auth.passwordPlaceholder")}
                             label={t("auth.passwordLabel")}
                             value={field.value}
@@ -121,7 +129,7 @@ export default function Login() {
                         {t("auth.noAccount")}
                     </Text>
                 </Link>
-            </KeyboardAvoidingView>
+            </KeyboardAwareScrollView>
         </View>
     );
 }

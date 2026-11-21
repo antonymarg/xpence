@@ -1,13 +1,13 @@
 import { theme } from "@/constants/theme";
 import React from "react";
 import {
-  KeyboardAvoidingView,
   Platform,
   Pressable,
   Modal as RNModal,
   ModalProps as RNModalProps,
   StyleSheet,
 } from "react-native";
+import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 
 interface ModalProps extends RNModalProps {
   onClose: () => void;
@@ -28,7 +28,7 @@ function Modal({
       {...props}
     >
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior="padding"
         style={styles.keyboardAvoidingView}
       >
         <Pressable onPress={props.onClose} style={styles.modalContainer}>
