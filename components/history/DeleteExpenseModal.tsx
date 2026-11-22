@@ -12,12 +12,14 @@ interface DeleteExpenseModalProps {
   expense: Expense | null;
   onClose: () => void;
   onConfirm: (expenseId: string) => void;
+  isPending?: boolean;
 }
 
 function DeleteExpenseyModal({
   expense,
   onClose,
   onConfirm,
+  isPending = false,
 }: DeleteExpenseModalProps) {
   const { t } = useTranslation();
   if (!expense) return null;
@@ -45,6 +47,7 @@ function DeleteExpenseyModal({
         onPress={() => onConfirm(expense.id)}
         block
         background="primaryRed"
+        disabled={isPending}
       >
         <Text weight="bold" color="white">
           {t("common.delete")}

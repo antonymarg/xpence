@@ -35,6 +35,8 @@ const toMinorUnits = (value: string): number => {
   return Math.round(amount * 100);
 };
 
+const fromMinorUnits = (amount: number): string => String(amount / 100);
+
 const toLocalDateString = (date: Date): string => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -52,6 +54,7 @@ export {
   capitaliseFirst,
   formatPrice,
   fromLocalDateString,
+  fromMinorUnits,
   parseAmountInput,
   toError,
   toLocalDateString,

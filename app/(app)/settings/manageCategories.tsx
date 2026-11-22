@@ -1,4 +1,3 @@
-import * as categoryApi from '@/api/categories.api';
 import Button from "@/components/Button";
 import ErrorScreen from '@/components/ErrorScreen';
 import Icon from "@/components/Icon";
@@ -10,6 +9,7 @@ import EditCategoryModal from "@/components/settings/EditCategoryModal";
 import SettingsHeader from "@/components/settings/SettingsHeader";
 import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
+import { useAddCategory, useDeleteCategory, useRenameCategory } from "@/hooks/useCategoryMutations";
 import useUserCategories from "@/hooks/useUserCategories";
 import { showErrorToast, showSuccessToast } from "@/lib/toast";
 import { Category } from "@/types/categories.types";
@@ -29,43 +29,46 @@ function ManageCategories() {
     const [editModalCategory, setEditModalCategory] = useState<Category | null>(null);
     const [isAddModalVisible, setIsAddModalVisible] = useState<boolean>(false);
 
+    const addCategory = useAddCategory();
+    const renameCategory = useRenameCategory();
+    const deleteCategory = useDeleteCategory();
+
     if (isCategoriesLoading) return <Loading />
     if (!isCategoriesSuccess) return <ErrorScreen onRefresh={invalidateUserCategories} />
 
-    const onAddCategory = async ({ name, type }: Omit<Category, "id">): Promise<boolean> => {
-        const { success } = await categoryApi.addUserCategory({ name, type });
-        if (!success) {
-            showErrorToast(t("common.actionFailed"));
-            return false;
-        }
-        await invalidateUserCategories();
-        onCloseAddModal();
-        showSuccessToast(t("settings.categoriesUpdated"));
-        return true;
+    const onAddCategory = (category: Pick<Category, "name" | "type">) => {
+        addCategory.mutate(category, {
+            onSuccess: () => {
+                onCloseAddModal();
+                showSuccessToast(t("settings.categoriesUpdated"));
+            },
+            onError: () => showErrorToast(t("common.actionFailed")),
+        });
     };
 
     const onCloseDeleteModal = () => setDeleteModalCategory(null);
-    const onRenameCategory = async (categoryId: string, name: string) => {
-        const { success } = await categoryApi.renameUserCategory(categoryId, name);
-        if (success) {
-            await invalidateUserCategories();
-            setEditModalCategory(null);
-            showSuccessToast(t("settings.categoryUpdated"));
-        } else {
-            showErrorToast(t("common.actionFailed"));
-        }
+    const onRenameCategory = (categoryId: string, name: string) => {
+        renameCategory.mutate({ categoryId, name }, {
+            onSuccess: () => {
+                setEditModalCategory(null);
+                showSuccessToast(t("settings.categoryUpdated"));
+            },
+            onError: () => showErrorToast(t("common.actionFailed")),
+        });
     };
-    const onDeleteCategory = async (categoryId: string) => {
-        const { success } = await categoryApi.deleteUserCategory(categoryId);
-        if (success) {
-            await invalidateUserCategories();
-            onCloseDeleteModal();
-            showSuccessToast(t("settings.categoryDeleted"));
-        } else {
-            showErrorToast(t("common.actionFailed"));
-        }
+    const onDeleteCategory = (categoryId: string) => {
+        deleteCategory.mutate(categoryId, {
+            onSuccess: () => {
+                onCloseDeleteModal();
+                showSuccessToast(t("settings.categoryDeleted"));
+            },
+            onError: () => showErrorToast(t("common.actionFailed")),
+        });
     };
 
+    const onOpenAddModal = () => {
+        setIsAddModalVisible(true);
+    };
     const onCloseAddModal = () => setIsAddModalVisible(false);
 
     return <View style={styles.container}>
@@ -76,7 +79,7 @@ function ManageCategories() {
                     {t("settings.currentCategories")}
                 </Text>
                 <Button
-                    onPress={() => setIsAddModalVisible(true)}
+                    onPress={onOpenAddModal}
                     background="transparent"
                     size="sm"
                     style={styles.addButton}
@@ -103,16 +106,20 @@ function ManageCategories() {
             isVisible={isAddModalVisible}
             onClose={onCloseAddModal}
             onConfirm={onAddCategory}
+            isPending={addCategory.isPending}
         />
         <DeleteCategoryModal
             category={deleteModalCategory}
             onClose={onCloseDeleteModal}
             onConfirm={onDeleteCategory}
+            isPending={deleteCategory.isPending}
         />
         <EditCategoryModal
+            key={editModalCategory?.id}
             category={editModalCategory}
             onClose={() => setEditModalCategory(null)}
             onConfirm={onRenameCategory}
+            isPending={renameCategory.isPending}
         />
     </View>
 }

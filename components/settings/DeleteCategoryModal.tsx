@@ -12,12 +12,14 @@ interface DeleteCategoryModalProps {
   category: Category | null;
   onClose: () => void;
   onConfirm: (categoryId: string) => void;
+  isPending?: boolean;
 }
 
 function DeleteCategoryModal({
   category,
   onClose,
   onConfirm,
+  isPending = false,
 }: DeleteCategoryModalProps) {
   const { t } = useTranslation();
   if (!category) return null;
@@ -45,6 +47,7 @@ function DeleteCategoryModal({
         onPress={() => onConfirm(category.id)}
         block
         background="primaryRed"
+        disabled={isPending}
       >
         <Text weight="bold" color="white">
           {t("common.delete")}

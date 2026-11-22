@@ -1,5 +1,4 @@
 import Button from "@/components/Button";
-import Loading from "@/components/Loading";
 import Text from "@/components/Text";
 import TextInput from "@/components/TextInput";
 import { theme } from "@/constants/theme";
@@ -109,19 +108,15 @@ export default function Login() {
                 />
 
                 <Button
-                    disabled={loading}
                     onPress={handleSubmit(onLoginPress)}
                     background="gradient"
                     block
                     style={styles.button}
+                    loading={loading}
                 >
-                    {loading ? (
-                        <Loading />
-                    ) : (
-                        <Text weight="bold" size='xl' color="white">
-                            {t("auth.login")}
-                        </Text>
-                    )}
+                    <Text weight="bold" size='xl' color="white">
+                        {t("auth.login")}
+                    </Text>
                 </Button>
 
                 <Link href="/(auth)/(tabs)/signup" style={styles.linkText}>

@@ -1,19 +1,17 @@
-import * as userApi from "@/api/users.api";
 import Button from "@/components/Button";
 import Dropdown from "@/components/Dropdown";
-import Loading from "@/components/Loading";
 import Logo from "@/components/Logo";
 import Text from "@/components/Text";
 import TextInput from "@/components/TextInput";
 import { currencies } from "@/constants/currency";
 import { locales } from "@/constants/locale";
 import { theme } from "@/constants/theme";
+import { useCreateProfile } from "@/hooks/useProfileMutations";
 import { showErrorToast } from "@/lib/toast";
 import { setAppLanguage } from "@/lib/i18n";
 import { parseAmountInput, toMinorUnits } from "@/lib/utils";
 import { Currency, Locale } from "@/types/users.types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import i18n from "i18next";
 import React from "react";
@@ -30,7 +28,6 @@ import z from "zod";
 export default function Onboard() {
     const { t } = useTranslation();
     const router = useRouter();
-    const queryClient = useQueryClient();
 
     const schema = z
         .object({
@@ -43,25 +40,21 @@ export default function Onboard() {
             locale: z.enum(locales.map(({ code }) => code) as [Locale, ...Locale[]]),
         })
 
-    const [loading, setLoading] = React.useState(false);
+    const { mutate: createProfile, isPending: loading } = useCreateProfile();
 
-    const onOnboardPress = async (data: z.infer<typeof schema>) => {
-        setLoading(true);
-        try {
-            const { success } = await userApi.createUserProfile({
+    const onOnboardPress = (data: z.infer<typeof schema>) => {
+        createProfile(
+            {
                 locale: data.locale,
                 displayName: data.name,
                 budget: toMinorUnits(data.budget),
                 currency: data.currency
-            })
-            if (!success) throw new Error()
-            queryClient.removeQueries({ queryKey: ["profile"] });
-            router.replace('/(app)/home')
-        } catch {
-            showErrorToast(t("auth.unexpectedError"));
-        } finally {
-            setLoading(false);
-        }
+            },
+            {
+                onSuccess: () => router.replace('/(app)/home'),
+                onError: () => showErrorToast(t("auth.unexpectedError")),
+            }
+        );
     }
 
     const {
@@ -155,19 +148,15 @@ export default function Onboard() {
                         )}
                     />
                     <Button
-                        disabled={loading}
                         onPress={handleSubmit(onOnboardPress)}
                         background="gradient"
                         block
                         style={styles.button}
+                        loading={loading}
                     >
-                        {loading ? (
-                            <Loading />
-                        ) : (
-                            <Text weight="bold" size='xl' color="white">
-                                {t("auth.letsgo")}
-                            </Text>
-                        )}
+                        <Text weight="bold" size='xl' color="white">
+                            {t("auth.letsgo")}
+                        </Text>
                     </Button>
                 </KeyboardAwareScrollView>
             </View>

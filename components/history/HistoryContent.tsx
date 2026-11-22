@@ -1,4 +1,3 @@
-import * as expenseApi from "@/api/expenses.api";
 import ErrorScreen from "@/components/ErrorScreen";
 import CategoryPicker from "@/components/history/CategoryPicker";
 import DeleteExpenseyModal from "@/components/history/DeleteExpenseModal";
@@ -11,6 +10,7 @@ import Pressable from "@/components/Pressable";
 import Text from "@/components/Text";
 import { theme } from "@/constants/theme";
 import useExpenses from "@/hooks/useExpenses";
+import { useDeleteExpense, useUpdateExpense } from "@/hooks/useExpenseMutations";
 import useUserCategories from "@/hooks/useUserCategories";
 import { showErrorToast, showSuccessToast } from "@/lib/toast";
 import { CategoryType } from "@/types/categories.types";
@@ -45,31 +45,31 @@ function HistoryContent({ categoryType }: HistoryContentProps) {
         fromDate,
         toDate
     });
+    const updateExpenseMutation = useUpdateExpense();
+    const deleteExpenseMutation = useDeleteExpense();
 
     const onSelectCategory = (category: string | null) => {
         setSelectedCategory(category);
     };
 
-    const updateExpense = async (expense: Expense) => {
-        const { success } = await expenseApi.updateExpense(expense);
-        if (!success) {
-            showErrorToast(t("common.actionFailed"));
-            return;
-        }
-        await invalidateExpenses();
-        setExpenseToEdit(null);
-        showSuccessToast(t("expense.updated"));
+    const updateExpense = (expense: Expense) => {
+        updateExpenseMutation.mutate(expense, {
+            onSuccess: () => {
+                setExpenseToEdit(null);
+                showSuccessToast(t("expense.updated"));
+            },
+            onError: () => showErrorToast(t("common.actionFailed")),
+        });
     };
 
-    const deleteExpense = async (id: string) => {
-        const { success } = await expenseApi.deleteExpense(id);
-        if (!success) {
-            showErrorToast(t("common.actionFailed"));
-            return;
-        }
-        await invalidateExpenses();
-        setExpenseToDelete(null);
-        showSuccessToast(t("expense.deleted"));
+    const deleteExpense = (id: string) => {
+        deleteExpenseMutation.mutate(id, {
+            onSuccess: () => {
+                setExpenseToDelete(null);
+                showSuccessToast(t("expense.deleted"));
+            },
+            onError: () => showErrorToast(t("common.actionFailed")),
+        });
     };
 
     if (isUserCategoriesLoading) {
@@ -132,11 +132,13 @@ function HistoryContent({ categoryType }: HistoryContentProps) {
                 expense={expenseToEdit}
                 onClose={() => setExpenseToEdit(null)}
                 onConfirm={updateExpense}
+                isPending={updateExpenseMutation.isPending}
             />
             <DeleteExpenseyModal
                 key={`delete-${expenseToDelete?.id}`}
                 expense={expenseToDelete}
                 onConfirm={deleteExpense}
+                isPending={deleteExpenseMutation.isPending}
                 onClose={() => setExpenseToDelete(null)}
             />
         </View>

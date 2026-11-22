@@ -1,4 +1,3 @@
-import * as expenseApi from "@/api/expenses.api";
 import Button from "@/components/Button";
 import CategoryPicker from "@/components/CategoryPicker";
 import DatePicker from "@/components/DatePicker";
@@ -8,13 +7,13 @@ import Text from "@/components/Text";
 import TextInput from "@/components/TextInput";
 import { currencies } from "@/constants/currency";
 import { theme } from "@/constants/theme";
+import { useAddExpense } from "@/hooks/useExpenseMutations";
 import useProfile from "@/hooks/useProfile";
 import useUserCategories from "@/hooks/useUserCategories";
 import { showErrorToast, showSuccessToast } from "@/lib/toast";
 import { parseAmountInput, toMinorUnits } from "@/lib/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -29,9 +28,8 @@ import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { z } from "zod";
 
 function AddRecordPage() {
-  const queryClient = useQueryClient();
   const { t } = useTranslation();
-  const [isSaving, setIsSaving] = React.useState(false);
+  const { mutate: addExpense, isPending: isSaving } = useAddExpense();
   const schema = z.object({
     amount: z.string().refine(
       (value) => parseAmountInput(value) !== null,
@@ -70,23 +68,17 @@ function AddRecordPage() {
     },
   });
 
-  const handleSave = async (data: z.infer<typeof schema>) => {
-    setIsSaving(true);
-    try {
-      const result = await expenseApi.addExpense({
-        ...data,
-        amount: toMinorUnits(data.amount),
-      });
-      if (result.success) {
-        showSuccessToast(t("expense.expenseAdded"));
-        queryClient.invalidateQueries({ queryKey: ["expenses"] });
-        reset();
-      } else {
-        showErrorToast(t("expense.saveFailed"));
+  const handleSave = (data: z.infer<typeof schema>) => {
+    addExpense(
+      { ...data, amount: toMinorUnits(data.amount) },
+      {
+        onSuccess: () => {
+          showSuccessToast(t("expense.expenseAdded"));
+          reset();
+        },
+        onError: () => showErrorToast(t("expense.saveFailed")),
       }
-    } finally {
-      setIsSaving(false);
-    }
+    );
   };
 
   const handleSavePress = () => {

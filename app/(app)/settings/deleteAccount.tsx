@@ -1,15 +1,14 @@
-import * as userApi from "@/api/users.api";
 import Button from "@/components/Button";
 import Icon from "@/components/Icon";
-import Loading from "@/components/Loading";
 import SettingsHeader from "@/components/settings/SettingsHeader";
 import Text from "@/components/Text";
 import TextInput from "@/components/TextInput";
 import { theme } from "@/constants/theme";
+import { InvalidPasswordError, useDeleteAccount } from "@/hooks/useAccountMutations";
 import { showErrorToast, showSuccessToast } from "@/lib/toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Keyboard, ScrollView, StyleSheet, View } from "react-native";
@@ -18,7 +17,7 @@ import z from "zod";
 function DeleteAccount() {
     const { t } = useTranslation();
     const router = useRouter();
-    const [loading, setLoading] = useState(false);
+    const { mutate: deleteAccount, isPending: loading } = useDeleteAccount();
 
     const confirmWord = t("settings.deleteConfirmWord");
     const schema = z.object({
@@ -40,20 +39,21 @@ function DeleteAccount() {
         defaultValues: { password: "", confirmation: "" },
     });
 
-    const onSubmit = async (data: z.infer<typeof schema>) => {
+    const onSubmit = (data: z.infer<typeof schema>) => {
         Keyboard.dismiss();
-        setLoading(true);
-        const result = await userApi.deleteAccount(data.password);
-        setLoading(false);
-
-        if (result.success) {
-            showSuccessToast(t("settings.accountDeleted"));
-            router.replace("/(auth)/(tabs)/login");
-        } else if (result.invalidPassword) {
-            setError("password", { message: t("validation.incorrectPassword") });
-        } else {
-            showErrorToast(t("common.actionFailed"));
-        }
+        deleteAccount(data.password, {
+            onSuccess: () => {
+                showSuccessToast(t("settings.accountDeleted"));
+                router.replace("/(auth)/(tabs)/login");
+            },
+            onError: (error) => {
+                if (error instanceof InvalidPasswordError) {
+                    setError("password", { message: t("validation.incorrectPassword") });
+                } else {
+                    showErrorToast(t("common.actionFailed"));
+                }
+            },
+        });
     };
 
     const consequences = [
@@ -118,14 +118,10 @@ function DeleteAccount() {
                 )}
             />
 
-            <Button onPress={handleSubmit(onSubmit)} disabled={loading} block background="primaryRed">
-                {loading ? (
-                    <Loading />
-                ) : (
-                    <Text weight="bold" color="white">
-                        {t("settings.deleteAccountPermanently")}
-                    </Text>
-                )}
+            <Button onPress={handleSubmit(onSubmit)} block background="primaryRed" loading={loading}>
+                <Text weight="bold" color="white">
+                    {t("settings.deleteAccountPermanently")}
+                </Text>
             </Button>
         </ScrollView>
     );

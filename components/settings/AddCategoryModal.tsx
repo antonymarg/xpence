@@ -15,24 +15,27 @@ import TextInput from "../TextInput";
 interface AddCategoryModalProps {
   isVisible: boolean;
   onClose: () => void;
-  onConfirm: (newCat: Omit<Category, "id">) => Promise<boolean>;
+  onConfirm: (newCat: Pick<Category, "name" | "type">) => void;
+  isPending?: boolean;
 }
 
 function AddCategoryModal({
   isVisible,
   onClose,
   onConfirm,
+  isPending = false,
 }: AddCategoryModalProps) {
   const { t } = useTranslation();
   const schema = z.object({
     categoryName: z.string().min(1, t("validation.nameRequired")),
     categoryType: z.enum(["needs", "wants", "savings"], { error: t("validation.categoryTypeRequired") }),
   });
+
   const {
     control,
     handleSubmit,
-    reset,
     formState: { errors },
+    reset
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -41,12 +44,11 @@ function AddCategoryModal({
     },
   });
 
-  const handleSave = async (data: z.infer<typeof schema>) => {
-    const saved = await onConfirm({
+  const handleSave = (data: z.infer<typeof schema>) => {
+    onConfirm({
       name: data.categoryName.trim(),
       type: data.categoryType,
     });
-    if (saved) reset();
   };
 
   const handleSavePress = () => {
@@ -54,8 +56,13 @@ function AddCategoryModal({
     void handleSubmit(handleSave)();
   };
 
+  const handleClose = () => {
+    reset()
+    onClose()
+  }
+
   return (
-    <Modal visible={Boolean(isVisible)} onClose={onClose}>
+    <Modal visible={Boolean(isVisible)} onClose={handleClose}>
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.content}
@@ -92,7 +99,7 @@ function AddCategoryModal({
             />
           )}
         />
-        <Button onPress={handleSavePress} block background="gradient">
+        <Button onPress={handleSavePress} disabled={isPending} block background="gradient">
           <Text weight="bold" color="white">
             {t("categories.addAction")}
           </Text>

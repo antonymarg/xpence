@@ -1,7 +1,7 @@
 import { theme } from "@/constants/theme";
 import { Category } from "@/types/categories.types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useEffect } from "react";
+import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Keyboard, ScrollView, StyleSheet } from "react-native";
@@ -15,13 +15,15 @@ interface EditCategoryModalProps {
     category: Category | null;
     onClose: () => void;
     onConfirm: (categoryId: string, name: string) => void;
+    isPending?: boolean;
 }
 
-function EditCategoryModal({ category, onClose, onConfirm }: EditCategoryModalProps) {
+function EditCategoryModal({ category, onClose, onConfirm, isPending = false }: EditCategoryModalProps) {
     const { t } = useTranslation();
     const schema = z.object({
         name: z.string().trim().min(1, t("validation.nameRequired")),
     });
+
     const {
         control,
         handleSubmit,
@@ -31,10 +33,6 @@ function EditCategoryModal({ category, onClose, onConfirm }: EditCategoryModalPr
         resolver: zodResolver(schema),
         defaultValues: { name: category?.name ?? "" },
     });
-
-    useEffect(() => {
-        reset({ name: category?.name ?? "" });
-    }, [category, reset]);
 
     const handleSave = (data: z.infer<typeof schema>) => {
         if (!category) return;
@@ -46,8 +44,13 @@ function EditCategoryModal({ category, onClose, onConfirm }: EditCategoryModalPr
         void handleSubmit(handleSave)();
     };
 
+    const handleClose = () => {
+        reset()
+        onClose()
+    }
+
     return (
-        <Modal visible={Boolean(category)} onClose={onClose}>
+        <Modal visible={Boolean(category)} onClose={handleClose}>
             <ScrollView
                 style={styles.scrollView}
                 contentContainerStyle={styles.content}
@@ -71,7 +74,7 @@ function EditCategoryModal({ category, onClose, onConfirm }: EditCategoryModalPr
                         />
                     )}
                 />
-                <Button onPress={handleSavePress} block background="gradient">
+                <Button onPress={handleSavePress} disabled={isPending} block background="gradient">
                     <Text weight="bold" color="white">
                         {t("common.save")}
                     </Text>

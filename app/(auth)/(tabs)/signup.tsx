@@ -1,6 +1,5 @@
 import Button from "@/components/Button";
 import Icon from "@/components/Icon";
-import Loading from "@/components/Loading";
 import PolicyModal, { POLICY_VERSION } from "@/components/PolicyModal";
 import Pressable from "@/components/Pressable";
 import Text from "@/components/Text";
@@ -215,19 +214,15 @@ export default function Signup() {
                         />
 
                         <Button
-                            disabled={loading}
                             onPress={handleSubmit(onSignupPress)}
                             background="gradient"
                             block
                             style={styles.button}
+                            loading={loading}
                         >
-                            {loading ? (
-                                <Loading />
-                            ) : (
-                                <Text weight="bold" size='xl' color="white">
-                                    {t("auth.signup")}
-                                </Text>
-                            )}
+                            <Text weight="bold" size='xl' color="white">
+                                {t("auth.signup")}
+                            </Text>
                         </Button>
                     </>
                 )}

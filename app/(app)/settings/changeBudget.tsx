@@ -1,4 +1,3 @@
-import { updateUserBudget } from "@/api/users.api";
 import Button from "@/components/Button";
 import ErrorScreen from "@/components/ErrorScreen";
 import Loading from "@/components/Loading";
@@ -8,8 +7,9 @@ import TextInput from "@/components/TextInput";
 import { currencies } from "@/constants/currency";
 import { theme } from "@/constants/theme";
 import useProfile from "@/hooks/useProfile";
+import { useUpdateBudget } from "@/hooks/useProfileMutations";
 import { showErrorToast, showSuccessToast } from "@/lib/toast";
-import { parseAmountInput } from "@/lib/utils";
+import { fromMinorUnits, parseAmountInput, toMinorUnits } from "@/lib/utils";
 import { useNavigation } from "expo-router";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -26,32 +26,26 @@ function ChangeBudget() {
     const navigator = useNavigation()
     const [budgetDraft, setBudgetDraft] = useState<string | null>(null);
     const [hasBudgetError, setHasBudgetError] = useState(false);
-    const [isSaving, setIsSaving] = useState(false);
+    const { mutate: updateBudget, isPending: isSaving } = useUpdateBudget();
 
     if (isProfileLoading) return <Loading />
     if (!isProfileSuccess || !profile) return <ErrorScreen onRefresh={invalidateProfile} />
 
-    const onBudgetUpdate = async () => {
-        const amount = parseAmountInput(budgetDraft ?? String(profile.budget / 100));
-        if (amount === null) {
+    const onBudgetUpdate = () => {
+        const value = budgetDraft ?? fromMinorUnits(profile.budget);
+        if (parseAmountInput(value) === null) {
             setHasBudgetError(true);
             return;
         }
 
         if (isSaving) return;
-        setIsSaving(true);
-        try {
-            const { success } = await updateUserBudget(Math.round(amount * 100));
-            if (success) {
+        updateBudget(toMinorUnits(value), {
+            onSuccess: () => {
                 showSuccessToast(t("settings.budgetUpdated"));
-                await invalidateProfile();
-                navigator.goBack()
-            } else {
-                showErrorToast(t("common.actionFailed"));
-            }
-        } finally {
-            setIsSaving(false);
-        }
+                navigator.goBack();
+            },
+            onError: () => showErrorToast(t("common.actionFailed")),
+        });
     };
     return <View style={styles.container}>
         <SettingsHeader label={t("settings.changeBudgetTitle")} href="/(app)/settings" />
@@ -62,16 +56,14 @@ function ChangeBudget() {
                 setHasBudgetError(false);
             }}
             inputMode="decimal"
-            value={budgetDraft ?? String(profile.budget / 100)}
+            value={budgetDraft ?? fromMinorUnits(profile.budget)}
             prefix={currencies[profile.currency]}
             error={hasBudgetError ? t("validation.validAmount") : undefined}
         />
-        <Button onPress={onBudgetUpdate} disabled={isSaving} block background="gradient">
-            {isSaving ? <Loading /> : (
-                <Text weight="bold" color="white">
-                    {t("settings.updateBudget")}
-                </Text>
-            )}
+        <Button onPress={onBudgetUpdate} block background="gradient" loading={isSaving}>
+            <Text weight="bold" color="white">
+                {t("settings.updateBudget")}
+            </Text>
         </Button>
     </View>
 }

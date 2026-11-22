@@ -1,4 +1,3 @@
-import * as userApi from '@/api/users.api';
 import Button from "@/components/Button";
 import Dropdown from '@/components/Dropdown';
 import ErrorScreen from "@/components/ErrorScreen";
@@ -8,6 +7,7 @@ import Text from "@/components/Text";
 import { locales } from '@/constants/locale';
 import { theme } from "@/constants/theme";
 import useProfile from "@/hooks/useProfile";
+import { useUpdateLocale } from "@/hooks/useProfileMutations";
 import { showErrorToast, showSuccessToast } from "@/lib/toast";
 import { setAppLanguage } from '@/lib/i18n';
 import { Locale } from '@/types/users.types';
@@ -27,31 +27,24 @@ function ChangeLocale() {
     const { t } = useTranslation()
 
     const [locale, setLocale] = useState<Locale | null>(null)
-    const [isSaving, setIsSaving] = useState(false);
+    const { mutate: updateLocale, isPending: isSaving } = useUpdateLocale();
 
     if (isProfileLoading) return <Loading />
     if (!isProfileSuccess || !profile) return <ErrorScreen onRefresh={invalidateProfile} />
 
     const selectedLocale = locale ?? profile.locale;
 
-    const onLocaleUpdate = async () => {
+    const onLocaleUpdate = () => {
         if (isSaving) return;
-        setIsSaving(true);
-        try {
-            const { success } = await userApi.updateUserLocale(selectedLocale);
-            if (!success) {
-                showErrorToast(t("common.actionFailed"));
-                return;
-            }
-
-            await setAppLanguage(selectedLocale);
-            const languageTag = locales.find(({ code }) => code === selectedLocale)!.languageTag;
-            await invalidateProfile();
-            navigator.goBack();
-            showSuccessToast(t('update_locale_success', { lng: languageTag }));
-        } finally {
-            setIsSaving(false);
-        }
+        updateLocale(selectedLocale, {
+            onSuccess: async () => {
+                await setAppLanguage(selectedLocale);
+                const languageTag = locales.find(({ code }) => code === selectedLocale)!.languageTag;
+                navigator.goBack();
+                showSuccessToast(t('update_locale_success', { lng: languageTag }));
+            },
+            onError: () => showErrorToast(t("common.actionFailed")),
+        });
     };
     return <View style={styles.container}>
         <SettingsHeader label={t('change_locale')} href="/(app)/settings" />
@@ -60,12 +53,10 @@ function ChangeLocale() {
             onValueChange={setLocale}
             options={locales.map(({ code, labelKey }) => ({ label: t(labelKey), value: code }))}
         />
-        <Button onPress={onLocaleUpdate} disabled={isSaving} block background="gradient">
-            {isSaving ? <Loading /> : (
-                <Text weight="bold" color="white">
-                    {t('update_language')}
-                </Text>
-            )}
+        <Button onPress={onLocaleUpdate} block background="gradient" loading={isSaving}>
+            <Text weight="bold" color="white">
+                {t('update_language')}
+            </Text>
         </Button>
     </View>
 }

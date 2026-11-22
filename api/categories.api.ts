@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase";
 import { toError } from "@/lib/utils";
 import { Result } from "@/types/api.types";
 import { Category } from "@/types/categories.types";
+import { Tables } from "@/types/database.types";
 import { Locale } from "@/types/users.types";
 import i18next from "i18next";
 
@@ -48,7 +49,7 @@ async function getUserCategories(activeOnly = false): Result<Category[]> {
   }
 }
 
-async function addUserCategory({ name, type }: Omit<Omit<Category, "id">, "is_active">) {
+async function addUserCategory({ name, type }: Pick<Category, "name" | "type">): Result<Tables<"categories">> {
   try {
     const userId = await getUserId();
     const { data: newCategory, error: createCatError } = await supabase

@@ -30,10 +30,10 @@ async function getUserProfile(): Result<Profile | null> {
   }
 }
 
-async function createUserProfile(profile: Omit<Profile, 'userId'>) {
+async function createUserProfile(profile: Omit<Profile, 'userId'>): Result<null> {
   try {
     const userId = await getUserId();
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("user_profiles")
       .insert({
         user_id: userId,
@@ -47,13 +47,13 @@ async function createUserProfile(profile: Omit<Profile, 'userId'>) {
     const categoriesResult = await createDefaultCategoriesForUser(userId, profile.locale);
     if (!categoriesResult.success) throw categoriesResult.error;
 
-    return { success: true, data }
+    return { success: true, data: null }
   } catch (err) {
     return { success: false, error: toError(err) };
   }
 }
 
-async function updateUserBudget(budget: number) {
+async function updateUserBudget(budget: number): Result<null> {
   try {
     const userId = await getUserId();
     const { error } = await supabase
@@ -67,7 +67,7 @@ async function updateUserBudget(budget: number) {
   }
 }
 
-async function updateUserCurrency(currency: Currency) {
+async function updateUserCurrency(currency: Currency): Result<null> {
   try {
     const userId = await getUserId();
     const { error } = await supabase
@@ -81,7 +81,7 @@ async function updateUserCurrency(currency: Currency) {
   }
 }
 
-async function updateUserLocale(locale: Locale) {
+async function updateUserLocale(locale: Locale): Result<null> {
   try {
     const userId = await getUserId();
     const { error } = await supabase

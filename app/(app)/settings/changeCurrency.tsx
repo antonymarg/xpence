@@ -1,4 +1,3 @@
-import * as userApi from '@/api/users.api';
 import Button from "@/components/Button";
 import Dropdown from '@/components/Dropdown';
 import ErrorScreen from "@/components/ErrorScreen";
@@ -8,6 +7,7 @@ import Text from "@/components/Text";
 import { currencies } from '@/constants/currency';
 import { theme } from "@/constants/theme";
 import useProfile from "@/hooks/useProfile";
+import { useUpdateCurrency } from "@/hooks/useProfileMutations";
 import { showErrorToast, showSuccessToast } from "@/lib/toast";
 import { Currency } from '@/types/users.types';
 import { useNavigation } from "expo-router";
@@ -26,28 +26,22 @@ function ChangeCurrency() {
     const navigator = useNavigation()
 
     const [currency, setCurrency] = useState<Currency | null>(profile?.currency ?? null)
-    const [isSaving, setIsSaving] = useState(false);
+    const { mutate: updateCurrency, isPending: isSaving } = useUpdateCurrency();
 
     if (isProfileLoading) return <Loading />
     if (!isProfileSuccess || !profile) return <ErrorScreen onRefresh={invalidateProfile} />
 
     const selectedCurrency = currency ?? profile.currency;
 
-    const onCurrencyUpdate = async () => {
+    const onCurrencyUpdate = () => {
         if (isSaving) return;
-        setIsSaving(true);
-        try {
-            const { success } = await userApi.updateUserCurrency(selectedCurrency);
-            if (success) {
+        updateCurrency(selectedCurrency, {
+            onSuccess: () => {
                 showSuccessToast(t("settings.currencyUpdated"));
-                await invalidateProfile();
-                navigator.goBack()
-            } else {
-                showErrorToast(t("common.actionFailed"));
-            }
-        } finally {
-            setIsSaving(false);
-        }
+                navigator.goBack();
+            },
+            onError: () => showErrorToast(t("common.actionFailed")),
+        });
     };
     return <View style={styles.container}>
         <SettingsHeader label={t("settings.changeCurrency")} href="/(app)/settings" />
@@ -56,12 +50,10 @@ function ChangeCurrency() {
             onValueChange={setCurrency}
             options={Object.entries(currencies).map(([code, symbol]) => ({ label: `${code} (${symbol})`, value: code as Currency }))}
         />
-        <Button onPress={onCurrencyUpdate} disabled={isSaving} block background="gradient">
-            {isSaving ? <Loading /> : (
-                <Text weight="bold" color="white">
-                    {t("settings.updateCurrency")}
-                </Text>
-            )}
+        <Button onPress={onCurrencyUpdate} block background="gradient" loading={isSaving}>
+            <Text weight="bold" color="white">
+                {t("settings.updateCurrency")}
+            </Text>
         </Button>
     </View>
 }

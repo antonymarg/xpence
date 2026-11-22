@@ -1,14 +1,13 @@
-import * as userApi from "@/api/users.api";
 import Button from "@/components/Button";
-import Loading from "@/components/Loading";
 import SettingsHeader from "@/components/settings/SettingsHeader";
 import Text from "@/components/Text";
 import TextInput from "@/components/TextInput";
 import { theme } from "@/constants/theme";
+import { InvalidPasswordError, useChangePassword } from "@/hooks/useAccountMutations";
 import { showErrorToast, showSuccessToast } from "@/lib/toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigation } from "expo-router";
-import React, { useState } from "react";
+import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Keyboard, ScrollView, StyleSheet } from "react-native";
@@ -17,7 +16,7 @@ import z from "zod";
 function ChangePassword() {
     const { t } = useTranslation();
     const navigator = useNavigation();
-    const [loading, setLoading] = useState(false);
+    const { mutate: changePassword, isPending: loading } = useChangePassword();
 
     const schema = z
         .object({
@@ -44,20 +43,24 @@ function ChangePassword() {
         defaultValues: { currentPassword: "", newPassword: "", confirmPassword: "" },
     });
 
-    const onSubmit = async (data: z.infer<typeof schema>) => {
+    const onSubmit = (data: z.infer<typeof schema>) => {
         Keyboard.dismiss();
-        setLoading(true);
-        const result = await userApi.changePassword(data.currentPassword, data.newPassword);
-        setLoading(false);
-
-        if (result.success) {
-            showSuccessToast(t("settings.passwordUpdated"));
-            navigator.goBack();
-        } else if (result.invalidPassword) {
-            setError("currentPassword", { message: t("validation.incorrectPassword") });
-        } else {
-            showErrorToast(t("common.actionFailed"));
-        }
+        changePassword(
+            { currentPassword: data.currentPassword, newPassword: data.newPassword },
+            {
+                onSuccess: () => {
+                    showSuccessToast(t("settings.passwordUpdated"));
+                    navigator.goBack();
+                },
+                onError: (error) => {
+                    if (error instanceof InvalidPasswordError) {
+                        setError("currentPassword", { message: t("validation.incorrectPassword") });
+                    } else {
+                        showErrorToast(t("common.actionFailed"));
+                    }
+                },
+            }
+        );
     };
 
     const fields = [
@@ -90,14 +93,10 @@ function ChangePassword() {
                     )}
                 />
             ))}
-            <Button onPress={handleSubmit(onSubmit)} disabled={loading} block background="gradient">
-                {loading ? (
-                    <Loading />
-                ) : (
-                    <Text weight="bold" color="white">
-                        {t("settings.updatePassword")}
-                    </Text>
-                )}
+            <Button onPress={handleSubmit(onSubmit)} block background="gradient" loading={loading}>
+                <Text weight="bold" color="white">
+                    {t("settings.updatePassword")}
+                </Text>
             </Button>
         </ScrollView>
     );

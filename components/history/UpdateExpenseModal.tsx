@@ -2,7 +2,7 @@ import { currencies } from "@/constants/currency";
 import { theme } from "@/constants/theme";
 import useProfile from "@/hooks/useProfile";
 import useUserCategories from "@/hooks/useUserCategories";
-import { parseAmountInput, toMinorUnits } from "@/lib/utils";
+import { fromMinorUnits, parseAmountInput, toMinorUnits } from "@/lib/utils";
 import { Expense } from "@/types/expenses.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
@@ -20,13 +20,15 @@ import TextInput from "../TextInput";
 interface UpdateExpenseModalProps {
   expense: Expense | null;
   onClose: () => void;
-  onConfirm: (expense: Expense) => Promise<void>;
+  onConfirm: (expense: Expense) => void;
+  isPending?: boolean;
 }
 
 function UpdateExpenseModal({
   expense,
   onClose,
   onConfirm,
+  isPending = false,
 }: UpdateExpenseModalProps) {
   const { t } = useTranslation();
   const schema = z.object({
@@ -49,7 +51,7 @@ function UpdateExpenseModal({
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
-      amount: expense ? String(expense.amount / 100) : "10",
+      amount: expense ? fromMinorUnits(expense.amount) : "10",
       description: expense?.description || "",
       categoryId: expense?.categoryId || "",
       date: expense?.date || new Date(),
@@ -58,8 +60,8 @@ function UpdateExpenseModal({
 
   if (!expense || !isUserCategoriesSuccess) return null;
 
-  const handleSave = async (data: z.infer<typeof schema>) => {
-    await onConfirm({
+  const handleSave = (data: z.infer<typeof schema>) => {
+    onConfirm({
       id: expense.id,
       ...data,
       amount: toMinorUnits(data.amount),
@@ -155,7 +157,7 @@ function UpdateExpenseModal({
           <Text weight="bold">{t("common.close")}</Text>
         </Button>
         <View style={styles.updateButtonWrapper}>
-          <Button onPress={handleSavePress} background="gradient" block>
+          <Button onPress={handleSavePress} disabled={isPending} background="gradient" block>
             <Text weight="bold" color="white">
               {t("common.update")}
             </Text>
