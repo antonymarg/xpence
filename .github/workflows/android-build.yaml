@@ -1,0 +1,37 @@
+name: Android production build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - run: npm ci
+
+      - name: Build Android app bundle locally
+        run: eas build --platform android --profile production --local --non-interactive --output ./app.aab
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: app-aab
+          path: app.aab
+          retention-days: 1
