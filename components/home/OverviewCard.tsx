@@ -51,7 +51,7 @@ function OverviewCard({ sum, budget }: OverviewCardProps) {
           ) : (
             <Text size="sm">{t("home.remaining", { amount: formatCurrency(remaining) })}</Text>
           )}
-          <Text size="sm" style={styles.budgetText}>
+          <Text size="sm">
             {t("home.budget", { amount: formatCurrency(budget) })}
           </Text>
         </View>
@@ -78,17 +78,15 @@ const styles = StyleSheet.create({
   },
   remainingTextContainer: {
     flexDirection: "row",
+    flexWrap: 'wrap',
     gap: theme.spacing.xs,
-    alignItems: "baseline",
+    justifyContent: 'space-between'
   },
   overLimitPillText: {
     textTransform: "uppercase",
   },
   numberText: {
     marginBottom: theme.spacing.lg,
-  },
-  budgetText: {
-    marginLeft: "auto",
   },
 });
 

@@ -93,12 +93,12 @@ const styles = StyleSheet.create({
   mainContent: {
     padding: theme.spacing.md,
     paddingTop: 0,
-    gap: theme.spacing.md,
+    gap: theme.spacing.sm,
     flexGrow: 1,
   },
   categoriesRow: {
     flexDirection: "row",
-    gap: theme.spacing.md,
+    gap: theme.spacing.sm,
   },
   category: {
     flex: 1,
