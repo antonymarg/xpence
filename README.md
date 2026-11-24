@@ -22,9 +22,13 @@ _Coming soon to Google Play._
 
 ## Screenshots
 
-| Home | History | Insights | Settings |
-|:---:|:---:|:---:|:---:|
-| <img src="docs/screenshots/home.png" width="200" /> | <img src="docs/screenshots/history.png" width="200" /> | <img src="docs/screenshots/insights.png" width="200" /> | <img src="docs/screenshots/settings.png" width="200" /> |
+| Home | History | Add Record |
+|:---:|:---:|:---|
+| <img src="docs/screenshots/home.png" width="200" /> | <img src="docs/screenshots/history.png" width="200" /> | <img src="docs/screenshots/addRecord.png" width="200" /> ||
+
+| Insights | ManageCategories | Login |
+|:---:|:---:|:---:|
+| <img src="docs/screenshots/insights.png" width="200" /> | <img src="docs/screenshots/manageCategories.png" width="200" /> | <img src="docs/screenshots/login.png" width="200" /> |
 
 ## What it does
 
