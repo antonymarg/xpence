@@ -42,6 +42,7 @@ export default function ExpenseList({
 }: ExpenseListProps) {
   const { t, i18n } = useTranslation();
   const language = i18n.resolvedLanguage || i18n.language;
+  const isFiltered = selectedCategoryType !== "all" || selectedCategory !== null || !!fromDate || !!toDate;
   const transformData = useCallback((data: InfiniteData<Expense[]>) => {
     const expenses = data.pages.flat();
     if (!expenses.length) return [];
@@ -129,7 +130,7 @@ export default function ExpenseList({
       ListFooterComponent={isFetchingNextPage ? <Loading /> : null}
       ListEmptyComponent={
         <View style={style.empty}>
-          <Text>{t("history.noExpenses")}</Text>
+          <Text textAlign="center">{t(isFiltered ? "history.noResults" : "history.noExpenses")}</Text>
         </View>
       }
     />
