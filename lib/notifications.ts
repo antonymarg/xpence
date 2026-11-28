@@ -4,12 +4,9 @@ import i18n from "i18next";
 import { Platform } from "react-native";
 
 const REMINDER_CHANNEL_ID = "daily-reminder";
-const REMINDER_KIND = "daily-reminder";
 const REMINDER_HOUR = 20;
 const REMINDER_MINUTE = 0;
 
-// How many days ahead to schedule. Each app open refreshes the window, so
-// reminders stop after this many days of inactivity.
 const DAYS_AHEAD = 14;
 
 const ENABLED_STORAGE_KEY = "dailyReminderEnabled";
@@ -44,22 +41,18 @@ async function ensureAndroidChannel() {
   });
 }
 
-export async function cancelDailyReminders() {
-  if (!isSupported) return;
-  const scheduled = await Notifications.getAllScheduledNotificationsAsync();
-  await Promise.all(
-    scheduled
-      .filter((n) => n.content.data?.kind === REMINDER_KIND)
-      .map((n) => Notifications.cancelScheduledNotificationAsync(n.identifier)),
-  );
+function reminderId(date: Date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `daily-reminder-${y}-${m}-${d}`;
 }
 
-/**
- * Called whenever the app is opened / foregrounded. Since the user has opened
- * the app today, today's reminder is skipped and one is scheduled for 20:00
- * on each of the following days. Opening the app again on any of those days
- * reschedules, which effectively cancels that day's reminder.
- */
+export async function cancelDailyReminders() {
+  if (!isSupported) return;
+  await Notifications.cancelAllScheduledNotificationsAsync();
+}
+
 export async function refreshDailyReminders() {
   if (!isSupported) return;
   if (!(await getRemindersEnabled())) {
@@ -88,7 +81,8 @@ export async function refreshDailyReminders() {
       REMINDER_MINUTE,
     );
     await Notifications.scheduleNotificationAsync({
-      content: { title, body, data: { kind: REMINDER_KIND } },
+      identifier: reminderId(date),
+      content: { title, body },
       trigger: {
         type: Notifications.SchedulableTriggerInputTypes.DATE,
         date,
