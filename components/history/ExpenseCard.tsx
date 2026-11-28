@@ -31,15 +31,15 @@ function ExpenseCard({
   return (
     <>
       <Card style={styles.container} padding="sm" borderRadius="sm">
-        <View>
-          <Text weight="bold">{expense.description}</Text>
+        <View style={styles.leftColumn}>
+          <Text weight="bold" numberOfLines={2}>{expense.description}</Text>
           <View style={styles.leftSide}>
             <Pill variant={categoryType} label={t(`categories.${categoryType}`)} />
             <Pill variant="generic" label={categoryName} />
           </View>
         </View>
         <View style={styles.rightSide}>
-          <Text weight="bold">
+          <Text weight="bold" numberOfLines={1}>
             -{formatCurrency(expense.amount)}
           </Text>
           <ExpenseActionsMenu
@@ -57,14 +57,20 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    gap: theme.spacing.sm,
+  },
+  leftColumn: {
+    flex: 1,
   },
   leftSide: {
     marginTop: theme.spacing.xs,
     flexDirection: "row",
+    flexWrap: "wrap",
     gap: theme.spacing.sm,
   },
   rightSide: {
     flexDirection: 'row',
+    alignItems: 'center',
     gap: theme.spacing.sm
   },
 });
